@@ -109,12 +109,7 @@ namespace StartWithBase
                 int goundNPC = 2;
                 int baseChests = chestsPerFloor * baseFloor + groundChests + storageFloorChest;
                 int basNPCFlats = npcsPerFloor * baseFloor + goundNPC;
-                                
-                writeDebugFile("townNPCs: " + townNPCcount);
-                writeDebugFile("basNPCFlats: " + basNPCFlats);
-                writeDebugFile("allItemCount: " + allItemCount);
-                writeDebugFile("chestsNeeded: " + chestsNeeded);
-                writeDebugFile("baseChests: " + baseChests);
+                               
 
                 //extra floors needed
                 int floorsNeeded = (townNPCcount - basNPCFlats + npcsPerFloor - 1) / npcsPerFloor;
@@ -129,9 +124,6 @@ namespace StartWithBase
                 if (extraStorageFloor == 0 && floorsNeeded > 4)
                     extraStorageFloor = (floorsNeeded) / 8;
 
-                writeDebugFile("extraFloor: " + floorsNeeded);
-                writeDebugFile("extraStorageFloor: " + extraStorageFloor);
-                writeDebugFile("totalChest: " + newChests);
 
                 cy -= 4 * floorsNeeded;
                 cy -= 6 * extraStorageFloor;
@@ -558,14 +550,6 @@ namespace StartWithBase
 
         }
 
-        public void writeDebugFile(string content)
-        {
-            using (System.IO.StreamWriter file =
-                  new System.IO.StreamWriter(Main.SavePath + @".\debug.txt", true))
-            {
-                file.WriteLine(content);                
-            }
-        }
 
         public void DrawATask(DrawTask task, bool goRightDirec = true )
         {
