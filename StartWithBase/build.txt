@@ -1,0 +1,10 @@
+author = Unftf
+version = 0.1.0.0
+displayName = Start with base
+homepage = 
+hideCode = false
+hideResources = false
+includeSource = true
+buildIgnore = *.csproj, *.user, obj\*, bin\*, .vs\*, *.config, .git\*
+includePDB = true
+languageVersion = 6
