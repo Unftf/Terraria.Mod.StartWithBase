@@ -81,8 +81,7 @@ namespace StartWithBase
                 cx = Main.spawnTileX - 20;
                 cy = Main.spawnTileY - yoff;
 
-                //WorldGen.Place1x2Top(num, i, 42, style2); lamp
-
+                
                 if (Main.worldName.Contains("all") && Main.worldName.Contains("item"))
                 {
                     PlaceAllItems();
@@ -142,7 +141,7 @@ namespace StartWithBase
         }
 
         bool extend = false;
-        //const int startingFloors = 4;
+      
         public void DrawBase(int extraFloors, int extraStorageFloor)
         {
             DrawObjectTask floorType1 = new DrawObjectTask();
