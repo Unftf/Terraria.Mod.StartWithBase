@@ -1,5 +1,5 @@
 author = Unftf
-version = 0.1.0.0
+version = 0.1.0.1
 displayName = Start with base
 homepage = 
 hideCode = false
