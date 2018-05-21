@@ -1,5 +1,5 @@
 author = Unftf
-version = 0.1.0.2
+version = 0.1.0.3
 displayName = Start with base
 homepage = https://forums.terraria.org/index.php?threads/start-with-base.69608/
 homepage = 
