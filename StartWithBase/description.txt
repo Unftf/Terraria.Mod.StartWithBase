@@ -11,3 +11,7 @@ It would be nice if you can also write me your experience during playthrough wit
 Thanks for testing. gl hf!
 
 (mod in early version and for testing)
+
+
+update:
+0.1.0.5 - some bug fixing

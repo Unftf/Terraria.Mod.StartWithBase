@@ -123,9 +123,19 @@ namespace StartWithBase
                 if (extraStorageFloor == 0 && floorsNeeded > 4)
                     extraStorageFloor = (floorsNeeded) / 8;
 
-
+              
                 cy -= 4 * floorsNeeded;
-                cy -= 6 * extraStorageFloor;
+                cy -= 7 * extraStorageFloor;
+                
+
+                //writeDebugFile("townNPCcount " + townNPCcount, false);
+                //writeDebugFile("chestsNeeded " + chestsNeeded);
+                //writeDebugFile("baseChests " + baseChests);
+                //writeDebugFile("basNPCFlats " + basNPCFlats);
+                //writeDebugFile("newChests " + newChests);
+                //writeDebugFile("floorsNeeded "+ floorsNeeded);
+                //writeDebugFile("extraStorageFloor "+ extraStorageFloor);
+                //writeDebugFile("floorSpace " + ((floorsNeeded) / (extraStorageFloor + 1)));
 
                 for (int xi = cx; xi < cx + 40; xi++)
                 {
@@ -139,6 +149,15 @@ namespace StartWithBase
 
             }));
         }
+        public static void writeDebugFile(string content, bool append=true)
+        {
+            using (System.IO.StreamWriter file =
+             new System.IO.StreamWriter(Main.SavePath + @".\debug.txt", append))
+            {
+                file.WriteLine(content);
+            }
+        }
+
 
         bool extend = false;
       
@@ -289,6 +308,7 @@ namespace StartWithBase
 
             int floorSpace = (extraFloors ) / (extraStorageFloor + 1);
             int florCountToStorage = 0;
+            
 
             if (floorSpace < 4)
                 extend = true;
@@ -304,9 +324,10 @@ namespace StartWithBase
                     DrawAObject(floorType1, false); cy--;
                 }
                 extraFloors--;
-                if(florCountToStorage+1 == floorSpace && extraFloors > 0)
+                if(florCountToStorage+1 == floorSpace && extraFloors > 0 && extraStorageFloor > 0)
                 {
                     DrawAObject(storageRoom); cy--;
+                    extraStorageFloor--;
                     florCountToStorage = 0;
                 }
                 else
