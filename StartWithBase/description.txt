@@ -24,5 +24,6 @@ You can combine those, e.g "MyWorldName$Ba3FdyTssWdi" (without quotes) will sele
 more details at linked page
 
 updates:
+0.1.3.1 - some bug fixing
 0.1.3.0 - Advanced options, added 2 alternative base structures and the option to change the used tiles
 0.1.0.5 - some bug fixing
