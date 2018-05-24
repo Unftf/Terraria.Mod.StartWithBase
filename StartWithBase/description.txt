@@ -14,11 +14,11 @@ Update:
 options for [c/88CC88:alternative tiles and base structure]. Enter at the end of world name.
 $Ba2 - base with smallest element of 2 NPC flats
 $Ba3 - base with smallest element of 3 NPC flats (§b3b for big version)
-$Ba6 - base with smallest element of 6 NPC flats 
+$Ba6 - base with smallest element of 6 NPC flats (credits to Sergo for that)
 $Fpa, Fdy, Fwo, Fgr, Fbo, Fri ---> changes the furniture material
 $Tha, Tob, Tdy, Two, Tss, Tri, Tbo --> changes the tiles used for flats
 $Wha, Wdg, Wdy, Wwo, Wss, Wdi, Wri, Wbo --> changes the used wall
-$Sy* - random style of used tiles, predefined $Sy0, $Sy1, $Sy1
+$Sy* - random style of used tiles, predefined $Sy0, $Sy1, $Sy2
 
 You can combine those, e.g "MyWorldName$Ba3FdyTssWdi" (without quotes) will select base 3 with dyndasty wood furniture (Fdy), stone slab for Flats (Tss) and dirt as wall behind (Wdi)
 more details at linked page

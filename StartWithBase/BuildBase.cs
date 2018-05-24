@@ -210,7 +210,7 @@ namespace StartWithBase
 
             subs = subs.Substring(1);
             subs = subs.ToLower().Normalize();
-            if (subs.Length == 3 && subs.Substring(0,2).Equals("ba"))
+            if (subs.Length == 3 && (subs.Substring(0,2).Equals("ba") || subs.Equals("b3b")))
                 subs = subs + "sy*";
             
             for(int i=0; i < subs.Length/3;i++)
