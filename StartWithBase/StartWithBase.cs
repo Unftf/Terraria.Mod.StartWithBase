@@ -10,17 +10,13 @@ using Terraria.GameInput;
 using Terraria.Graphics;
 using Terraria.Localization;
 using Terraria.GameContent.UI.States;
-using System;
 using Microsoft.Xna.Framework;
-
-
 
 
 using Microsoft.Xna.Framework.Graphics;
 using Terraria.GameContent.UI.Elements;
 using Terraria.UI.Gamepad;
 using Terraria.World.Generation;
-using Terraria.ModLoader;
 using Terraria.Map;
 
 using System.IO;
