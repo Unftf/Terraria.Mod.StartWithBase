@@ -27,22 +27,22 @@ namespace StartWithBase
 {
     class BuildBase : ModWorld
     {
-        int curTileType = TileID.HayBlock;
-        int curTileItemType = ItemID.Hay;
-        byte curWallType = WallID.Hay;
-        int curWallItemType = ItemID.HayWall;
+        static int curTileType = TileID.HayBlock;
+        static int curTileItemType = ItemID.Hay;
+        static byte curWallType = WallID.Hay;
+        static int curWallItemType = ItemID.HayWall;
 
-        int curStyle = 17;
+        static int curStyle = 17;
 
-        int curChestStyle = 5;
+        static int curChestStyle = 5;
 
-        int curPlatformStyle = 17;
-        int curLanternStyle = 13;
-        int curChairStyle = 29;
-        int curWorkBenchStyle = 22;
-        int curLampStyle = 0;
-        int curTorchStyle = 0;
-        int curPlatformItemType = ItemID.PalmWood;
+        static int curPlatformStyle = 17;
+        static int curLanternStyle = 13;
+        static int curChairStyle = 29;
+        static int curWorkBenchStyle = 22;
+        static int curLampStyle = 0;
+        static int curTorchStyle = 0;
+        static int curPlatformItemType = ItemID.PalmWood;
         
 
         int cx, cy;
@@ -81,7 +81,7 @@ namespace StartWithBase
 
 
         BaseType baseType = BaseType.Base3;
-        public enum BaseType { Base2, Base3, Base6 };
+        public enum BaseType { Base2, Base3, Base4, Base6 };
         public class Base
         {
             BaseType baseType;
@@ -121,6 +121,79 @@ namespace StartWithBase
                 this.spriteStyle = spriteStyle;
                 this.placeWall = placeWall;                
             }
+
+            public DrawTask(string task)
+            {
+                char num = task[0];
+                char type = task[1];
+
+                string numbers = "0123456789abcdefghijklmnopqrstABCDEFGHIJKLMNOPQRSTZ"; //a = 10, k=20; A=30; k=40; Z=50
+
+                this.placeWall = Char.IsLower(type); // place wall if type is written small letters
+                this.count = numbers.IndexOf(num);
+                if (this.count < 0) throw new Exception("invalid draw task count "+ num  +" ("+ task[0]+")"+"\n");
+                
+
+                type = Char.ToUpper(type);
+                this.spriteStyle = -1;
+
+                switch (type)
+                {
+                    //Blocks
+                    //Platform
+                    //Storage container
+                    //Hanging lantern
+                    //Chair
+                    //Work bench
+                    //tall Gate
+                    //Lamp
+                    //Empty (or only fill walls)
+
+                    case 'B':
+                        //block
+                        this.type = curTileType;                        
+                        break;
+                    case 'P':
+                        this.type = TileID.Platforms;
+                        this.spriteStyle = curPlatformStyle;
+                        break;
+                    case 'S':
+                        //storage container
+                        this.type = TileID.Containers;
+                        this.spriteStyle = curChestStyle;
+                        break;
+                    case 'H':                        
+                        this.type = TileID.HangingLanterns;
+                        this.spriteStyle = curLanternStyle;
+                        break;
+                    case 'C':                        
+                        this.type = TileID.Chairs;
+                        this.spriteStyle = curChairStyle;
+                        break;
+                    case 'W':                        
+                        this.type = TileID.WorkBenches;
+                        this.spriteStyle = curWorkBenchStyle;
+                        break;
+                    case 'G':                        
+                        this.type = TileID.TallGateOpen;
+                        this.spriteStyle = 0;
+                        break;
+                    case 'L':                        
+                        this.type = TileID.Lamps;
+                        this.spriteStyle = curLampStyle;
+                        break;
+                    case 'E':
+                        //empty tile or only place walls
+                        this.type = -1;                        
+                        break;
+                    case 'T':
+                        this.type = TileID.Torches;
+                        this.spriteStyle = curTorchStyle;
+                        break;
+                }
+
+
+            }
         }
         public class DrawLineTask
         {
@@ -130,6 +203,14 @@ namespace StartWithBase
             {
                 drawTaskList = new List<DrawTask>();
             }
+            public DrawLineTask(string string2Parse)
+            {
+                drawTaskList = new List<DrawTask>();
+                for (int i = 0; i < string2Parse.Length-1; i+=2)
+                {
+                    drawTaskList.Add(new DrawTask(string2Parse.Substring(i, 2)));
+                }
+            }
         }
         public class DrawObjectTask
         {
@@ -137,6 +218,13 @@ namespace StartWithBase
             public DrawObjectTask()
             {
                 drawLineList = new List<DrawLineTask>();
+            }
+            public DrawObjectTask(string string2Parse)
+            {
+                drawLineList = new List<DrawLineTask>();
+                string[] lines = string2Parse.Split('|');
+                for(int i=0; i < lines.Length; i++)
+                drawLineList.Add(new DrawLineTask(lines[i]));
             }
         }
 
@@ -167,12 +255,13 @@ namespace StartWithBase
                     if (cur != null)
                         if (cur.npc.CanTalk && cur.npc.friendly) townNPCcount++;
                 }
+                //all vanilla 1.3.5.3 npc count: 23
+
                                
                 allItemCount = ItemLoader.ItemCount;
                 chestsNeeded = (allItemCount + 39) / 40;
 
                 
-
                 string wname = Main.worldName;
                 param = new List<string>();
                 //if (!wname.Contains("$"))
@@ -181,16 +270,20 @@ namespace StartWithBase
                     parsWN(wname);
 
                 if(baseType == BaseType.Base2)
-                    Base2();
+                    Base2(); 
                 else if (baseType == BaseType.Base6)
-                    Base6();
-                else //if (param.Contains("b3"))
-                    Base3();
+                    Base6(); //up to 90 at small
+                else if (baseType == BaseType.Base4)
+                    Base4();                
+                else 
+                    Base3(); //if (param.Contains("ba3")) max npc about 80 at small world
 
 
                 param = null;
             }));
         }
+
+
 
         List<string> param;
         public void parsWN(string wname)
@@ -222,6 +315,7 @@ namespace StartWithBase
                 {
                     if (pa.Equals("ba2")) baseType = BaseType.Base2;
                     if (pa.Equals("ba3")) baseType = BaseType.Base3;
+                    if (pa.Equals("ba4")) baseType = BaseType.Base4;
                     if (pa.Equals("ba6")) baseType = BaseType.Base6;
                 }
                 if (pa.Equals("b3b"))
@@ -235,9 +329,13 @@ namespace StartWithBase
                     //random
                     //int val = WorldGen.genRand.Next(100);
                     //baseType = val<10? BaseType.Base2 : val < 20 ? BaseType.Base6: BaseType.Base3;
-                    SetToFurniture( (styleTypeDict.ElementAt( WorldGen.genRand.Next(styleTypeDict.Count) )).Value  );
+                    int dummy = (WorldGen.genRand.Next(Math.Abs(Main.worldName.GetHashCode() - (Main.player.Length>0? Main.player[0].name.GetHashCode():0)+ DateTime.Now.Second+ DateTime.Now.Millisecond)))%100;
+                    while (dummy-->0) WorldGen.genRand.Next();
+                    SetToFurniture( (styleTypeDict.ElementAt( WorldGen.genRand.Next(styleTypeDict.Count) )).Value);
                     SetToWall((wallTypeDict.ElementAt( WorldGen.genRand.Next(wallTypeDict.Count))).Value);
+                    if(curWallType == wallTypeDict["wri"].WallID || curWallType == wallTypeDict["wdg"].WallID) SetToWall((wallTypeDict.ElementAt(WorldGen.genRand.Next(wallTypeDict.Count))).Value);//dont like mahagony reduce chance, digew hard to get
                     SetToTiles((TileTypeDict.ElementAt( WorldGen.genRand.Next(TileTypeDict.Count))).Value);
+                    if (curTileType == TileTypeDict["tri"].TileID || curTileType == TileTypeDict["tob"].TileID) SetToWall((wallTypeDict.ElementAt(WorldGen.genRand.Next(wallTypeDict.Count))).Value);//dont like mahagony, obsidian hard to get reduce chance
                 }
                 if (pa.Equals("sy0"))
                 {   
@@ -383,6 +481,34 @@ namespace StartWithBase
             ClearField(groundBaseHight + 4 * floorsNeeded + 7 * extraStorageFloor + +(extend ? 7 : 0) , 2 + (extend?7:0));
 
             DrawBase3(floorsNeeded, extraStorageFloor);
+        }
+
+        public void Base4()
+        {
+            int chestsPerFloor = 12;
+            int npcsPerFloor = 6;
+            int baseFloor = 0;
+            
+            int startBaseChests = 80 + baseFloor * chestsPerFloor;
+            int startBaseNPC = 23 + baseFloor * npcsPerFloor;
+            
+
+            //extra floors needed
+            int floorsNeeded = (townNPCcount - startBaseNPC + npcsPerFloor - 1) / npcsPerFloor;
+            
+
+            int newChests = floorsNeeded * chestsPerFloor + startBaseChests;
+
+            
+
+            int translateY = 47;
+            cy -= translateY;
+            int spaceXneeded = floorsNeeded * 8;
+
+            ClearField(translateY, (spaceXneeded+1/2) + 2);
+            cx++;
+
+            DrawBase4(floorsNeeded);
         }
 
         public void Base6()
@@ -1505,7 +1631,7 @@ namespace StartWithBase
 
         }
 
-        public void Fill(int xtl, int ytl, int dimX, int dimY, byte wallID, int tileID = -1, int style = 0)
+        public void Fill(int xtl, int ytl, int dimX, int dimY, int wallID, int tileID = -1, int style = 0)
         {
             for(int x= xtl; x< xtl + dimX;x++)
                 for (int y = ytl; y < ytl + dimY; y++)
@@ -1520,6 +1646,294 @@ namespace StartWithBase
 
 
         }
+
+
+        public void DrawBase4(int extraFloors)
+        {
+            int startX = cx; //top left of inner base
+            int startY = cy;
+
+            
+            int extraFloorsParam = extraFloors;
+
+            if (extraFloors > 0)
+            {
+                DrawObjectTask floor = new DrawObjectTask("9B|" +
+                                                          "1B1h1b3e1b1h1b|" +
+                                                          "1B1e1b3e1b1e1b|" +
+                                                          "1B1e1b1e3b1e1b|" +
+                                                          "1B1e1b1e1b1w1e1b|" +
+                                                          "1B1e1b1e3b1e1b|" +
+                                                          "1B1e1b1w1h1b1e1b|" +
+                                                          "1B1e3b1e1b1e1b|" +
+                                                          "1B1e1w1b1e1b1e1b|" +
+                                                          "1B1e3b1c1b1e1b|" +
+                                                          "1B2e1b2e1b1e1b|" +
+                                                          "1B1c1b1p1e1p1b1c1p|" +
+                                                          "1B2e1p1e1p2e1p|" +
+                                                          "1B1p1e1p1e1p1e1p1b|" +
+                                                          "1E1p1e1p1b1p1e1p1e|" +
+                                                          "1E1p1e1p1h1p1e1p1e|" +
+                                                          "1E1p1b1p1e1p1b1p1e|" +
+                                                          "1E1e1p2e1c1w1e|" +
+                                                          "1B2p3e2p1b|" +
+                                                          "1E1e4p3e|" +
+                                                          "1E1e1p6e|" +
+                                                          "1E1e1p6e|" +                                                          
+                                                          "1E8p|" +
+                                                          "1E8e|" +
+                                                          "1E8e|" +
+                                                          "1B8b|" +
+                                                          "1B3e1b3e1b|" +
+                                                          "1P3e1p3e1p|" +
+                                                          "1B1b1p1e1p1b1p1e1p|" +
+                                                          "1P1c2e1p1c2e1p|" +
+                                                          "1P1e1p1b1p1e1p1b1p|" +
+                                                          "1P1p1w2p1w1p|" +
+                                                          "1E2p1b1e2p1b1e|" +
+                                                          "1E1p1e1h1e1p1e1h1e|" +
+                                                          "1E1p1p2e1p1p2e|" +
+                                                          "1E1p3e1p3e|" +
+                                                          "9B");
+
+                /*      DrawObjectTask floor = new DrawObjectTask("9B|" +
+                                                          "1B1h1b3e1b1h1b|" +
+                                                          "1B1e1b3e1b1e1b|" +
+                                                          "1B1e1b1e3b1e1b|" +
+                                                          "1B1e1b1e1b1w1e1b|" +
+                                                          "1B1e1b1e3b1e1b|" +
+                                                          "1B1e1b1w1h1b1e1b|" +
+                                                          "1B1e3b1e1b1e1b|" +
+                                                          "1B1e1w1b1e1b1e1b|" +
+                                                          "1B1e3b1c1b1e1b|" +
+                                                          "1B2e1b2e1b1e1b|" +
+                                                          "1B1c1b1p1e1p1b1c1p|" +
+                                                          "1B2e1p1e1p2e1p|" +
+                                                          "1B1p1e1p1e1p1e1p1b|" +
+                                                          "1E1p1e1p1b1p1e1p1e|" +
+                                                          "1E1p1e1p1h1p1e1p1e|" +
+                                                          "1E1p1b1p1e1p1b1p1e|" +
+                                                          "1E1e1p2e1c1w1e|" +
+                                                          "1B2p3e2p1b|" +
+                                                          "1E1e4p3e|" +
+                                                          "1E1e1p6e|" +
+                                                          "1E1e1p6e|" +                                                          
+                                                          "1E8p|" +
+                                                          "1E8e|" +
+                                                          "1E8e|" +
+                                                          "1B8b|" +
+                                                          "1B3e1b3e1b|" +
+                                                          "1P3e1p3e1p|" +
+                                                          "1P1e1p1b1p1e1p1b1p|" +
+                                                          "1P2e1c1p2e1c1p|" +
+                                                          "1P1b1p1e1p1b1p1e1p|" +
+                                                          "1P1w2p1w2p|" +
+                                                          "1E1b2p1e1b2p1e|" +
+                                                          "1E1h1e1p1e1h1e1p1e|" +
+                                                          "1E1e1p1p2e1p1p1e|" +
+                                                          "1E2e1p3e1p1e|" +
+                                                          "9B");*/
+
+
+                int stfx = startX;
+                int stfy = startY + 13;
+                               
+
+                while (extraFloors-- > 0)
+                {
+                    cy = stfy;
+                    if (extraFloors % 2 == 0)
+                    {
+                        cx = stfx - 8 * (((extraFloorsParam+1)/2) - (extraFloors / 2));
+                        DrawAObject(floor);
+                    }
+                    else
+                    {
+                        cx = stfx + 30 + 8 * (((extraFloorsParam)/2) - (extraFloors / 2));
+                        DrawAObject(floor, false);
+                    }
+                }
+                cx = startX;
+                cy = startY;
+            }
+            
+            
+            DrawObjectTask innerbase = new DrawObjectTask("1B8P6B9P6B8P1B|" +
+                                                          "1B8e1b3e1c1b9e1b3e1h1b8e1B|" +
+                                                          "1B8e1h4e1b9e1b4e1c8e1B|" +
+                                                          "1B8p4e1p3b5p4b1p1w1e8p1B|" +
+                                                          "1B8e4b1w1p6e1b1h2e1p3b8e1B|" +
+                                                          "1B8e1b2e4p6e1b2e1c1p2e1b8e1B|" +
+                                                          "1B8p1b3e1w1p6e1w2e1p2e1b8p1B|" +
+                                                          "1B8e1h1c1e1p4b5p4b1p1e1c1h8e1B|" +
+                                                          "1Gbe1p2e1h1b6e1p1wce1G|" +
+                                                          "1E8p3b1p1c2e1b6e4p3b8p1E|" +
+                                                          "1E8e1h2e1p2e1w6e1p1w3e1h8e1E|" +
+                                                          "1E9e1c1e1p4b5p4b1p1e1c9e1E|" +
+                                                          "1E8p1b3e1w1p6e1b1h2e1p2e1b8p1E|" +
+                                                          "1B8e3B4p6e1b2e1c1p3b8e1B|" +
+                                                          "1B8e1b3e1w1p6e1w2e1p2e1b8e1B|" +
+                                                          "1B8p1h1c1e1p4b5p4b1p1e1c1h8p1B|" +
+                                                          "1Bbe1p2e1h1b6e1p1wce1B|" +
+                                                          "1B8e3b1p1c2e1b6e4p3b8e1B|" +
+                                                          "1B8p1b2e1p2e1w6e1p1w3e1b8p1B|" +
+                                                          "1B8e1h1c1e1p4b5p4b1p1e1c1h8e1B|" +
+                                                          "1Bce1w1p6e1b1h2e1pbe1B|" +
+                                                          "1B8p3b4p6e1b2e1c1p3b8p1B|" +
+                                                          "1B8e1b3e1w1p6e1w2e1p1e1h1b8e1B|" +
+                                                          "1B8e1h2e1p4b5p4b1p2e1c8e1B|" +
+                                                          "1B8p1e1c1e1p2e1h1b6e1p1e1b4e8p1B|" +
+                                                          "1B8e1b2e1p1c2e1b6e1p5e1b8e1B|" +
+                                                          "1B8e4b2e1w6e1p1w3e1b8e1B|" +
+                                                          "1B8p1b2e3b9p6b8p1B");
+
+            DrawAObject(innerbase);
+            cy--; //overwrite bot lane
+
+            DrawObjectTask maininnertop = new DrawObjectTask("1B4b4p1b2e5b5p8b4p4b1B|" +
+                                                          "1c3e1b4e1pje1p4e1b3e1c|" +
+                                                          "4e1h4e1pje1p4e1h4e|" +
+                                                          "1b8e1pje1p8e1b|" +
+                                                          "1B4btp4b1B");
+            DrawAObject(maininnertop);
+
+            
+            if (extraFloorsParam == 0)
+            {              
+                WorldGen.PlaceTile(cx-1, cy-4, curTileType, true, true, -1, 0);
+                WorldGen.PlaceTile(cx - 1, cy - 5, curTileType, true, true, -1, 0);
+                WorldGen.PlaceTile(cx-3, cy - 2, curTileType, true, true, -1, 0);
+                Fill(cx - 3, cy-1, 3, 1, -1, curTileType);
+                Fill(cx - 3, cy - 3, 3, 1, -1, curTileType);
+                Fill(cx - 2, cy - 2, 2, 1, curWallType);
+                WorldGen.PlaceTile(cx - 2, cy - 2, TileID.WorkBenches, true, true, -1, curWorkBenchStyle);
+
+                WorldGen.PlaceTile(cx+39, cy - 4, curTileType, true, true, -1, 0);
+                WorldGen.PlaceTile(cx + 39, cy - 5, curTileType, true, true, -1, 0);
+                WorldGen.PlaceTile(cx+ 39+2, cy - 2, curTileType, true, true, -1, 0);
+                Fill(cx+39 , cy - 1, 3, 1, -1, curTileType);
+                Fill(cx+39 , cy - 3, 3, 1, -1, curTileType);
+                Fill(cx+39 , cy - 2, 2, 1, curWallType);
+                WorldGen.PlaceTile(cx + 39, cy - 2, TileID.WorkBenches, true, true, -1, curWorkBenchStyle);
+            }else
+            {
+                WorldGen.PlaceTile(cx - 3, cy - 2, TileID.Platforms, true, true, -1, curPlatformStyle);
+                WorldGen.PlaceTile(cx - 3, cy - 1, TileID.Platforms, true, true, -1, curPlatformStyle);
+                WorldGen.PlaceTile(cx + 39 + 2, cy - 2, TileID.Platforms, true, true, -1, curPlatformStyle);
+                WorldGen.PlaceTile(cx + 39 + 2, cy - 1, TileID.Platforms, true, true, -1, curPlatformStyle);
+            }
+
+
+            DrawObjectTask maininnerbot = new DrawObjectTask("1E3e1hte1h3e1E|"+
+                                                             "1EHe1E|" +
+                                                             "1EHe1E|" +
+                                                             "1EHp1E|" +
+                                                             "1EHe1E|" +
+                                                             "1EHe1E|" +
+                                                             "1BHp1B|" +
+                                                             "1BHe1B|" +
+                                                             "1BHe1B|" +
+                                                             "1B6b1p9b5p9b1p1b1p4b1B|" +
+                                                             "1B6e1b2e1h1c4e1b5e1b4e1c1h2e1b1e1b4e1B|"+
+                                                             "1Bfe1b5e1bfe1B|"+
+                                                             "1B8e1w6b5e6b1w8e1B|"+
+                                                             "1Bbb4e1h5e1h4ebb1B|"+
+                                                             "1E1pFe1p1E|" +
+                                                             "1E1pFe1p1E|" +
+                                                             "1E1pFe1p1E|" +
+                                                             "hB5PhB"
+                                                             );
+            DrawAObject(maininnerbot);
+
+
+            RopeToGround(cx+19, cy);            
+            int cid = WorldGen.PlaceChest(cx + 18, cy -2 , TileID.Containers, false, curChestStyle);
+            if (cid >= 0) SetUpChest(cid);
+
+            //entrances
+            if(extraFloorsParam == 0)
+            {                
+                for(int cyi=cy-2;cyi>cy-7;cyi--)
+                    WorldGen.KillTile(cx, cyi, false, false, false);                
+                WorldGen.PlaceObject(cx, cy - 6, TileID.TallGateOpen, true);
+
+                for (int cyi = cy - 2; cyi > cy - 7; cyi--)
+                    WorldGen.KillTile(cx+38, cyi, false, false, false);
+                WorldGen.PlaceObject(cx+38, cy - 6, TileID.TallGateOpen, true);
+
+                WorldGen.PlaceTile(cx, cy - 18, curTileType, true, true);
+                WorldGen.PlaceObject(cx, cy - 17, TileID.TallGateOpen, true);
+
+                WorldGen.PlaceTile(cx+38, cy - 18, curTileType, true, true);
+                WorldGen.PlaceObject(cx + 38, cy - 17, TileID.TallGateOpen, true);
+            }
+            else
+            {
+                int diffxl = 8 * ((extraFloorsParam + 1) / 2);
+                int diffxr = 8 * ((extraFloorsParam ) / 2);
+
+                WorldGen.PlaceTile(cx - diffxl, cy - 18, curTileType, true, true);
+                WorldGen.PlaceObject(cx - diffxl, cy - 17, TileID.TallGateOpen, true);
+
+                WorldGen.PlaceTile(cx + 38 + diffxr, cy - 18, curTileType, true, true);
+                WorldGen.PlaceObject(cx + 38 + diffxr, cy - 17, TileID.TallGateOpen, true);
+
+                for (int cyi = cy - 20; cyi > cy - 26; cyi--)
+                    WorldGen.PlaceTile(cx - diffxl, cyi, curTileType, true, true);
+                for (int cyi = cy - 20; cyi > cy - 26; cyi--)
+                    WorldGen.PlaceTile(cx + 38+ +diffxr, cyi, curTileType, true, true);
+
+
+                for (int cyi = cy - 7; cyi > cy - 11; cyi--)
+                    WorldGen.KillTile(cx - diffxl, cyi, false, false, false);
+                for (int cyi = cy - 7; cyi > cy - 11; cyi--)
+                    WorldGen.KillTile(cx +38+ diffxr, cyi, false, false, false);
+
+
+                for (int cyi = cy - 7; cyi > cy - 11; cyi--)
+                    WorldGen.PlaceTile(cx - diffxl, cyi, curTileType, true, true);
+                for (int cyi = cy - 7; cyi > cy - 11; cyi--)
+                    WorldGen.PlaceTile(cx + 38 + diffxr, cyi, curTileType, true, true);
+                               
+
+                WorldGen.KillTile(cx - diffxl, cy-6, false, false, false);
+                WorldGen.KillTile(cx + 38 + diffxr , cy-6, false, false, false);
+
+                WorldGen.PlaceTile(cx - diffxl, cy - 7, curTileType, true, true);
+                WorldGen.PlaceTile(cx + 38 + diffxr, cy - 7, curTileType, true, true);
+
+                WorldGen.PlaceObject(cx - diffxl, cy - 6, TileID.TallGateOpen, true);
+                WorldGen.PlaceObject(cx + 38 + diffxr, cy - 6, TileID.TallGateOpen, true);
+
+
+                //for closed flats to inner base bot
+                for (int cyi = cy - 8; cyi > cy - 11; cyi--)
+                    WorldGen.KillTile(cx, cyi, false, false, false);
+                for (int cyi = cy - 8; cyi > cy - 11; cyi--)
+                    WorldGen.KillTile(cx + 38, cyi, false, false, false);
+
+                for (int cyi = cy - 8; cyi > cy - 11; cyi--)
+                    WorldGen.PlaceTile(cx , cyi, TileID.Platforms, true, true, -1, curPlatformStyle);
+                for (int cyi = cy - 8; cyi > cy - 11; cyi--)
+                    WorldGen.PlaceTile(cx + 38, cyi, TileID.Platforms, true, true, -1, curPlatformStyle);
+
+                WorldGen.KillTile(cx -2, cy - 5, false, false, false);
+                WorldGen.KillTile(cx + 38 +2, cy - 5, false, false, false);
+
+                WorldGen.PlaceTile(cx -2, cy-2, TileID.WorkBenches, true, true, -1, curWorkBenchStyle);
+                WorldGen.PlaceTile(cx + 37+2, cy-2, TileID.WorkBenches, true, true, -1, curWorkBenchStyle);
+            }
+
+            Main.tile[cx + 7, cy - 9].liquid = 255;
+            Main.tile[cx + 31, cy - 9].liquid = 255;
+            Main.tile[cx + 31, cy - 9].honey(true);
+            Main.tile[cx + 33, cy - 9].liquid = 255;            
+            WorldGen.PlaceTile(cx + 33, cy - 9, TileID.Platforms, true, true, -1, 13);//obsid plat to hold lava
+            Main.tile[cx + 33, cy - 9].lava(true);
+
+
+        }
+
 
 
         public void DrawBase2(int extraFloors)
@@ -1755,7 +2169,7 @@ namespace StartWithBase
             RopeToGround(startX + 3+2, startY + 18);
                         
             int cid = WorldGen.PlaceChest(startX+ +4, startY+16, TileID.Containers, false, curChestStyle);
-            if(cid>0)SetUpChest(cid);            
+            if(cid>=0)SetUpChest(cid);            
             
         }
 
@@ -1824,31 +2238,56 @@ namespace StartWithBase
                         WorldGen.PlaceTile(cx, cy + 2, TileID.Dirt, true, true, -1, 0);
                         WorldGen.PlaceTile(cx, cy +1 , 15, true, false, -1, curStyle);
 
-                       
-                        bool changed = false;
+
+                        //normal chair open to left
+                        //right hand tiles (cy+0) unknown, they still need to generate
+
+                        bool changeIt = false;
+                        int yd = 0;
+                        while (yd++ < 10)
+                        {
+                            if (Main.tile[cx - 1, cy - yd].active() && Main.tile[cx + 1, cy - yd].active())
+                                continue;
+                            else
+                            {
+                                if ((Main.tile[cx - 1, cy - yd].active() && !Main.tile[cx + 1, cy - yd].active()) && Main.tile[cx - 1, cy - yd].type != TileID.HangingLanterns)
+                                    changeIt = true;
+                                break;
+                            }
+                        }
+                        if (changeIt)
+                        {
+                            Tile expr_691 = Main.tile[cx, cy + 1];
+                            expr_691.frameX += 18;
+                            Tile expr_6B2 = Main.tile[cx, cy];
+                            expr_6B2.frameX += 18;                            
+                        }                       
+
+                        /*
+                         * bool changed = false;
                         if (((!Main.tile[cx + 1, cy - 1].active()) && (Main.tile[cx - 1, cy - 1].active())) || (
-                            ((!Main.tile[cx + 1, cy - 1].active()) && (!Main.tile[cx - 1, cy - 1].active()) &&
-                            (!Main.tile[cx + 1, cy - 2].active()) && (Main.tile[cx - 1, cy - 1].active())
-                            )))
+                            (!Main.tile[cx + 1, cy - 1].active()) && (!Main.tile[cx - 1, cy - 1].active()) &&
+                            (!Main.tile[cx + 1, cy - 2].active()) && (Main.tile[cx - 1, cy - 1].active())) || 
+                            (Main.tile[cx -1, cy ].active() && !Main.tile[cx + 1, cy-2].active()) )
                         {
                             Tile expr_691 = Main.tile[cx, cy + 1];
                             expr_691.frameX += 18;
                             Tile expr_6B2 = Main.tile[cx, cy];
                             expr_6B2.frameX += 18;
                             changed = true;
-                        }                        
-                        if (Main.tile[cx - 1, cy].type == TileID.WorkBenches && changed)
+                        }      
+                        
+                        if (Main.tile[cx - 1, cy].type == TileID.WorkBenches && changed && (!Main.tile[cx - 1, cy - 1].active()) )
                         {
                             Tile expr_691 = Main.tile[cx, cy + 1];
                             expr_691.frameX -= 18;
                             Tile expr_6B2 = Main.tile[cx, cy];
-                            expr_6B2.frameX -= 18;
-                            
+                            expr_6B2.frameX -= 18;                            
                         }
-                        
+                        */
 
-                    }
-                    else if (curTileType == TileID.TallGateOpen || curTileType == TileID.TallGateClosed)
+            }
+            else if (curTileType == TileID.TallGateOpen || curTileType == TileID.TallGateClosed)
                     {                        
                         WorldGen.PlaceTile(cx, cy + 5, TileID.Dirt, true, true, -1, 0); //dummy tiles to stand on                        
                         WorldGen.PlaceObject(cx, cy , curTileType, true);         
@@ -1869,6 +2308,7 @@ namespace StartWithBase
             }
 
         }
+        
 
         public void DrawALine(DrawLineTask ltask, bool goRightDirec = true)
         {
