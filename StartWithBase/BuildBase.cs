@@ -248,16 +248,21 @@ namespace StartWithBase
                 }
                 
                 townNPCcount = Main.MaxShopIDs; //vanilla town npc
+                int count2 = townNPCcount;               
                 for (int i=0; i < NPCLoader.NPCCount; i++)
                 {
                     //adds town npc's from mods
                     ModNPC cur = NPCLoader.GetNPC(i);
                     if (cur != null)
                         if (cur.npc.CanTalk && cur.npc.friendly) townNPCcount++;
+                    if (cur != null)
+                        if (cur.npc.townNPC) count2++;                                    
+
                 }
                 //all vanilla 1.3.5.3 npc count: 23
+                townNPCcount = Math.Max(townNPCcount, count2);
+                
 
-                               
                 allItemCount = ItemLoader.ItemCount;
                 chestsNeeded = (allItemCount + 39) / 40;
 
@@ -1696,43 +1701,7 @@ namespace StartWithBase
                                                           "1E1p3e1p3e|" +
                                                           "9B");
 
-                /*      DrawObjectTask floor = new DrawObjectTask("9B|" +
-                                                          "1B1h1b3e1b1h1b|" +
-                                                          "1B1e1b3e1b1e1b|" +
-                                                          "1B1e1b1e3b1e1b|" +
-                                                          "1B1e1b1e1b1w1e1b|" +
-                                                          "1B1e1b1e3b1e1b|" +
-                                                          "1B1e1b1w1h1b1e1b|" +
-                                                          "1B1e3b1e1b1e1b|" +
-                                                          "1B1e1w1b1e1b1e1b|" +
-                                                          "1B1e3b1c1b1e1b|" +
-                                                          "1B2e1b2e1b1e1b|" +
-                                                          "1B1c1b1p1e1p1b1c1p|" +
-                                                          "1B2e1p1e1p2e1p|" +
-                                                          "1B1p1e1p1e1p1e1p1b|" +
-                                                          "1E1p1e1p1b1p1e1p1e|" +
-                                                          "1E1p1e1p1h1p1e1p1e|" +
-                                                          "1E1p1b1p1e1p1b1p1e|" +
-                                                          "1E1e1p2e1c1w1e|" +
-                                                          "1B2p3e2p1b|" +
-                                                          "1E1e4p3e|" +
-                                                          "1E1e1p6e|" +
-                                                          "1E1e1p6e|" +                                                          
-                                                          "1E8p|" +
-                                                          "1E8e|" +
-                                                          "1E8e|" +
-                                                          "1B8b|" +
-                                                          "1B3e1b3e1b|" +
-                                                          "1P3e1p3e1p|" +
-                                                          "1P1e1p1b1p1e1p1b1p|" +
-                                                          "1P2e1c1p2e1c1p|" +
-                                                          "1P1b1p1e1p1b1p1e1p|" +
-                                                          "1P1w2p1w2p|" +
-                                                          "1E1b2p1e1b2p1e|" +
-                                                          "1E1h1e1p1e1h1e1p1e|" +
-                                                          "1E1e1p1p2e1p1p1e|" +
-                                                          "1E2e1p3e1p1e|" +
-                                                          "9B");*/
+                
 
 
                 int stfx = startX;
@@ -1766,31 +1735,32 @@ namespace StartWithBase
                                                           "1B8e1b2e4p6e1b2e1c1p2e1b8e1B|" +
                                                           "1B8p1b3e1w1p6e1w2e1p2e1b8p1B|" +
                                                           "1B8e1h1c1e1p4b5p4b1p1e1c1h8e1B|" +
-                                                          "1Gbe1p2e1h1b6e1p1wce1G|" +
-                                                          "1E8p3b1p1c2e1b6e4p3b8p1E|" +
-                                                          "1E8e1h2e1p2e1w6e1p1w3e1h8e1E|" +
+                                                          "1Gbe1p2e1h1b7e1p1wbe1G|" +
+                                                          "1E8p3b1p1c2e1b7e3p3b8p1E|" +
+                                                          "1E8e1h2e1p2e1w7e1p1w2e1h8e1E|" +
                                                           "1E9e1c1e1p4b5p4b1p1e1c9e1E|" +
-                                                          "1E8p1b3e1w1p6e1b1h2e1p2e1b8p1E|" +
-                                                          "1B8e3B4p6e1b2e1c1p3b8e1B|" +
-                                                          "1B8e1b3e1w1p6e1w2e1p2e1b8e1B|" +
+                                                          "1E8p1b2e1w1p7e1b1h2e1p2e1b8p1E|" +
+                                                          "1B8e3b3p7e1b2e1c1p3b8e1B|" +
+                                                          "1B8e1b2e1w1p7e1w2e1p2e1b8e1B|" +
                                                           "1B8p1h1c1e1p4b5p4b1p1e1c1h8p1B|" +
-                                                          "1Bbe1p2e1h1b6e1p1wce1B|" +
-                                                          "1B8e3b1p1c2e1b6e4p3b8e1B|" +
-                                                          "1B8p1b2e1p2e1w6e1p1w3e1b8p1B|" +
+                                                          "1Bbe1p2e1h1b7e1p1wbe1B|" +
+                                                          "1B8e3b1p1c2e1b7e3p3b8e1B|" +
+                                                          "1B8p1b2e1p2e1w7e1p1w2e1b8p1B|" +
                                                           "1B8e1h1c1e1p4b5p4b1p1e1c1h8e1B|" +
-                                                          "1Bce1w1p6e1b1h2e1pbe1B|" +
-                                                          "1B8p3b4p6e1b2e1c1p3b8p1B|" +
-                                                          "1B8e1b3e1w1p6e1w2e1p1e1h1b8e1B|" +
-                                                          "1B8e1h2e1p4b5p4b1p2e1c8e1B|" +
-                                                          "1B8p1e1c1e1p2e1h1b6e1p1e1b4e8p1B|" +
-                                                          "1B8e1b2e1p1c2e1b6e1p5e1b8e1B|" +
-                                                          "1B8e4b2e1w6e1p1w3e1b8e1B|" +
-                                                          "1B8p1b2e3b9p6b8p1B");
+                                                          "1Bbe1w1p7e1b1h2e1pbe1B|" +
+                                                          "1B8p3b3p7e1b2e1c1p3b8p1B|" +
+                                                          "1B8e1b2e1w1p7e1w2e1p1w1b8e1B|" +
+                                                          "1B8e1h2e1p4b5p4b3p1h8e1B|" +
+                                                          "1B8p1e1c1e1p1c1e1h1b7e1p1b4e8p1B|" +
+                                                          "1B8e1b2e1p3e1b7e1p1c3e1b8e1B|" +
+                                                          "1B8e4b1p1e1w7e1p4e1b8e1B|" +
+                                                          "1B8p1b3e2b9p6b8p1B");
+
 
             DrawAObject(innerbase);
             cy--; //overwrite bot lane
 
-            DrawObjectTask maininnertop = new DrawObjectTask("1B4b4p1b2e5b5p8b4p4b1B|" +
+            DrawObjectTask maininnertop = new DrawObjectTask("1B4b4p1b3e4b5p8b4p4b1B|" +
                                                           "1c3e1b4e1pje1p4e1b3e1c|" +
                                                           "4e1h4e1pje1p4e1h4e|" +
                                                           "1b8e1pje1p8e1b|" +
@@ -2250,7 +2220,7 @@ namespace StartWithBase
                                 continue;
                             else
                             {
-                                if ((Main.tile[cx - 1, cy - yd].active() && !Main.tile[cx + 1, cy - yd].active()) && Main.tile[cx - 1, cy - yd].type != TileID.HangingLanterns)
+                                if ((Main.tile[cx - 1, cy - yd].active() && !Main.tile[cx + 1, cy - yd].active())) // && Main.tile[cx - 1, cy - yd].type != TileID.HangingLanterns
                                     changeIt = true;
                                 break;
                             }
@@ -2286,7 +2256,7 @@ namespace StartWithBase
                         }
                         */
 
-            }
+        }
             else if (curTileType == TileID.TallGateOpen || curTileType == TileID.TallGateClosed)
                     {                        
                         WorldGen.PlaceTile(cx, cy + 5, TileID.Dirt, true, true, -1, 0); //dummy tiles to stand on                        
@@ -2373,9 +2343,14 @@ namespace StartWithBase
             int chestNum = WorldGen.PlaceChest(x, y - 1, TileID.Containers, false, WorldGen.genRand.Next(5, 22));
             return chestNum;
         }
-        
+
+
+
         
 
+
+
+        
 
     }
 }
