@@ -21,10 +21,10 @@ Thanks for testing. gl hf!
 
 
 Update: 
-options for [c/88CC88:alternative tiles and base structure] to compare with. Enter at the end of world name.
-$Ba2 - base with 2 NPC flats as core structure
-$Ba3 - base with 3 NPC flats as core ($b3b for big version, both look if enough space for all mod items)
-$Ba4 - base with 4 .. (useful for many NPC)
+options for alternative tiles and base structure to compare with. Enter at the end of world name.<br>
+$Ba2 - base with 2 NPC flats as core structure<br>
+$Ba3 - base with 3 NPC flats as core ($b3b for big version, both look if enough space for all mod items)<br>
+$Ba4 - base with 4 .. (useful for many NPC)<br>
 $Ba6 - base with 6 NPC flats as core (credits to Sergo for that)
 $Fpa, Fdy, Fwo, Fgr, Fbo, Fri ---> changes the furniture material
 $Tha, Tob, Tdy, Two, Tss, Tri, Tbo --> changes the tiles used for flats
