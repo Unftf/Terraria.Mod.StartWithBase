@@ -25,19 +25,19 @@ options for alternative tiles and base structure to compare with. Enter at the e
 $Ba2 - base with 2 NPC flats as core structure<br>
 $Ba3 - base with 3 NPC flats as core ($b3b for big version, both look if enough space for all mod items)<br>
 $Ba4 - base with 4 .. (useful for many NPC)<br>
-$Ba6 - base with 6 NPC flats as core (credits to Sergo for that)
-$Fpa, Fdy, Fwo, Fgr, Fbo, Fri ---> changes the furniture material
-$Tha, Tob, Tdy, Two, Tss, Tri, Tbo --> changes the tiles used for flats
-$Wha, Wdg, Wdy, Wwo, Wss, Wdi, Wri, Wbo --> changes the used wall
-$Sy* - random style of used tiles, predefined $Sy0, $Sy1, $Sy2
+$Ba6 - base with 6 NPC flats as core (credits to Sergo for that)<br>
+$Fpa, Fdy, Fwo, Fgr, Fbo, Fri ---> changes the furniture material<br>
+$Tha, Tob, Tdy, Two, Tss, Tri, Tbo --> changes the tiles used for flats<br>
+$Wha, Wdg, Wdy, Wwo, Wss, Wdi, Wri, Wbo --> changes the used wall<br>
+$Sy* - random style of used tiles, predefined $Sy0, $Sy1, $Sy2<br>
 
 You can combine those, e.g "MyWorldName$Ba3FdyTssWdi" (without quotes) will select base 3 with dyndasty wood furniture (Fdy), stone slab for Flats (Tss) and dirt as wall behind (Wdi)
-more details at linked page
+more details at linked page <br>
 
-updates:
-0.1.4.2 - base improv
-0.1.4.1 - small fix at npc count
-0.1.4.0 - add base 4 (for manny npc's)
-0.1.3.1 - some bug fixing
-0.1.3.0 - Advanced options, added 2 alternative base structures and the option to change the used tiles
-0.1.0.5 - some bug fixing
+updates:<br>
+0.1.4.2 - base improv<br>
+0.1.4.1 - small fix at npc count<br>
+0.1.4.0 - add base 4 (for manny npc's)<br>
+0.1.3.1 - some bug fixing<br>
+0.1.3.0 - Advanced options, added 2 alternative base structures and the option to change the used tiles<br>
+0.1.0.5 - some bug fixing<br>
