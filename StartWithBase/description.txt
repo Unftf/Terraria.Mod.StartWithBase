@@ -18,15 +18,17 @@ $Ba2 - base with 2 NPC flats as core structure
 $Ba3 - base with 3 NPC flats as core ($b3b for big version, both look if enough space for all mod items)
 $Ba4 - base with 4 .. (useful for many NPC)
 $Ba6 - base with 6 NPC flats as core (credits to Sergo for that)
-$Fpa, Fdy, Fwo, Fgr, Fbo, Fri ---> changes the furniture material
-$Tha, Tob, Tdy, Two, Tss, Tri, Tbo --> changes the tiles used for flats
-$Wha, Wdg, Wdy, Wwo, Wss, Wdi, Wri, Wbo --> changes the used wall
+$Fpa, Fdy, Fwo, Fgr, Fbo, Fri, Fma ---> changes the furniture material
+$Tha, Tob, Tdy, Two, Tss, Tri, Tbo, Tgr, Tma --> changes the tiles used for flats
+$Wha, Wdg, Wdy, Wwo, Wss, Wdi, Wri, Wbo, Wgr, Wma --> changes the used wall
 $Sy* - random style of used tiles, predefined $Sy0, $Sy1, $Sy2
+$Cx1 - stores/loads config file which allows you to setup all values as you like
 
-You can combine those, e.g "MyWorldName$Ba3FdyTssWdi" (without quotes) will select base 3 with dyndasty wood furniture (Fdy), stone slab for Flats (Tss) and dirt as wall behind (Wdi)
+You can combine those, e.g "MyWorldName$Ba3FdyTssWdi" (without quotes) will select base 3 with dynasty wood furniture (Fdy), stone slab for Flats (Tss) and dirt as wall behind (Wdi)
 more details at linked page
 
 updates:
+0.1.4.4 - custom style and marble style
 0.1.4.2 - base improv
 0.1.4.1 - small fix at npc count
 0.1.4.0 - add base 4 (for manny npc's)

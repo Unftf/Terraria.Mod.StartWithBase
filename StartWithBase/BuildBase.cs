@@ -42,7 +42,7 @@ namespace StartWithBase
         static int curWorkBenchStyle = 22;
         static int curLampStyle = 0;
         static int curTorchStyle = 0;
-        static int curPlatformItemType = ItemID.PalmWood;
+        static int curFurnitureCraftingItemType = ItemID.PalmWood;
         
 
         int cx, cy;
@@ -50,12 +50,13 @@ namespace StartWithBase
         
         static Dictionary<string, StyleSetting> styleTypeDict = new Dictionary<string, StyleSetting>
             {
-            {"fpa", new StyleSetting{ PlatformStyle = 17, LanternStyle = 27, ChairStyle = 29, WorkBenchStyle = 22, LampStyle = 18, TorchStyle = 0, PlatformItemType = ItemID.PalmWood } },
-            {"fdy", new StyleSetting{ PlatformStyle = 32, LanternStyle = 26, ChairStyle = 27, WorkBenchStyle = 18, LampStyle = 17, TorchStyle = 0, PlatformItemType = ItemID.DynastyWood } },
-            {"fwo", new StyleSetting{ PlatformStyle = 0, LanternStyle = 22, ChairStyle = 0, WorkBenchStyle = 0, LampStyle = 0, TorchStyle = 0, PlatformItemType = ItemID.Wood } },
-            {"fgr", new StyleSetting{ PlatformStyle = 28, LanternStyle = 35, ChairStyle = 34, WorkBenchStyle = 29, LampStyle = 29, TorchStyle = 0, PlatformItemType = ItemID.GraniteBlock } },
-            {"fbo", new StyleSetting{ PlatformStyle = 19, LanternStyle = 29, ChairStyle = 30, WorkBenchStyle = 23, LampStyle = 20, TorchStyle = 0, PlatformItemType = ItemID.BorealWood } },
-            {"fri", new StyleSetting{ PlatformStyle = 2, LanternStyle = 16, ChairStyle = 3, WorkBenchStyle = 2, LampStyle = 6, TorchStyle = 0, PlatformItemType = ItemID.RichMahogany} },
+            {"fpa", new StyleSetting{ PlatformStyle = 17, LanternStyle = 27, ChairStyle = 29, WorkBenchStyle = 22, LampStyle = 18, TorchStyle = 0, FurnitureCraftingItem = ItemID.PalmWood } },
+            {"fdy", new StyleSetting{ PlatformStyle = 32, LanternStyle = 26, ChairStyle = 27, WorkBenchStyle = 18, LampStyle = 17, TorchStyle = 0, FurnitureCraftingItem = ItemID.DynastyWood } },
+            {"fwo", new StyleSetting{ PlatformStyle = 0, LanternStyle = 22, ChairStyle = 0, WorkBenchStyle = 0, LampStyle = 0, TorchStyle = 0, FurnitureCraftingItem = ItemID.Wood } },
+            {"fgr", new StyleSetting{ PlatformStyle = 28, LanternStyle = 35, ChairStyle = 34, WorkBenchStyle = 29, LampStyle = 29, TorchStyle = 0, FurnitureCraftingItem = ItemID.GraniteBlock } },
+            {"fbo", new StyleSetting{ PlatformStyle = 19, LanternStyle = 29, ChairStyle = 30, WorkBenchStyle = 23, LampStyle = 20, TorchStyle = 0, FurnitureCraftingItem = ItemID.BorealWood } },
+            {"fri", new StyleSetting{ PlatformStyle = 2, LanternStyle = 16, ChairStyle = 3, WorkBenchStyle = 2, LampStyle = 6, TorchStyle = 0, FurnitureCraftingItem = ItemID.RichMahogany} },
+            {"fma", new StyleSetting{ PlatformStyle = 29, LanternStyle = 36, ChairStyle = 35, WorkBenchStyle = 30, LampStyle = 30, TorchStyle = 0, FurnitureCraftingItem = ItemID.MarbleBlock} },
          };
         static Dictionary<string, WallSetting> wallTypeDict = new Dictionary<string, WallSetting>
             {
@@ -67,6 +68,8 @@ namespace StartWithBase
             {"wdi", new WallSetting{ WallID = WallID.Dirt, ItemIDofWallType = ItemID.DirtWall} },
             {"wri", new WallSetting{ WallID = WallID.RichMaogany, ItemIDofWallType = ItemID.RichMahoganyWall} },
             {"wbo", new WallSetting{ WallID = WallID.BorealWood, ItemIDofWallType = ItemID.BorealWoodWall} },
+            {"wgr", new WallSetting{ WallID = WallID.GraniteBlock, ItemIDofWallType = ItemID.GraniteBlock} },
+            {"wma", new WallSetting{ WallID = WallID.MarbleBlock, ItemIDofWallType = ItemID.MarbleBlockWall} },
          };
         static Dictionary<string, TileSetting> TileTypeDict = new Dictionary<string, TileSetting>
             {
@@ -76,12 +79,14 @@ namespace StartWithBase
             {"two", new TileSetting{ TileID = TileID.WoodBlock, ItemID = ItemID.Wood} },
             {"tss", new TileSetting{ TileID = TileID.StoneSlab, ItemID = ItemID.StoneSlab} },
             {"tri", new TileSetting{ TileID = TileID.RichMahogany, ItemID = ItemID.RichMahogany} },
-            {"tbo", new TileSetting{ TileID = TileID.BorealWood, ItemID = ItemID.BorealWood} },            
+            {"tbo", new TileSetting{ TileID = TileID.BorealWood, ItemID = ItemID.BorealWood} },
+            {"tgr", new TileSetting{ TileID = TileID.GraniteBlock, ItemID = ItemID.GraniteBlock} },
+            {"tma", new TileSetting{ TileID = TileID.MarbleBlock, ItemID = ItemID.MarbleBlock} },
          };
 
 
         BaseType baseType = BaseType.Base3;
-        public enum BaseType { Base2, Base3, Base4, Base6 };
+        public enum BaseType { Base2, Base3, Base3ext, Base4, Base6 };
         public class Base
         {
             BaseType baseType;
@@ -95,7 +100,7 @@ namespace StartWithBase
             public int WorkBenchStyle { get; set; }
             public int LampStyle { get; set; }
             public int TorchStyle { get; set; }
-            public int PlatformItemType { get; set; }
+            public int FurnitureCraftingItem { get; set; }
         }
         public class WallSetting
         {
@@ -363,7 +368,12 @@ namespace StartWithBase
                     SetToTiles(TileTypeDict["tob"]);
                     curLanternStyle = 15;
                 }
-
+                if (pa.Substring(0, 2).Equals("cx"))
+                {
+                    //custom values
+                    CheckGenerate(pa.Substring(2, 1));
+                    ReadAndSetConfig(pa.Substring(2, 1));
+                }
 
                 if (styleTypeDict.ContainsKey(pa))
                     SetToFurniture(styleTypeDict[pa]);
@@ -375,6 +385,125 @@ namespace StartWithBase
         }
         
 
+        public void ReadAndSetConfig(string numbs)
+        {
+            string modpath = @"/StartWithBase";
+            if (!System.IO.Directory.Exists(Main.SavePath + modpath))
+                return;
+
+            string filePath = Main.SavePath + modpath + @"/config" + numbs + ".txt";
+            if (!System.IO.File.Exists(filePath))
+                return;
+
+            System.IO.StreamReader file =  new System.IO.StreamReader(filePath);
+            string line;
+            while ((line = file.ReadLine()) != null)
+            {
+                line = line.Normalize();
+
+                if (line.Length < 3)
+                    continue;
+                if (line[0] == '#')
+                    continue;
+
+                string[] nameValue= line.Split('=');
+                if (nameValue.Length != 2)
+                    continue;
+
+                string name = nameValue[0].Trim();
+                string value = nameValue[1].Trim();
+
+
+                if (name.Equals("basetype"))
+                {
+                    baseType = (BaseType)Int32.Parse(value);
+                    if (baseType == BaseType.Base3ext)
+                    {
+                        baseType = BaseType.Base3;
+                        extend = true;
+                    }
+                }
+                else if (name.Equals("TileID"))
+                    curTileType = Int32.Parse(value);
+                else if (name.Equals("ItemIDoftileType"))
+                    curTileItemType = Int32.Parse(value);
+
+
+                else if (name.Equals("WallID"))
+                    curWallType = (byte)Int32.Parse(value);
+                else if (name.Equals("ItemIDofWallType"))
+                    curWallItemType = Int32.Parse(value);
+
+
+                else if (name.Equals("PlatformStyle"))
+                    curPlatformStyle = Int32.Parse(value);
+                else if (name.Equals("LanternStyle"))
+                    curLanternStyle = Int32.Parse(value);
+                else if (name.Equals("ChairStyle"))
+                    curChairStyle = Int32.Parse(value);
+                else if (name.Equals("WorkBenchStyle"))
+                    curWorkBenchStyle = Int32.Parse(value);
+                else if (name.Equals("LampStyle"))
+                    curLampStyle = Int32.Parse(value);
+                else if (name.Equals("TorchStyle"))
+                    curTorchStyle = Int32.Parse(value);
+                else if (name.Equals("FurnitureCraftingItemType"))
+                    curFurnitureCraftingItemType = Int32.Parse(value);               
+                
+            }
+
+
+        }
+
+        public void CheckGenerate(string numbs)
+        {
+            string modpath = @"/StartWithBase";
+            if (!System.IO.Directory.Exists(Main.SavePath + modpath))
+                System.IO.Directory.CreateDirectory(Main.SavePath + modpath);
+
+            string filePath = Main.SavePath + modpath + @"/config" + numbs + ".txt";
+            if (System.IO.File.Exists(filePath))                
+                return;
+
+            using (System.IO.StreamWriter file =
+            new System.IO.StreamWriter(filePath, true))
+            {
+                file.WriteLine("# Config file of Start with Base mod");
+                file.WriteLine("# here you can setup custom values");
+                file.WriteLine("# lines start with '#' get ignored");
+                file.WriteLine("");
+                file.WriteLine("# basetype values ba2=0 ba3=1 b3b=2 ba4=3 ba6=4 currently supported");
+                file.WriteLine("basetype = "+ (int)((baseType == BaseType.Base3 && extend)? BaseType.Base3ext : baseType)  );
+
+
+                file.WriteLine("");
+                file.WriteLine("# In following part you can change each type of placed objects.");
+                file.WriteLine("# For tile ID's look e.g. at https://terraria.gamepedia.com/Tile_IDs");
+                file.WriteLine("# For items types look at their wiki pages. Those are placed in a starting chest.");
+
+                file.WriteLine("");
+                file.WriteLine("# Tiles used to build base");
+                file.WriteLine("TileID = "+ curTileType);
+                file.WriteLine("ItemIDoftileType = "+ curTileItemType);
+
+                file.WriteLine("");
+                file.WriteLine("# Wall");
+                file.WriteLine("WallID = "+ curWallType);
+                file.WriteLine("ItemIDofWallType = "+ curWallItemType);
+                                
+                file.WriteLine("");
+                file.WriteLine("# Furniture");
+                file.WriteLine("PlatformStyle = "+ curPlatformStyle);
+                file.WriteLine("LanternStyle = "+ curLanternStyle);
+                file.WriteLine("ChairStyle = "+ curChairStyle);
+                file.WriteLine("WorkBenchStyle = "+ curWorkBenchStyle);
+                file.WriteLine("LampStyle = "+ curLampStyle);
+                file.WriteLine("TorchStyle = "+ curTorchStyle);
+                file.WriteLine("FurnitureCraftingItemType = "+ curFurnitureCraftingItemType);
+            }
+
+        }
+
         public void SetToFurniture(StyleSetting ss)
         {
             curPlatformStyle = ss.PlatformStyle;
@@ -383,7 +512,7 @@ namespace StartWithBase
             curWorkBenchStyle = ss.WorkBenchStyle;
             curLampStyle = ss.LampStyle;
             curTorchStyle = ss.TorchStyle;
-            curPlatformItemType = ss.PlatformItemType;
+            curFurnitureCraftingItemType = ss.FurnitureCraftingItem;
         }
         public void SetToWall(WallSetting ws)
         {
@@ -400,13 +529,16 @@ namespace StartWithBase
         const int stackSize = 42;
         public void SetUpChest(int cid)
         {
-            Main.chest[cid].item[0].SetDefaults(curPlatformItemType);
+            Main.chest[cid].item[0].SetDefaults(curFurnitureCraftingItemType);
             Main.chest[cid].item[0].stack = stackSize;
+            if (Main.chest[cid].item[0].value > 99) Main.chest[cid].item[0].stack = 0;
             Main.chest[cid].item[1].SetDefaults(curTileItemType);
             Main.chest[cid].item[1].stack = stackSize;
-            Main.chest[cid].item[2].SetDefaults(curWallItemType);
+            if (Main.chest[cid].item[1].value > 99) Main.chest[cid].item[1].stack = 0;
+            Main.chest[cid].item[2].SetDefaults(curWallItemType);            
             Main.chest[cid].item[2].stack = stackSize;
-            
+            if (Main.chest[cid].item[2].value > 99) Main.chest[cid].item[2].stack = 0;
+
         }
 
         public void Base2()
