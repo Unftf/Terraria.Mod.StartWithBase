@@ -31,10 +31,11 @@ namespace StartWithBase
         UIScalableImageButtton startIcon;
         public bool doNotBuildBase;
         UIGenProgressBar pbar;
+        Builder builder;
 
-        public StartWithBaseUI(UIState uistate, Mod mod)
+        public StartWithBaseUI(Builder builder, UIState uistate, Mod mod)
         {
-            
+            this.builder = builder;
             FieldInfo field = typeof(UIWorldLoad).GetField("_progressBar", BindingFlags.Instance | BindingFlags.NonPublic);
             if (field != null && uistate is UIWorldLoad)
                 pbar = (UIGenProgressBar)field.GetValue(uistate);
@@ -77,14 +78,14 @@ namespace StartWithBase
 
 
             content = "tile";
-            foreach (var sty in BuildBase.TileTypeDict)
+            foreach (var sty in builder.TileTypeDict)
             {
                 UIScalableImageButtton fur = new UIScalableImageButtton(ModLoader.GetTexture("Terraria/Item_" + sty.Value.ItemID), content);
                 fur.Id = sty.Key;
                 buttonDict.Add(fur.Id, fur);
             }
             content = "wall";
-            foreach (var sty in BuildBase.wallTypeDict)
+            foreach (var sty in builder.wallTypeDict)
             {
                 UIScalableImageButtton fur = new UIScalableImageButtton(ModLoader.GetTexture("Terraria/Item_" + sty.Value.ItemIDofWallType), content);
                 fur.Id = sty.Key;
@@ -92,7 +93,7 @@ namespace StartWithBase
             }
 
             content = "furniture";
-            foreach (var sty in BuildBase.styleTypeDict)
+            foreach (var sty in builder.styleTypeDict)
             {
                 UIScalableImageButtton fur = new UIScalableImageButtton(ModLoader.GetTexture("Terraria/Item_" + sty.Value.ItemID), content);
                 fur.Id = sty.Key;
@@ -100,14 +101,14 @@ namespace StartWithBase
             }
 
             content = "lantern";
-            foreach (var sty in BuildBase.lanternTypeDict)
+            foreach (var sty in builder.lanternTypeDict)
             {
                 UIScalableImageButtton fur = new UIScalableImageButtton(ModLoader.GetTexture("Terraria/Item_" + sty.Value.ItemID), content);
                 fur.Id = sty.Key;
                 buttonDict.Add(fur.Id, fur);
             }
             content = "platform";
-            foreach (var sty in BuildBase.platformTypeDict)
+            foreach (var sty in builder.platformTypeDict)
             {
                 UIScalableImageButtton fur = new UIScalableImageButtton(ModLoader.GetTexture("Terraria/Item_" + sty.Value.ItemID), content);
                 fur.Id = sty.Key;
@@ -179,46 +180,46 @@ namespace StartWithBase
                 if (content.Equals("base"))
                 {
                     //todo something better
-                    if (butt.Id.Equals("ba2") && BuildBase.baseType == BuildBase.BaseType.Base2)
+                    if (butt.Id.Equals("ba2") && builder.baseType == Builder.BaseType.Base2)
                         but.Value.isClicked = true;
-                    else if (butt.Id.Equals("ba3") && BuildBase.baseType == BuildBase.BaseType.Base3)
+                    else if (butt.Id.Equals("ba3") && builder.baseType == Builder.BaseType.Base3)
                         but.Value.isClicked = true;
-                    else if (butt.Id.Equals("b3b") && BuildBase.baseType == BuildBase.BaseType.Base3ext)
+                    else if (butt.Id.Equals("b3b") && builder.baseType == Builder.BaseType.Base3ext)
                         but.Value.isClicked = true;
-                    else if (butt.Id.Equals("ba4") && BuildBase.baseType == BuildBase.BaseType.Base4)
+                    else if (butt.Id.Equals("ba4") && builder.baseType == Builder.BaseType.Base4)
                         but.Value.isClicked = true;
-                    else if (butt.Id.Equals("ba6") && BuildBase.baseType == BuildBase.BaseType.Base6)
+                    else if (butt.Id.Equals("ba6") && builder.baseType == Builder.BaseType.Base6)
                         but.Value.isClicked = true;
                 }
                 else if (content.Equals("tile"))
                 {
-                    int type = BuildBase.TileTypeDict.ContainsKey(but.Value.Id) ? BuildBase.TileTypeDict[but.Value.Id].TileID : -1;
-                    if (BuildBase.curTileType == type)
+                    int type = builder.TileTypeDict.ContainsKey(but.Value.Id) ? builder.TileTypeDict[but.Value.Id].TileID : -1;
+                    if (builder.curTileType == type)
                         but.Value.isClicked = true;
                 }
                 else if (content.Equals("wall"))
                 {
-                    byte type = (byte)(BuildBase.wallTypeDict.ContainsKey(but.Value.Id) ? BuildBase.wallTypeDict[but.Value.Id].WallID : 0);
-                    if (BuildBase.curWallType == type)
+                    byte type = (byte)(builder.wallTypeDict.ContainsKey(but.Value.Id) ? builder.wallTypeDict[but.Value.Id].WallID : 0);
+                    if (builder.curWallType == type)
                         but.Value.isClicked = true;
                 }
                 else if (content.Equals("furniture"))
                 {
                     //may also selected it custom style contains this workbench
-                    int type = BuildBase.styleTypeDict.ContainsKey(but.Value.Id) ? BuildBase.styleTypeDict[but.Value.Id].WorkBenchStyle : -1;
-                    if (BuildBase.curWorkBenchStyle == type)
+                    int type = builder.styleTypeDict.ContainsKey(but.Value.Id) ? builder.styleTypeDict[but.Value.Id].WorkBenchStyle : -1;
+                    if (builder.curWorkBenchStyle == type)
                         but.Value.isClicked = true;
                 }
                 else if (content.Equals("lantern"))
                 {
-                    int type = BuildBase.lanternTypeDict.ContainsKey(but.Value.Id) ? BuildBase.lanternTypeDict[but.Value.Id].LanternStyle : -1;
-                    if (BuildBase.curLanternStyle == type)
+                    int type = builder.lanternTypeDict.ContainsKey(but.Value.Id) ? builder.lanternTypeDict[but.Value.Id].LanternStyle : -1;
+                    if (builder.curLanternStyle == type)
                         but.Value.isClicked = true;
                 }
                 else if (content.Equals("platform"))
                 {
-                    int type = BuildBase.platformTypeDict.ContainsKey(but.Value.Id) ? BuildBase.platformTypeDict[but.Value.Id].PlatformStyle : -1;
-                    if (BuildBase.curPlatformStyle == type)
+                    int type = builder.platformTypeDict.ContainsKey(but.Value.Id) ? builder.platformTypeDict[but.Value.Id].PlatformStyle : -1;
+                    if (builder.curPlatformStyle == type)
                         but.Value.isClicked = true;
                 }
             }
@@ -252,14 +253,14 @@ namespace StartWithBase
             Random rnd = new Random();
             string rand = "world$";
 
-            rand += BuildBase.baseTypeDict.ElementAt(rnd.Next(0, BuildBase.baseTypeDict.Count)).Key ;
-            rand += BuildBase.TileTypeDict.ElementAt(rnd.Next(0, BuildBase.TileTypeDict.Count)).Key;
-            rand += BuildBase.wallTypeDict.ElementAt(rnd.Next(0, BuildBase.wallTypeDict.Count)).Key;
-            rand += BuildBase.styleTypeDict.ElementAt(rnd.Next(0, BuildBase.styleTypeDict.Count)).Key;
-            rand += BuildBase.lanternTypeDict.ElementAt(rnd.Next(0, BuildBase.lanternTypeDict.Count)).Key;
-            rand += BuildBase.platformTypeDict.ElementAt(rnd.Next(0, BuildBase.platformTypeDict.Count)).Key;
+            rand += builder.baseTypeDict.ElementAt(rnd.Next(0, builder.baseTypeDict.Count)).Key ;
+            rand += builder.TileTypeDict.ElementAt(rnd.Next(0, builder.TileTypeDict.Count)).Key;
+            rand += builder.wallTypeDict.ElementAt(rnd.Next(0, builder.wallTypeDict.Count)).Key;
+            rand += builder.styleTypeDict.ElementAt(rnd.Next(0, builder.styleTypeDict.Count)).Key;
+            rand += builder.lanternTypeDict.ElementAt(rnd.Next(0, builder.lanternTypeDict.Count)).Key;
+            rand += builder.platformTypeDict.ElementAt(rnd.Next(0, builder.platformTypeDict.Count)).Key;
 
-            BuildBase.parsWN(rand, false);
+            builder.parsWN(rand, false);
             InitButtons();
 
         }
@@ -273,8 +274,8 @@ namespace StartWithBase
                 if (but.Value.isClicked)
                 {
                     string pa = but.Value.Id;
-                    if (BuildBase.styleTypeDict.ContainsKey(pa) || BuildBase.wallTypeDict.ContainsKey(pa) || BuildBase.TileTypeDict.ContainsKey(pa) ||
-                        BuildBase.lanternTypeDict.ContainsKey(pa) || BuildBase.baseTypeDict.ContainsKey(pa) || BuildBase.platformTypeDict.ContainsKey(pa))
+                    if (builder.styleTypeDict.ContainsKey(pa) || builder.wallTypeDict.ContainsKey(pa) || builder.TileTypeDict.ContainsKey(pa) ||
+                        builder.lanternTypeDict.ContainsKey(pa) || builder.baseTypeDict.ContainsKey(pa) || builder.platformTypeDict.ContainsKey(pa))
                         wn += pa;
                 }
 
@@ -413,7 +414,7 @@ namespace StartWithBase
                 if (bid.Length == ("config").Length + 1)
                 {
                     int which = Int32.Parse(bid.Substring(6));
-                    bool doExist = BuildBase.ReadAndSetConfig(bid.Substring(6));
+                    bool doExist = builder.ReadAndSetConfig(bid.Substring(6));
                     if (doExist)
                     {
                         setOtherOff("", "", true);
@@ -441,8 +442,8 @@ namespace StartWithBase
                     }
                     if (num != -1)
                     {
-                        BuildBase.parsWN(getValues());
-                        BuildBase.CheckGenerate(num.ToString(), true);
+                        builder.parsWN(getValues());
+                        builder.CheckGenerate(num.ToString(), true);
                         lastSave = num;
                     }
                     

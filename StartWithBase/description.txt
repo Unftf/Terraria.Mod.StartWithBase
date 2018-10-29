@@ -20,12 +20,12 @@ $Ba2 - base with 2 NPC flats as core structure
 $Ba3 - base with 3 NPC flats as core ($b3b for big version, both look if enough space for all mod items)
 $Ba4 - base with 4 .. (useful for many NPC)
 $Ba6 - base with 6 NPC flats as core (credits to Sergo for that)
-$Fpa, Fdy, Fwo, Fgr, Fbo, Fri, Fma ---> changes the furniture material
-$Tha, Tob, Tdy, Two, Tss, Tri, Tbo, Tgr, Tma --> changes the tiles used for flats
-$Wha, Wdg, Wdy, Wwo, Wss, Wdi, Wri, Wbo, Wgr, Wma --> changes the used wall
-$Lho, Lgl, Ldy, Lwo, Lpa, Lbo, Lgr, Wma --> changes the used lantern
-$Ppa, Pri, Pdy, Pwo, Pbo, Pgr, Pma, Pic --> changes the used platform
-
+$Fpa, Fdy, Fwo, Fgr, Fbo, Fri, Fmb ---> changes the furniture material
+$Tha, Tob, Tdy, Two, Tss, Tri, Tbo, Tgr, Tmb --> changes the tiles used for flats
+$Wha, Wdg, Wdy, Wwo, Wss, Wdi, Wri, Wbo, Wgr, Wmb --> changes the used wall
+$Lho, Lgl, Ldy, Lwo, Lpa, Lbo, Lgr, Wmb --> changes the used lantern
+$Ppa, Pri, Pdy, Pwo, Pbo, Pgr, Pmb, Pic --> changes the used platform
+...and many more
 
 $Sy* - random style of used tiles, predefined $Sy0, $Sy1, $Sy2
 $Cx1 - stores/loads config file which allows you to setup all values as you like
