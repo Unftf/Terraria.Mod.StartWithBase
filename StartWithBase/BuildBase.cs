@@ -23,42 +23,74 @@ using Terraria.UI;
 
 using Terraria.Map;
 
+
+using Terraria.GameContent.UI.Elements;
+
+
+
+
 namespace StartWithBase
 {
     class BuildBase : ModWorld
     {
-        static int curTileType = TileID.HayBlock;
-        static int curTileItemType = ItemID.Hay;
-        static byte curWallType = WallID.Hay;
-        static int curWallItemType = ItemID.HayWall;
+        public static int curTileType = TileID.HayBlock;
+        public static int curTileItemType = ItemID.Hay;
+        public static byte curWallType = WallID.Hay;
+        public static int curWallItemType = ItemID.HayWall;
+        public static int curLanternItemTyp = ItemID.ChainLantern;
 
         static int curStyle = 17;
 
         static int curChestStyle = 5;
 
-        static int curPlatformStyle = 17;
-        static int curLanternStyle = 13;
+        public static int curPlatformStyle = 17;
+        public static int curLanternStyle = 13;
         static int curChairStyle = 29;
-        static int curWorkBenchStyle = 22;
+        public static int curWorkBenchStyle = 22;
         static int curLampStyle = 0;
         static int curTorchStyle = 0;
         static int curFurnitureCraftingItemType = ItemID.PalmWood;
+        static int curPlatformCraftingItemType = ItemID.PalmWood;
         
 
-        int cx, cy;
+        static int cx, cy;
 
         
-        static Dictionary<string, StyleSetting> styleTypeDict = new Dictionary<string, StyleSetting>
+        public static Dictionary<string, StyleSetting> styleTypeDict = new Dictionary<string, StyleSetting>
             {
-            {"fpa", new StyleSetting{ PlatformStyle = 17, LanternStyle = 27, ChairStyle = 29, WorkBenchStyle = 22, LampStyle = 18, TorchStyle = 0, FurnitureCraftingItem = ItemID.PalmWood } },
-            {"fdy", new StyleSetting{ PlatformStyle = 32, LanternStyle = 26, ChairStyle = 27, WorkBenchStyle = 18, LampStyle = 17, TorchStyle = 0, FurnitureCraftingItem = ItemID.DynastyWood } },
-            {"fwo", new StyleSetting{ PlatformStyle = 0, LanternStyle = 22, ChairStyle = 0, WorkBenchStyle = 0, LampStyle = 0, TorchStyle = 0, FurnitureCraftingItem = ItemID.Wood } },
-            {"fgr", new StyleSetting{ PlatformStyle = 28, LanternStyle = 35, ChairStyle = 34, WorkBenchStyle = 29, LampStyle = 29, TorchStyle = 0, FurnitureCraftingItem = ItemID.GraniteBlock } },
-            {"fbo", new StyleSetting{ PlatformStyle = 19, LanternStyle = 29, ChairStyle = 30, WorkBenchStyle = 23, LampStyle = 20, TorchStyle = 0, FurnitureCraftingItem = ItemID.BorealWood } },
-            {"fri", new StyleSetting{ PlatformStyle = 2, LanternStyle = 16, ChairStyle = 3, WorkBenchStyle = 2, LampStyle = 6, TorchStyle = 0, FurnitureCraftingItem = ItemID.RichMahogany} },
-            {"fma", new StyleSetting{ PlatformStyle = 29, LanternStyle = 36, ChairStyle = 35, WorkBenchStyle = 30, LampStyle = 30, TorchStyle = 0, FurnitureCraftingItem = ItemID.MarbleBlock} },
+            {"fpa", new StyleSetting{ PlatformStyle = 17, LanternStyle = 27, ChairStyle = 29, WorkBenchStyle = 22, LampStyle = 18, TorchStyle = 0, FurnitureCraftingItem = ItemID.PalmWood, ItemID = ItemID.PalmWoodWorkBench } },
+            {"fdy", new StyleSetting{ PlatformStyle = 32, LanternStyle = 26, ChairStyle = 27, WorkBenchStyle = 18, LampStyle = 17, TorchStyle = 0, FurnitureCraftingItem = ItemID.DynastyWood, ItemID = ItemID.DynastyWorkBench } },
+            {"fwo", new StyleSetting{ PlatformStyle = 0, LanternStyle = 22, ChairStyle = 0, WorkBenchStyle = 0, LampStyle = 0, TorchStyle = 0, FurnitureCraftingItem = ItemID.Wood, ItemID = ItemID.WorkBench } },
+            {"fgr", new StyleSetting{ PlatformStyle = 28, LanternStyle = 35, ChairStyle = 34, WorkBenchStyle = 29, LampStyle = 29, TorchStyle = 0, FurnitureCraftingItem = ItemID.GraniteBlock, ItemID = ItemID.GraniteWorkBench } },
+            {"fbo", new StyleSetting{ PlatformStyle = 19, LanternStyle = 29, ChairStyle = 30, WorkBenchStyle = 23, LampStyle = 20, TorchStyle = 0, FurnitureCraftingItem = ItemID.BorealWood, ItemID = ItemID.BorealWoodWorkBench } },
+            {"fri", new StyleSetting{ PlatformStyle = 2, LanternStyle = 16, ChairStyle = 3, WorkBenchStyle = 2, LampStyle = 6, TorchStyle = 0, FurnitureCraftingItem = ItemID.RichMahogany, ItemID = ItemID.RichMahoganyWorkBench} },
+            {"fma", new StyleSetting{ PlatformStyle = 29, LanternStyle = 36, ChairStyle = 35, WorkBenchStyle = 30, LampStyle = 30, TorchStyle = 0, FurnitureCraftingItem = ItemID.MarbleBlock, ItemID = ItemID.MarbleWorkBench} },
          };
-        static Dictionary<string, WallSetting> wallTypeDict = new Dictionary<string, WallSetting>
+        public  static Dictionary<string, LanternSetting> lanternTypeDict = new Dictionary<string, LanternSetting>
+            {
+            {"lho", new LanternSetting{LanternStyle = 13, ItemID = ItemID.HoneyLantern } },
+            {"lgl", new LanternSetting{LanternStyle = 15, ItemID = ItemID.GlassLantern } },
+            {"lri", new LanternSetting{LanternStyle = 16, ItemID = ItemID.RichMahoganyLantern } },
+            {"ldy", new LanternSetting{LanternStyle = 26, ItemID = ItemID.DynastyLantern } },
+            {"lpa", new LanternSetting{LanternStyle = 27, ItemID = ItemID.PalmWoodLantern } },
+            {"lwo", new LanternSetting{LanternStyle = 22, ItemID = ItemID.LivingWoodLantern } },
+            {"lbo", new LanternSetting{LanternStyle = 29, ItemID = ItemID.BorealWoodLantern } },
+            {"lgr", new LanternSetting{LanternStyle = 35, ItemID = ItemID.GraniteLantern } },
+            {"lma", new LanternSetting{LanternStyle = 36, ItemID = ItemID.MarbleLantern } },
+         };
+        public static Dictionary<string, PlatformSetting> platformTypeDict = new Dictionary<string, PlatformSetting>
+            {
+            {"ppa", new PlatformSetting{ PlatformStyle = 17, PlatformCraftingItem = ItemID.PalmWood, ItemID = ItemID.PalmWoodPlatform } },
+            {"pdy", new PlatformSetting{ PlatformStyle = 32, PlatformCraftingItem = ItemID.DynastyWood, ItemID = ItemID.DynastyPlatform } },
+            {"pwo", new PlatformSetting{ PlatformStyle = 0,  PlatformCraftingItem = ItemID.Wood, ItemID = ItemID.WoodPlatform } },
+            {"pgr", new PlatformSetting{ PlatformStyle = 28, PlatformCraftingItem = ItemID.GraniteBlock, ItemID = ItemID.GranitePlatform } },
+            {"pbo", new PlatformSetting{ PlatformStyle = 19, PlatformCraftingItem = ItemID.BorealWood, ItemID = ItemID.BorealWoodPlatform } },
+            {"pri", new PlatformSetting{ PlatformStyle = 2,  PlatformCraftingItem = ItemID.RichMahogany, ItemID = ItemID.RichMahoganyPlatform} },
+            {"pma", new PlatformSetting{ PlatformStyle = 29, PlatformCraftingItem = ItemID.MarbleBlock, ItemID = ItemID.MarblePlatform} },
+            {"pic", new PlatformSetting{ PlatformStyle = 35, PlatformCraftingItem = ItemID.IceBlock, ItemID = ItemID.FrozenPlatform} },
+         };
+
+        public static Dictionary<string, WallSetting> wallTypeDict = new Dictionary<string, WallSetting>
             {
             {"wha", new WallSetting{ WallID = WallID.Hay, ItemIDofWallType = ItemID.HayWall} },
             {"wdg", new WallSetting{ WallID = WallID.DiamondGemspark, ItemIDofWallType = ItemID.DiamondGemsparkWall} },
@@ -68,10 +100,10 @@ namespace StartWithBase
             {"wdi", new WallSetting{ WallID = WallID.Dirt, ItemIDofWallType = ItemID.DirtWall} },
             {"wri", new WallSetting{ WallID = WallID.RichMaogany, ItemIDofWallType = ItemID.RichMahoganyWall} },
             {"wbo", new WallSetting{ WallID = WallID.BorealWood, ItemIDofWallType = ItemID.BorealWoodWall} },
-            {"wgr", new WallSetting{ WallID = WallID.GraniteBlock, ItemIDofWallType = ItemID.GraniteBlock} },
+            {"wgr", new WallSetting{ WallID = WallID.GraniteBlock, ItemIDofWallType = ItemID.GraniteBlockWall} },
             {"wma", new WallSetting{ WallID = WallID.MarbleBlock, ItemIDofWallType = ItemID.MarbleBlockWall} },
          };
-        static Dictionary<string, TileSetting> TileTypeDict = new Dictionary<string, TileSetting>
+        public static Dictionary<string, TileSetting> TileTypeDict = new Dictionary<string, TileSetting>
             {
             {"tha", new TileSetting{ TileID = TileID.HayBlock, ItemID = ItemID.Hay } },
             {"tob", new TileSetting{ TileID = TileID.ObsidianBrick, ItemID = ItemID.ObsidianBrick} },
@@ -85,12 +117,17 @@ namespace StartWithBase
          };
 
 
-        BaseType baseType = BaseType.Base3;
+        public static BaseType baseType = BaseType.Base3;
         public enum BaseType { Base2, Base3, Base3ext, Base4, Base6 };
-        public class Base
+
+        public static Dictionary<string, BaseType> baseTypeDict = new Dictionary<string, BaseType>
         {
-            BaseType baseType;
-        }
+            {"ba2", BaseType.Base2 },
+            {"ba3", BaseType.Base3 },
+            {"b3b", BaseType.Base3ext },
+            {"ba4", BaseType.Base4 },
+            {"ba6", BaseType.Base6 },
+         };
 
         public class StyleSetting
         {
@@ -101,6 +138,7 @@ namespace StartWithBase
             public int LampStyle { get; set; }
             public int TorchStyle { get; set; }
             public int FurnitureCraftingItem { get; set; }
+            public int ItemID { get; set; }
         }
         public class WallSetting
         {
@@ -110,6 +148,19 @@ namespace StartWithBase
         public class TileSetting
         {
             public int TileID { get; set; }
+            public int ItemID { get; set; }
+        }
+
+        public class LanternSetting
+        {
+            public int LanternStyle { get; set; }
+            public int ItemID { get; set; }
+        }
+
+        public class PlatformSetting
+        {
+            public int PlatformStyle { get; set; }
+            public int PlatformCraftingItem { get; set; }
             public int ItemID { get; set; }
         }
 
@@ -237,66 +288,138 @@ namespace StartWithBase
         int allItemCount;
         int chestsNeeded;
         const int yoff = 13;
+        public StartWithBaseUI swbui = null;
         public override void ModifyWorldGenTasks(List<GenPass> tasks, ref float totalWeight)
         {
-
-            tasks.Add(new PassLegacy("Stop Sead search", delegate (GenerationProgress progress)
-            {                
-                cx = Main.spawnTileX - 20;
-                cy = Main.spawnTileY - yoff;
-
-                
-                if (Main.worldName.Contains("all") && Main.worldName.Contains("item"))
+            
+            int tunnelsIndex = tasks.FindIndex(genpass => genpass.Name.Equals("Tunnels"));
+            if (tunnelsIndex != -1)
+            {
+                tasks.Insert(3, new PassLegacy("Create UI", delegate (GenerationProgress progress)
                 {
-                    PlaceAllItems();
-                    return;
-                }
-                
-                townNPCcount = Main.MaxShopIDs; //vanilla town npc
-                int count2 = townNPCcount;               
-                for (int i=0; i < NPCLoader.NPCCount; i++)
+
+                    string wname = Main.worldName;
+                    if (wname.Contains("$"))
+                        parsWN(wname);
+
+                    //Main.MenuUI.CurrentState.RemoveAllChildren();
+                    
+                    swbui = new StartWithBaseUI(Main.MenuUI.CurrentState, mod);
+                    
+                    
+
+
+
+                }));
+            }
+            int taskCount = tasks.FindIndex(genpass => genpass.Name.Equals("Final Cleanup")) - 1;
+            if (taskCount != -1)
+            {
+                for (int tid = taskCount; tid > tunnelsIndex ; tid--)
                 {
-                    //adds town npc's from mods
-                    ModNPC cur = NPCLoader.GetNPC(i);
-                    if (cur != null)
-                        if (cur.npc.CanTalk && cur.npc.friendly) townNPCcount++;
-                    if (cur != null)
-                        if (cur.npc.townNPC) count2++;                                    
+                    int val = (taskCount - tid);
+                    tasks.Insert(tid, new PassLegacy("Set counter to", delegate (GenerationProgress progress)
+                    {
+                        if (swbui != null)
+                        {                            
+
+                            //swbui.counterText.SetText(""+ (Int32.Parse(swbui.counterText.Text)-1) );
+                            swbui.counterText.SetText(""+val );                           
+                            
+                        }
+
+                    }));
 
                 }
-                //all vanilla 1.3.5.3 npc count: 23
-                townNPCcount = Math.Max(townNPCcount, count2);
+            }
+
+            int genIndex = tasks.FindIndex(genpass => genpass.Name.Equals("Final Cleanup"));
+            if (genIndex != -1)
+            {
+                tasks.Insert(genIndex, new PassLegacy("Build base", delegate (GenerationProgress progress)
+                {
+                    if (swbui != null && !swbui.doNotBuildBase)
+                    {
+                        
+                        cx = Main.spawnTileX - 20;
+                        cy = Main.spawnTileY;
+                        findSweetSpot(); // increases cy if spawn under surface
+                        cy -= yoff;
+                                                                       
+
+                        townNPCcount = Main.MaxShopIDs; //vanilla town npc
+                        int count2 = townNPCcount;
+                        for (int i = 0; i < NPCLoader.NPCCount; i++)
+                        {
+                            //adds town npc's from mods
+                            ModNPC cur = NPCLoader.GetNPC(i);
+                            if (cur != null)
+                                if (cur.npc.CanTalk && cur.npc.friendly) townNPCcount++;
+                            if (cur != null)
+                                if (cur.npc.townNPC) count2++;
+
+                        }
+                        //all vanilla 1.3.5.3 npc count: 23
+                        townNPCcount = Math.Max(townNPCcount, count2);
+
+
+                        allItemCount = ItemLoader.ItemCount;
+                        chestsNeeded = (allItemCount + 39) / 40;
+
+
+                        if (swbui != null)
+                        {
+                            string winfo = swbui.getValues();
+                            parsWN(winfo, false);
+                            swbui.free();
+                        }
+                        
+
+                        //if (!wname.Contains("$"))
+                        //    wname = wname + "$sy*";
+
+
+                        if (baseType == BaseType.Base2)
+                            Base2();
+                        else if (baseType == BaseType.Base6)
+                            Base6(); //up to 90 at small
+                        else if (baseType == BaseType.Base4)
+                            Base4();
+                        else
+                            Base3(); //if (param.Contains("ba3")) max npc about 80 at small world
+
+                        if (Main.worldName.Contains("all") && Main.worldName.Contains("item") && (Main.worldName.Contains("world") || Main.worldName.Contains("map")))
+                        {                            
+                            PlaceAllItems();                            
+                        }
+                    }
+                }));                
+            }
+                       
+        }
                 
+        public void findSweetSpot()
+        {
+            const int checkSizex = 20;
 
-                allItemCount = ItemLoader.ItemCount;
-                chestsNeeded = (allItemCount + 39) / 40;
+            for (; cy > 200; cy--)
+            {
+                bool decre = false;
 
-                
-                string wname = Main.worldName;
-                param = new List<string>();
-                //if (!wname.Contains("$"))
-                //    wname = wname + "$sy*";
-                if (wname.Contains("$"))
-                    parsWN(wname);
-
-                if(baseType == BaseType.Base2)
-                    Base2(); 
-                else if (baseType == BaseType.Base6)
-                    Base6(); //up to 90 at small
-                else if (baseType == BaseType.Base4)
-                    Base4();                
-                else 
-                    Base3(); //if (param.Contains("ba3")) max npc about 80 at small world
-
-
-                param = null;
-            }));
+                for (int xi = 0; xi < checkSizex; xi++)
+                {
+                    if((Main.tile[cx+xi,cy].active() || Main.tile[cx - xi, cy].active()) && Main.tile[cx - xi, cy].wall != WallID.None)
+                    {
+                        decre = true;
+                        break;
+                    }
+                }
+                if (!decre)
+                    break;
+            }            
         }
 
-
-
-        List<string> param;
-        public void parsWN(string wname)
+        public static void parsWN(string wname, bool setwn = true)
         {
             int from = wname.IndexOf("$");
             int to = wname.Length;
@@ -305,11 +428,15 @@ namespace StartWithBase
             string subs = wname.Substring(from, to - from);
 
             //rename world file
-            string newWN = wname.Substring(0, from);
-            Main.worldName = newWN;
-            string seed = Main.ActiveWorldFileData.SeedText;
-            Main.ActiveWorldFileData = WorldFile.CreateMetadata(Main.worldName, Main.ActiveWorldFileData.IsCloudSave, Main.expertMode);
-            Main.ActiveWorldFileData.SetSeed(seed);
+            if (setwn)
+            {
+
+                string newWN = wname.Substring(0, from);
+                Main.worldName = newWN;
+                string seed = Main.ActiveWorldFileData.SeedText;
+                Main.ActiveWorldFileData = WorldFile.CreateMetadata(Main.worldName, Main.ActiveWorldFileData.IsCloudSave, Main.expertMode);
+                Main.ActiveWorldFileData.SetSeed(seed);
+            }
 
             subs = subs.Substring(1);
             subs = subs.ToLower().Normalize();
@@ -319,7 +446,7 @@ namespace StartWithBase
             for(int i=0; i < subs.Length/3;i++)
             {
                 string pa = subs.Substring(3 * i, 3);
-                param.Add(pa);
+                
 
                 if (pa.Substring(0, 2).Equals("ba"))
                 {
@@ -330,7 +457,8 @@ namespace StartWithBase
                 }
                 if (pa.Equals("b3b"))
                 {
-                    baseType = BaseType.Base3;
+                    //baseType = BaseType.Base3;
+                    baseType = BaseType.Base3ext;
                     extend = true;
                 }
 
@@ -343,30 +471,30 @@ namespace StartWithBase
                     while (dummy-->0) WorldGen.genRand.Next();
                     SetToFurniture( (styleTypeDict.ElementAt( WorldGen.genRand.Next(styleTypeDict.Count) )).Value);
                     SetToWall((wallTypeDict.ElementAt( WorldGen.genRand.Next(wallTypeDict.Count))).Value);
-                    if(curWallType == wallTypeDict["wri"].WallID || curWallType == wallTypeDict["wdg"].WallID) SetToWall((wallTypeDict.ElementAt(WorldGen.genRand.Next(wallTypeDict.Count))).Value);//dont like mahagony reduce chance, digew hard to get
+                    if(curWallType == wallTypeDict["wri"].WallID || curWallType == wallTypeDict["wdg"].WallID || curWallType == wallTypeDict["wgr"].WallID ) SetToWall((wallTypeDict.ElementAt(WorldGen.genRand.Next(wallTypeDict.Count))).Value);//dont like mahagony reduce chance, digew hard to get
                     SetToTiles((TileTypeDict.ElementAt( WorldGen.genRand.Next(TileTypeDict.Count))).Value);
-                    if (curTileType == TileTypeDict["tri"].TileID || curTileType == TileTypeDict["tob"].TileID) SetToWall((wallTypeDict.ElementAt(WorldGen.genRand.Next(wallTypeDict.Count))).Value);//dont like mahagony, obsidian hard to get reduce chance
+                    if (curTileType == TileTypeDict["tri"].TileID || curTileType == TileTypeDict["tob"].TileID) SetToTiles((TileTypeDict.ElementAt(WorldGen.genRand.Next(TileTypeDict.Count))).Value);//dont like mahagony, obsidian hard to get reduce chance
                 }
                 if (pa.Equals("sy0"))
                 {   
                     SetToFurniture(styleTypeDict["fpa"]);
                     SetToWall(wallTypeDict["wha"]);
                     SetToTiles(TileTypeDict["tha"]);
-                    curLanternStyle = 13;
+                    SetToLantern(lanternTypeDict["lho"]);                    
                 }
                 if (pa.Equals("sy1"))
                 {
                     SetToFurniture(styleTypeDict["fwo"]);
                     SetToWall(wallTypeDict["wdi"]);
                     SetToTiles(TileTypeDict["tss"]);
-                    curLanternStyle = 26;
+                    SetToLantern(lanternTypeDict["ldy"]);
                 }
                 if (pa.Equals("sy2"))
                 {
                     SetToFurniture(styleTypeDict["fwo"]);
                     SetToWall(wallTypeDict["wdg"]);
                     SetToTiles(TileTypeDict["tob"]);
-                    curLanternStyle = 15;
+                    SetToLantern(lanternTypeDict["lgl"]);
                 }
                 if (pa.Substring(0, 2).Equals("cx"))
                 {
@@ -381,19 +509,23 @@ namespace StartWithBase
                     SetToWall(wallTypeDict[pa]);
                 else if (TileTypeDict.ContainsKey(pa))
                     SetToTiles(TileTypeDict[pa]);
+                else if (lanternTypeDict.ContainsKey(pa))
+                    SetToLantern(lanternTypeDict[pa]);
+                else if (platformTypeDict.ContainsKey(pa))
+                    SetToPlatform(platformTypeDict[pa]);
             }
         }
         
 
-        public void ReadAndSetConfig(string numbs)
+        public static bool ReadAndSetConfig(string numbs)
         {
             string modpath = @"/StartWithBase";
             if (!System.IO.Directory.Exists(Main.SavePath + modpath))
-                return;
+                return false;
 
             string filePath = Main.SavePath + modpath + @"/config" + numbs + ".txt";
             if (!System.IO.File.Exists(filePath))
-                return;
+                return false;
 
             System.IO.StreamReader file =  new System.IO.StreamReader(filePath);
             string line;
@@ -419,7 +551,8 @@ namespace StartWithBase
                     baseType = (BaseType)Int32.Parse(value);
                     if (baseType == BaseType.Base3ext)
                     {
-                        baseType = BaseType.Base3;
+                        //baseType = BaseType.Base3;
+                        baseType = BaseType.Base3ext;
                         extend = true;
                     }
                 }
@@ -448,25 +581,27 @@ namespace StartWithBase
                 else if (name.Equals("TorchStyle"))
                     curTorchStyle = Int32.Parse(value);
                 else if (name.Equals("FurnitureCraftingItemType"))
-                    curFurnitureCraftingItemType = Int32.Parse(value);               
-                
+                    curFurnitureCraftingItemType = Int32.Parse(value);
+                else if (name.Equals("PlatformCraftingItemType"))
+                    curPlatformCraftingItemType = Int32.Parse(value);
+
             }
 
-
+            return true;
         }
 
-        public void CheckGenerate(string numbs)
+        public static void CheckGenerate(string numbs, bool overwrite = false)
         {
             string modpath = @"/StartWithBase";
             if (!System.IO.Directory.Exists(Main.SavePath + modpath))
                 System.IO.Directory.CreateDirectory(Main.SavePath + modpath);
 
             string filePath = Main.SavePath + modpath + @"/config" + numbs + ".txt";
-            if (System.IO.File.Exists(filePath))                
+            if (System.IO.File.Exists(filePath) && !overwrite)                
                 return;
 
             using (System.IO.StreamWriter file =
-            new System.IO.StreamWriter(filePath, true))
+            new System.IO.StreamWriter(filePath, false))
             {
                 file.WriteLine("# Config file of Start with Base mod");
                 file.WriteLine("# here you can setup custom values");
@@ -500,11 +635,12 @@ namespace StartWithBase
                 file.WriteLine("LampStyle = "+ curLampStyle);
                 file.WriteLine("TorchStyle = "+ curTorchStyle);
                 file.WriteLine("FurnitureCraftingItemType = "+ curFurnitureCraftingItemType);
+                file.WriteLine("PlatformCraftingItemType = " + curPlatformCraftingItemType);
             }
-
+            
         }
 
-        public void SetToFurniture(StyleSetting ss)
+        public static void SetToFurniture(StyleSetting ss)
         {
             curPlatformStyle = ss.PlatformStyle;
             curLanternStyle = ss.LanternStyle;
@@ -512,18 +648,29 @@ namespace StartWithBase
             curWorkBenchStyle = ss.WorkBenchStyle;
             curLampStyle = ss.LampStyle;
             curTorchStyle = ss.TorchStyle;
-            curFurnitureCraftingItemType = ss.FurnitureCraftingItem;
+            curFurnitureCraftingItemType = ss.FurnitureCraftingItem;            
+
+
         }
-        public void SetToWall(WallSetting ws)
+        public static void SetToWall(WallSetting ws)
         {
             curWallType = (byte)ws.WallID;
             curWallItemType = ws.ItemIDofWallType;
         }
 
-        public void SetToTiles(TileSetting ts)
+        public static void SetToTiles(TileSetting ts)
         {
             curTileType = (ushort)ts.TileID;
             curTileItemType = ts.ItemID;
+        }
+        public static void SetToLantern(LanternSetting ls)
+        {
+            curLanternStyle = (ushort)ls.LanternStyle;               
+        }
+        public static void SetToPlatform(PlatformSetting ps)
+        {
+            curPlatformStyle = (ushort)ps.PlatformStyle;
+            curPlatformCraftingItemType = ps.PlatformCraftingItem;
         }
 
         const int stackSize = 42;
@@ -538,6 +685,9 @@ namespace StartWithBase
             Main.chest[cid].item[2].SetDefaults(curWallItemType);            
             Main.chest[cid].item[2].stack = stackSize;
             if (Main.chest[cid].item[2].value > 99) Main.chest[cid].item[2].stack = 0;
+            Main.chest[cid].item[3].SetDefaults(curPlatformCraftingItemType);
+            Main.chest[cid].item[3].stack = stackSize;
+            if (Main.chest[cid].item[3].value > 99) Main.chest[cid].item[3].stack = 0;
 
         }
 
@@ -615,7 +765,7 @@ namespace StartWithBase
             cy -= groundBaseHight;
 
 
-            ClearField(groundBaseHight + 4 * floorsNeeded + 7 * extraStorageFloor + +(extend ? 7 : 0) , 2 + (extend?7:0));
+            ClearField(groundBaseHight + 4 * floorsNeeded + 7 * extraStorageFloor +(extend ? 7 : 0) , 2 + (extend?7+4:0));
 
             DrawBase3(floorsNeeded, extraStorageFloor);
         }
@@ -642,7 +792,7 @@ namespace StartWithBase
             cy -= translateY;
             int spaceXneeded = floorsNeeded * 8;
 
-            ClearField(translateY, (spaceXneeded+1/2) + 2);
+            ClearField(translateY, ((spaceXneeded+1)/2) + 2);
             cx++;
 
             DrawBase4(floorsNeeded);
@@ -699,7 +849,7 @@ namespace StartWithBase
         }
 
 
-        bool extend = false;
+        static bool extend = false;
       
         public void DrawBase3(int extraFloors, int extraStorageFloor)
         {
@@ -1494,10 +1644,14 @@ namespace StartWithBase
 
         }
 
+        int ropeX, ropeY;
+
         public void RopeToGround(int x, int y)
         {
+            ropeX = x;
+            ropeY = y;
             int rope = 0;
-            while ((!Main.tile[x, y + rope].active() || rope < 5))
+            while ((!Main.tile[x, y + rope].active() || (Main.tile[x, y + rope].active() && Main.tile[x, y + rope].type == TileID.Trees) || rope < 5))
             {
                 WorldGen.PlaceTile(x, y + rope++, TileID.Rope, true, true, -1, 0);
             }
@@ -1838,21 +1992,23 @@ namespace StartWithBase
 
                 int stfx = startX;
                 int stfy = startY + 13;
-                               
+
 
                 while (extraFloors-- > 0)
                 {
                     cy = stfy;
-                    if (extraFloors % 2 == 0)
-                    {
-                        cx = stfx - 8 * (((extraFloorsParam+1)/2) - (extraFloors / 2));
-                        DrawAObject(floor);
-                    }
-                    else
-                    {
-                        cx = stfx + 30 + 8 * (((extraFloorsParam)/2) - (extraFloors / 2));
-                        DrawAObject(floor, false);
-                    }
+                    //if (extraFloors % 2 == 0)
+                    //{
+                    cx = stfx - 8 * (((extraFloorsParam + 1) / 2) - (extraFloors / 2));
+                    DrawAObject(floor);
+                    //}
+                    // else
+                    //{
+                    cy = stfy;// added // for sym
+                    cx = stfx + 30 + 8 * (((extraFloorsParam+1) / 2) - (extraFloors / 2));//+1 for sym
+                    DrawAObject(floor, false);
+                    //}
+                    extraFloors--;// added // for sym
                 }
                 cx = startX;
                 cy = startY;
@@ -1886,22 +2042,42 @@ namespace StartWithBase
                                                           "1B8p1e1c1e1p1c1e1h1b7e1p1b4e8p1B|" +
                                                           "1B8e1b2e1p3e1b7e1p1c3e1b8e1B|" +
                                                           "1B8e4b1p1e1w7e1p4e1b8e1B|" +
-                                                          "1B8p1b3e2b9p6b8p1B");
+                                                          (extraFloorsParam == 0? "1B3e1b4p1b3e4b5p8b4p1b3e1B" : "1B8p1b3e2b9p6b8p1B"));//it does not overwrite platform with empty /todo remove
 
 
             DrawAObject(innerbase);
-            cy--; //overwrite bot lane
+            
 
-            DrawObjectTask maininnertop = new DrawObjectTask("1B4b4p1b3e4b5p8b4p4b1B|" +
+            DrawObjectTask maininnertop;
+
+            if (extraFloorsParam == 0)
+            {
+                cy-=4; //overwrite bot floor
+
+                maininnertop = new DrawObjectTask("1B4b4p3e1p3e1b7e1p1b4e4p4b1B|" +
+                                                          "1B1h1w1b4e1b2e1p3e1b7e1p4e1b4e1b1w1h1B|" +
+                                                          "1B1e3b4e4b1pae1p4e1b4e3b1e1B|" +
+                                                          "1B3e1b4p1b3e4b5p8b4p1b3e1B|" +
+                                                          "1B3e1b4e1pje1p4e1b3e1B|" +
+                                                          "1B3e1c4e1pje1p4e1c3e1B|" +
+                                                          "1B8e1pje1p8e1B|" +
+                                                          "1B4btp4b1B");
+            }
+            else
+            {
+                cy--; //overwrite bot lane
+                maininnertop = new DrawObjectTask("1B4b4p1b3e4b5p8b4p4b1B|" +
                                                           "1c3e1b4e1pje1p4e1b3e1c|" +
                                                           "4e1h4e1pje1p4e1h4e|" +
                                                           "1b8e1pje1p8e1b|" +
                                                           "1B4btp4b1B");
+            }
             DrawAObject(maininnertop);
 
             
             if (extraFloorsParam == 0)
-            {              
+            {      
+                /*
                 WorldGen.PlaceTile(cx-1, cy-4, curTileType, true, true, -1, 0);
                 WorldGen.PlaceTile(cx - 1, cy - 5, curTileType, true, true, -1, 0);
                 WorldGen.PlaceTile(cx-3, cy - 2, curTileType, true, true, -1, 0);
@@ -1916,7 +2092,7 @@ namespace StartWithBase
                 Fill(cx+39 , cy - 1, 3, 1, -1, curTileType);
                 Fill(cx+39 , cy - 3, 3, 1, -1, curTileType);
                 Fill(cx+39 , cy - 2, 2, 1, curWallType);
-                WorldGen.PlaceTile(cx + 39, cy - 2, TileID.WorkBenches, true, true, -1, curWorkBenchStyle);
+                WorldGen.PlaceTile(cx + 39, cy - 2, TileID.WorkBenches, true, true, -1, curWorkBenchStyle);*/
             }else
             {
                 WorldGen.PlaceTile(cx - 3, cy - 2, TileID.Platforms, true, true, -1, curPlatformStyle);
@@ -1938,7 +2114,7 @@ namespace StartWithBase
                                                              "1B6b1p9b5p9b1p1b1p4b1B|" +
                                                              "1B6e1b2e1h1c4e1b5e1b4e1c1h2e1b1e1b4e1B|"+
                                                              "1Bfe1b5e1bfe1B|"+
-                                                             "1B8e1w6b5e6b1w8e1B|"+
+                                                             "1B8e1w6b1p3e1p6b1w8e1B|"+
                                                              "1Bbb4e1h5e1h4ebb1B|"+
                                                              "1E1pFe1p1E|" +
                                                              "1E1pFe1p1E|" +
@@ -1972,7 +2148,7 @@ namespace StartWithBase
             else
             {
                 int diffxl = 8 * ((extraFloorsParam + 1) / 2);
-                int diffxr = 8 * ((extraFloorsParam ) / 2);
+                int diffxr = 8 * ((extraFloorsParam + 1) / 2);//+1 for sym
 
                 WorldGen.PlaceTile(cx - diffxl, cy - 18, curTileType, true, true);
                 WorldGen.PlaceObject(cx - diffxl, cy - 17, TileID.TallGateOpen, true);
@@ -2278,9 +2454,6 @@ namespace StartWithBase
 
 
 
-
-
-
         public void DrawATask(DrawTask task, bool goRightDirec = true )
         {
             int dir = goRightDirec ? 1 : -1;
@@ -2435,52 +2608,101 @@ namespace StartWithBase
             }
         }
 
-        public void PlaceAllItems()
+
+        private bool canPlaceC(int x, int y)
         {
-            int x = Main.spawnTileX - 20;
-            int y = Main.spawnTileY - 20;
-           
-            int chestNum = NewChest(x, y);
+            y--;
 
-            int ci = 0;
-            int xc = 0;
-            for (int i = 0; i < ItemLoader.ItemCount; i++)
-            {
-                Main.chest[chestNum].item[ci].SetDefaults(i);
-                Main.chest[chestNum].item[ci].stack = Main.chest[chestNum].item[ci].maxStack;
-                ci++;
-                if (ci == 40)
-                {
-                    ci = 0;
-                    x += 2;
-                    xc++;
-                    chestNum = NewChest(x, y);
+            if (Main.tile[x, y ].active() || Main.tile[x+1, y].active() || Main.tile[x, y-1].active() || Main.tile[x+1, y-1].active())
+                return false;
 
-                    if (xc == 25)
-                    {
-                        xc = 0;
-                        x = Main.spawnTileX - 22;
-                        y -= 4;
-                    }
-                }
-            }
+            if(Main.tile[x, y + 1].type == TileID.Platforms && Main.tile[x+1, y + 1].type == TileID.Platforms)
+                return true;
+
+            if ( (Main.tile[x, y + 1].type != TileID.Platforms  && Main.tile[x, y + 1].type != curTileType) ||
+                (Main.tile[x+1, y + 1].type != TileID.Platforms && Main.tile[x+1, y + 1].type != curTileType)  )
+                return false;
             
-        }               
+            if ((Main.tile[x - 1, y ].type == TileID.Chairs || Main.tile[x - 1, y].type == TileID.WorkBenches || Main.tile[x - 1, y].type == TileID.Lamps)
+                  && (Main.tile[x - 1, y -1].type != curTileType && Main.tile[x - 1, y -1].type != TileID.Platforms))
+                    return false;
+            
+            if ((Main.tile[x + 2, y ].type == TileID.Chairs || Main.tile[x + 2, y ].type == TileID.WorkBenches || Main.tile[x + 2, y].type == TileID.Lamps)
+                 && (Main.tile[x + 2, y-1].type != curTileType && Main.tile[x + 2, y-1].type != TileID.Platforms))
+                    return false;
+            
+            if ((Main.tile[x - 2, y ].type == TileID.Chairs || Main.tile[x - 2, y].type == TileID.WorkBenches )
+                 &&(!Main.tile[x - 1, y].active() && Main.tile[x - 1, y].type != TileID.HangingLanterns && Main.tile[x - 1, y].type != TileID.Platforms))
+                    return false;
+            if((Main.tile[x + 3, y ].type == TileID.Chairs || Main.tile[x + 3, y].type == TileID.WorkBenches)
+                &&(!Main.tile[x + 2, y].active() && Main.tile[x + 2, y].type != TileID.HangingLanterns && Main.tile[x + 2, y].type != TileID.Platforms))
+                    return false;
 
-        public int NewChest(int x, int y)
-        {
-            WorldGen.PlaceWall(x, y, curWallType, true);
-            WorldGen.PlaceTile(x, y, TileID.Platforms, true, true, -1, curPlatformStyle);
-            WorldGen.PlaceTile(x+1, y, TileID.Platforms, true, true, -1, curPlatformStyle);            
-            int chestNum = WorldGen.PlaceChest(x, y - 1, TileID.Containers, false, WorldGen.genRand.Next(5, 22));
-            return chestNum;
+            if (Main.tile[x, y + 2].type == TileID.HolidayLights || Main.tile[x + 1, y + 2].type == TileID.HolidayLights)
+                return false;
+
+            return true;
         }
 
 
+        public void PlaceAllItems()
+        {
+            int x = ropeX;
+            int y = ropeY-5;
+            for (; (Main.tile[x, y-2].active() || Main.tile[x, y-1].wall == curWallType) && y > 75; y--) {
 
-        
+            }            
+            for (; (Main.tile[x - 1, y].active() || Main.tile[x-1, y].wall == curWallType) && x > 75; x--)
+            {
 
+            }x++;
+            int startX = x;
+            
 
+            int i = 0;
+            bool endIt = false;
+
+            for (; !endIt && (Main.tile[x, y].active() || Main.tile[x, y].wall == curWallType || Main.tile[x, y-1].active() || Main.tile[x, y-1].wall == curWallType) && y < Main.maxTilesY - 75; y++)
+            {
+                for (; !endIt && (Main.tile[x, y].active() || Main.tile[x, y].wall == curWallType || Main.tile[x, y - 1].active() || Main.tile[x, y - 1].wall == curWallType) && x < Main.maxTilesX - 75; x++)
+                {
+                    if (canPlaceC(x, y))
+                    {
+                        int chestNum = NewChest(x, y, false);
+                        if (chestNum > 0)
+                        {
+                            for (int ci = 0; ci < 40 && i < ItemLoader.ItemCount; ci++)
+                            {
+                                Main.chest[chestNum].item[ci].SetDefaults(i++);
+                                Main.chest[chestNum].item[ci].stack = Main.chest[chestNum].item[ci].maxStack;
+                            }
+                            x++;
+                        }
+                        if (chestNum == Main.maxChests || i == ItemLoader.ItemCount)
+                        {
+                            endIt = true;
+                            break;
+                        }
+
+                    }
+                }
+                x = startX;
+            }
+                        
+        }
+                             
+
+        public int NewChest(int x, int y, bool doGround = true)
+        {
+            if (doGround)
+            {
+                WorldGen.PlaceWall(x, y, curWallType, true);
+                WorldGen.PlaceTile(x, y, TileID.Platforms, true, true, -1, curPlatformStyle);
+                WorldGen.PlaceTile(x + 1, y, TileID.Platforms, true, true, -1, curPlatformStyle);
+            }
+            int chestNum = WorldGen.PlaceChest(x, y - 1, TileID.Containers, false, WorldGen.genRand.Next(5, 22));
+            return chestNum;
+        }
 
         
 

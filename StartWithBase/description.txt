@@ -1,19 +1,21 @@
+Update! now with GUI !!!
+
 "Start with base" is a small mod which generates a base at the end of world generation. If u are tiered building ur own all the time that mod might work for you. But it won't give you too much.
-You still need to place chests and crafting stations. For NPC flats you don't need to care about.
-It will check how many NPC your mods contain and resize the base accordingly.
+You still need to place chests and crafting stations. Only for NPC flats you don't need to care about anymore.
+It will check how many NPC your active mods contain and resize the base accordingly (only at world gen).
 
 It won't win a design award for good looking :) That's also your part.
-The main concept about this base is to reduce ways to NPC's, crafting stations, chests and a high amount of chest you can quick-stack too (after teleport back).
-Each of those can be done better but with negative effect for the other. If you think you got a better base structure write me in linked page please. (base made for vanilla, might be a better with mods)
+The main concept about this base is to reduce ways to NPC's, crafting stations, chests and a high amount of chest you can quick-stack to (after teleport back).
+Each of those can be done better but with negative effect for the other. If you think you got a better base structure write me in linked page please. (base made for vanilla)
 
-There you can also view how the base will look like at start an how it can look later on.
+There you can also view how the bases look like at start and how they can look later on.
 
 It would be nice if you can also write me your experience during playthrough with this base mod.
 
 Thanks for testing. gl hf!
 
 Update: 
-options for [c/88CC88:alternative tiles and base structure] to compare with. Enter at the end of world name.
+alternative tiles. Enter at the end of world name or use GUI.
 $Ba2 - base with 2 NPC flats as core structure
 $Ba3 - base with 3 NPC flats as core ($b3b for big version, both look if enough space for all mod items)
 $Ba4 - base with 4 .. (useful for many NPC)
@@ -21,6 +23,10 @@ $Ba6 - base with 6 NPC flats as core (credits to Sergo for that)
 $Fpa, Fdy, Fwo, Fgr, Fbo, Fri, Fma ---> changes the furniture material
 $Tha, Tob, Tdy, Two, Tss, Tri, Tbo, Tgr, Tma --> changes the tiles used for flats
 $Wha, Wdg, Wdy, Wwo, Wss, Wdi, Wri, Wbo, Wgr, Wma --> changes the used wall
+$Lho, Lgl, Ldy, Lwo, Lpa, Lbo, Lgr, Wma --> changes the used lantern
+$Ppa, Pri, Pdy, Pwo, Pbo, Pgr, Pma, Pic --> changes the used platform
+
+
 $Sy* - random style of used tiles, predefined $Sy0, $Sy1, $Sy2
 $Cx1 - stores/loads config file which allows you to setup all values as you like
 
@@ -28,6 +34,7 @@ You can combine those, e.g "MyWorldName$Ba3FdyTssWdi" (without quotes) will sele
 more details at linked page
 
 updates:
+0.2.0.0 - now with GUI, lantern, platform option
 0.1.4.4 - custom style and marble style
 0.1.4.2 - base improv
 0.1.4.1 - small fix at npc count
