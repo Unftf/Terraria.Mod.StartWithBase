@@ -136,7 +136,7 @@ namespace StartWithBase
             {"tbo", new TileSetting{ TileID = TileID.BorealWood, ItemID = ItemID.BorealWood} },
             {"tgr", new TileSetting{ TileID = TileID.GraniteBlock, ItemID = ItemID.GraniteBlock} },
             {"tmb", new TileSetting{ TileID = TileID.MarbleBlock, ItemID = ItemID.MarbleBlock} },
-            {"tir", new TileSetting{ TileID = TileID.Dirt, ItemID = ItemID.DirtBlock} },
+            {"tdi", new TileSetting{ TileID = TileID.Dirt, ItemID = ItemID.DirtBlock} },
             {"tst", new TileSetting{ TileID = TileID.Stone, ItemID = ItemID.StoneBlock} },
             {"tme", new TileSetting{ TileID = TileID.MeteoriteBrick, ItemID = ItemID.MeteoriteBrick} },
             {"tcr", new TileSetting{ TileID = TileID.CrystalBlock, ItemID = ItemID.CrystalBlock} },
