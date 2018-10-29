@@ -35,9 +35,11 @@ namespace StartWithBase
         public StartWithBaseUI(UIState uistate, Mod mod)
         {
             FieldInfo field = typeof(UIWorldLoad).GetField("_progressBar", BindingFlags.Instance | BindingFlags.NonPublic);
-            if(field != null)
+            if (field != null)
                 pbar = (UIGenProgressBar)field.GetValue(uistate);
-            
+            else
+                pbar = null;
+
             doNotBuildBase = false;
 
 
