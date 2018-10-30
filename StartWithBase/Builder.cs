@@ -87,7 +87,7 @@ namespace StartWithBase
             {"lcr", new LanternSetting{LanternStyle = 37, ItemID = ItemID.CrystalLantern } },
             {"lma", new LanternSetting{LanternStyle = 33, ItemID = ItemID.MartianLantern } },            
             {"lic", new LanternSetting{LanternStyle = 18, ItemID = ItemID.FrozenLantern } },
-            
+            {"lpw", new LanternSetting{LanternStyle = 17, ItemID = ItemID.Pearlwood } },
          };
 
        
@@ -125,6 +125,7 @@ namespace StartWithBase
             {"wss", new WallSetting{ WallID = WallID.StoneSlab, ItemIDofWallType = ItemID.StoneSlabWall} },
             {"wsb", new WallSetting{ WallID = WallID.SandstoneBrick, ItemIDofWallType = ItemID.SandstoneBrickWall} },                        
             {"wob", new WallSetting{ WallID = WallID.ObsidianBrick, ItemIDofWallType = ItemID.ObsidianBrickWall} },
+            {"wpw", new WallSetting{ WallID = WallID.PearlstoneBrick, ItemIDofWallType = ItemID.PearlstoneBrickWall} },
          };
         public Dictionary<string, TileSetting> TileTypeDict = new Dictionary<string, TileSetting>
             {
@@ -145,6 +146,7 @@ namespace StartWithBase
             {"tss", new TileSetting{ TileID = TileID.StoneSlab, ItemID = ItemID.StoneSlab} },
             {"tsb", new TileSetting{ TileID = TileID.SandstoneBrick, ItemID = ItemID.SandstoneBrick} },            
             {"tob", new TileSetting{ TileID = TileID.ObsidianBrick, ItemID = ItemID.ObsidianBrick} },
+            {"tpw", new TileSetting{ TileID = TileID.PearlstoneBrick, ItemID = ItemID.PearlstoneBrick} },
          };
 
 
