@@ -2689,7 +2689,6 @@ namespace StartWithBase
         {
             //crap code ahead
             int tryagain = 4;
-
             int x;
             int y;
             int startX;
