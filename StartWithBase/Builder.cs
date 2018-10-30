@@ -87,7 +87,7 @@ namespace StartWithBase
             {"lcr", new LanternSetting{LanternStyle = 37, ItemID = ItemID.CrystalLantern } },
             {"lma", new LanternSetting{LanternStyle = 33, ItemID = ItemID.MartianLantern } },            
             {"lic", new LanternSetting{LanternStyle = 18, ItemID = ItemID.FrozenLantern } },
-            {"lpw", new LanternSetting{LanternStyle = 17, ItemID = ItemID.Pearlwood } },
+            {"lpw", new LanternSetting{LanternStyle = 17, ItemID = ItemID.PearlwoodLantern } },
          };
 
        
