@@ -2656,6 +2656,8 @@ namespace StartWithBase
 
             if (Main.tile[x, y + 1].type == TileID.Platforms && Main.tile[x + 1, y + 1].type == TileID.Platforms)
                 return true;
+            if (Main.tile[x-1, y].type == TileID.Containers || Main.tile[x + 2, y].type == TileID.Containers)
+                return true;
 
             if ((Main.tile[x, y + 1].type != TileID.Platforms && Main.tile[x, y + 1].type != curTileType) ||
                 (Main.tile[x + 1, y + 1].type != TileID.Platforms && Main.tile[x + 1, y + 1].type != curTileType))
@@ -2685,29 +2687,55 @@ namespace StartWithBase
 
         public void PlaceAllItems()
         {
-            int x = ropeX;
-            int y = ropeY - 5;
-            for (; (Main.tile[x, y - 2].active() || Main.tile[x, y - 1].wall == curWallType) && y > 75; y--)
-            {
+            //crap code ahead
+            int tryagain = 4;
 
-            }
-            for (; (Main.tile[x - 1, y].active() || Main.tile[x - 1, y].wall == curWallType) && x > 75; x--)
-            {
-
-            }
-            x++;
-            int startX = x;
-
-
+            int x;
+            int y;
+            int startX;
+            int startY;
             int i = 0;
-            bool endIt = false;
+            int xMax = 0;
 
-            for (; !endIt && (Main.tile[x, y].active() || Main.tile[x, y].wall == curWallType || Main.tile[x, y - 1].active() || Main.tile[x, y - 1].wall == curWallType) && y < Main.maxTilesY - 75; y++)
+            FillerV:
+            x = ropeX;
+            y = ropeY - 5;
+
+            for (; (Main.tile[x, y - 2].active() || Main.tile[x, y - 1].wall == curWallType) && y > 75; y--){}
+            y++;
+            for (; (Main.tile[x - 1, y].active() || Main.tile[x - 1, y].wall == curWallType) && x > 75; x--){}
+            x++;
+            startX = x;
+            startY = y;
+
+            FillerH:
+            x = startX;
+            y = startY;
+            
+            bool endIt = false;
+            int k = 5;
+            
+            for (; !endIt && (Main.tile[x, y].active() || Main.tile[x, y].wall == curWallType || Main.tile[x, y - 1].active() || Main.tile[x, y - 1].wall == curWallType || k > 0) && y < Main.maxTilesY - 75 ; y++)
             {
-                for (; !endIt && (Main.tile[x, y].active() || Main.tile[x, y].wall == curWallType || Main.tile[x, y - 1].active() || Main.tile[x, y - 1].wall == curWallType) && x < Main.maxTilesX - 75; x++)
+                if (!(Main.tile[x, y].active() || Main.tile[x, y].wall == curWallType || Main.tile[x, y - 1].active() || Main.tile[x, y - 1].wall == curWallType))
+                    k--;
+
+                x = startX;
+                for (; (Main.tile[x-1, y].active() || Main.tile[x-1, y].wall == curWallType) && x > 75; x--)
                 {
+
+                }
+                startX = Math.Min(x++, startX);
+                x = startX;
+                int l = 4;
+                for (; !endIt && (Main.tile[x, y].active() || Main.tile[x, y].wall == curWallType || Main.tile[x, y - 1].active() || Main.tile[x, y - 1].wall == curWallType || x < xMax || l>0) && x < Main.maxTilesX - 75; x++)
+                {
+                    if (!(Main.tile[x, y].active() || Main.tile[x, y].wall == curWallType || Main.tile[x, y - 1].active() || Main.tile[x, y - 1].wall == curWallType || x < xMax))
+                        l--;
+
                     if (canPlaceC(x, y))
                     {
+                        k = 5;l = 4;
                         int chestNum = NewChest(x, y, false);
                         if (chestNum > 0)
                         {
@@ -2717,7 +2745,7 @@ namespace StartWithBase
                                 Main.chest[chestNum].item[ci].stack = Main.chest[chestNum].item[ci].maxStack;
                             }
                             x++;
-                        }
+                        }                        
                         if (chestNum == Main.maxChests || i == ItemLoader.ItemCount)
                         {
                             endIt = true;
@@ -2726,8 +2754,33 @@ namespace StartWithBase
 
                     }
                 }
+                xMax = x;
                 x = startX;
             }
+            
+
+            if(i< ItemLoader.ItemCount && tryagain>0)
+            {
+                tryagain--;
+                if (tryagain % 2 == 0)
+                {
+                    goto FillerV;
+
+                }
+
+                x = ropeX;
+                y = ropeY - 5;
+                for (; (Main.tile[x - 1, y].active() || Main.tile[x - 1, y].wall == curWallType) && x > 75; x--) { }
+                x++;
+                for (; (Main.tile[x, y - 2].active() || Main.tile[x, y - 1].wall == curWallType) && y > 75; y--) { }
+                y++;
+                startX = x;
+                startY = y;
+                
+                goto FillerH;
+
+            }
+
 
         }
 
