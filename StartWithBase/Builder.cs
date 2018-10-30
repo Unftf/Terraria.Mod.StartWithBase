@@ -36,7 +36,7 @@ namespace StartWithBase
         public int curTileItemType = ItemID.Hay;
         public byte curWallType = WallID.Hay;
         public int curWallItemType = ItemID.HayWall;
-        public int curLanternItemTyp = ItemID.ChainLantern;
+        
 
         int curStyle = 17;
 
@@ -48,8 +48,11 @@ namespace StartWithBase
         public int curWorkBenchStyle = 22;
         int curLampStyle = 0;
         int curTorchStyle = 0;
-        int curFurnitureCraftingItemType = ItemID.PalmWood;
-        int curPlatformCraftingItemType = ItemID.PalmWood;
+        int curChairItemType = ItemID.PalmWoodChair;
+        int curWorkBenchItemType = ItemID.PalmWoodWorkBench;
+        public int curLanternItemType = ItemID.ChainLantern;
+        int curLampItemType = ItemID.PalmWoodLamp;
+        int curPlatformItemType = ItemID.PalmWoodPlatform;
 
 
         int cx, cy;
@@ -57,37 +60,39 @@ namespace StartWithBase
 
         public Dictionary<string, StyleSetting> styleTypeDict = new Dictionary<string, StyleSetting>
             {
-            {"fpa", new StyleSetting{ PlatformStyle = 17, LanternStyle = 27, ChairStyle = 29, WorkBenchStyle = 22, LampStyle = 18, TorchStyle = 0, FurnitureCraftingItem = ItemID.PalmWood, ItemID = ItemID.PalmWoodWorkBench } },
-            {"fdy", new StyleSetting{ PlatformStyle = 32, LanternStyle = 26, ChairStyle = 27, WorkBenchStyle = 18, LampStyle = 17, TorchStyle = 0, FurnitureCraftingItem = ItemID.DynastyWood, ItemID = ItemID.DynastyWorkBench } },
-            {"fwo", new StyleSetting{ PlatformStyle = 0, LanternStyle = 22, ChairStyle = 0, WorkBenchStyle = 0, LampStyle = 0, TorchStyle = 0, FurnitureCraftingItem = ItemID.Wood, ItemID = ItemID.WorkBench } },
-            {"fri", new StyleSetting{ PlatformStyle = 2, LanternStyle = 16, ChairStyle = 3, WorkBenchStyle = 2, LampStyle = 6, TorchStyle = 0, FurnitureCraftingItem = ItemID.RichMahogany, ItemID = ItemID.RichMahoganyWorkBench} },            
-            {"fbo", new StyleSetting{ PlatformStyle = 19, LanternStyle = 29, ChairStyle = 30, WorkBenchStyle = 23, LampStyle = 20, TorchStyle = 0, FurnitureCraftingItem = ItemID.BorealWood, ItemID = ItemID.BorealWoodWorkBench } },
-            {"fgr", new StyleSetting{ PlatformStyle = 28, LanternStyle = 35, ChairStyle = 34, WorkBenchStyle = 29, LampStyle = 29, TorchStyle = 0, FurnitureCraftingItem = ItemID.GraniteBlock, ItemID = ItemID.GraniteWorkBench } },
-            {"fmb", new StyleSetting{ PlatformStyle = 29, LanternStyle = 36, ChairStyle = 35, WorkBenchStyle = 30, LampStyle = 30, TorchStyle = 0, FurnitureCraftingItem = ItemID.MarbleBlock, ItemID = ItemID.MarbleWorkBench} },
-            {"fme", new StyleSetting{ PlatformStyle = 27, LanternStyle = 34, ChairStyle = 33, WorkBenchStyle = 28, LampStyle = 28, TorchStyle = 0, FurnitureCraftingItem = ItemID.MeteoriteBrick, ItemID = ItemID.MeteoriteWorkBench} },
-            {"fcr", new StyleSetting{ PlatformStyle = 30, LanternStyle = 37, ChairStyle = 36, WorkBenchStyle = 31, LampStyle = 31, TorchStyle = 0, FurnitureCraftingItem = ItemID.CrystalBlock, ItemID = ItemID.CrystalWorkbench} },            
-            {"fma", new StyleSetting{ PlatformStyle = 26, LanternStyle = 33, ChairStyle = 32, WorkBenchStyle = 27, LampStyle = 27, TorchStyle = 0, FurnitureCraftingItem = ItemID.MartianConduitPlating, ItemID = ItemID.MartianWorkBench} },
+            {"fpa", new StyleSetting{ PlatformStyle = 17, LanternStyle = 27, ChairStyle = 29, WorkBenchStyle = 22, LampStyle = 18, TorchStyle = 0, ItemIDChair = ItemID.PalmWoodChair, ItemIDWorkBench = ItemID.PalmWoodWorkBench, ItemIDLantern = ItemID.PalmWoodLantern, ItemIDLamp = ItemID.PalmWoodLamp, ItemIDPlatform = ItemID.PalmWoodPlatform } },
+            {"fdy", new StyleSetting{ PlatformStyle = 32, LanternStyle = 26, ChairStyle = 27, WorkBenchStyle = 18, LampStyle = 17, TorchStyle = 0, ItemIDChair = ItemID.DynastyChair, ItemIDWorkBench = ItemID.DynastyWorkBench, ItemIDLantern = ItemID.DynastyLantern, ItemIDLamp = ItemID.DynastyLamp, ItemIDPlatform = ItemID.DynastyPlatform } },
+            {"fwo", new StyleSetting{ PlatformStyle = 0, LanternStyle = 22, ChairStyle = 0, WorkBenchStyle = 0, LampStyle = 0, TorchStyle = 0, ItemIDChair = ItemID.WoodenChair, ItemIDWorkBench = ItemID.WorkBench, ItemIDLantern = ItemID.LivingWoodLantern, ItemIDLamp = ItemID.TikiTorch, ItemIDPlatform = ItemID.WoodPlatform } },
+            {"fri", new StyleSetting{ PlatformStyle = 2, LanternStyle = 16, ChairStyle = 3, WorkBenchStyle = 2, LampStyle = 6, TorchStyle = 0, ItemIDChair = ItemID.RichMahoganyChair, ItemIDWorkBench = ItemID.RichMahoganyWorkBench, ItemIDLantern = ItemID.RichMahoganyLantern, ItemIDLamp = ItemID.RichMahoganyLamp, ItemIDPlatform = ItemID.RichMahoganyPlatform } },
+            {"fbo", new StyleSetting{ PlatformStyle = 19, LanternStyle = 29, ChairStyle = 30, WorkBenchStyle = 23, LampStyle = 20, TorchStyle = 0, ItemIDChair = ItemID.BorealWoodChair, ItemIDWorkBench = ItemID.BorealWoodWorkBench, ItemIDLantern = ItemID.BorealWoodLantern, ItemIDLamp = ItemID.BorealWoodLamp, ItemIDPlatform = ItemID.BorealWoodPlatform } },
+            {"fgr", new StyleSetting{ PlatformStyle = 28, LanternStyle = 35, ChairStyle = 34, WorkBenchStyle = 29, LampStyle = 29, TorchStyle = 0, ItemIDChair = ItemID.GraniteChair, ItemIDWorkBench = ItemID.GraniteWorkBench, ItemIDLantern = ItemID.GraniteLantern, ItemIDLamp = ItemID.GraniteLamp, ItemIDPlatform = ItemID.GranitePlatform } },
+            {"fmb", new StyleSetting{ PlatformStyle = 29, LanternStyle = 36, ChairStyle = 35, WorkBenchStyle = 30, LampStyle = 30, TorchStyle = 0, ItemIDChair = ItemID.MarbleChair, ItemIDWorkBench = ItemID.MarbleWorkBench, ItemIDLantern = ItemID.MarbleLantern, ItemIDLamp = ItemID.MarbleLamp, ItemIDPlatform = ItemID.MarblePlatform } },
+            {"fme", new StyleSetting{ PlatformStyle = 27, LanternStyle = 34, ChairStyle = 33, WorkBenchStyle = 28, LampStyle = 28, TorchStyle = 0, ItemIDChair = ItemID.MeteoriteChair, ItemIDWorkBench = ItemID.MeteoriteWorkBench, ItemIDLantern = ItemID.MeteoriteLantern, ItemIDLamp = ItemID.MeteoriteLamp, ItemIDPlatform = ItemID.MeteoritePlatform } },
+            {"fcr", new StyleSetting{ PlatformStyle = 30, LanternStyle = 37, ChairStyle = 36, WorkBenchStyle = 31, LampStyle = 31, TorchStyle = 0, ItemIDChair = ItemID.CrystalChair, ItemIDWorkBench = ItemID.CrystalWorkbench, ItemIDLantern = ItemID.CrystalLantern, ItemIDLamp = ItemID.CrystalLamp, ItemIDPlatform = ItemID.CrystalPlatform } },
+            {"fma", new StyleSetting{ PlatformStyle = 26, LanternStyle = 33, ChairStyle = 32, WorkBenchStyle = 27, LampStyle = 27, TorchStyle = 0, ItemIDChair = ItemID.MartianHoverChair, ItemIDWorkBench = ItemID.MartianWorkBench, ItemIDLantern = ItemID.MartianLantern, ItemIDLamp = ItemID.MartianLamppost, ItemIDPlatform = ItemID.MartianPlatform } },
+            {"fpe", new StyleSetting{ PlatformStyle = 3, LanternStyle = 17, ChairStyle = 4, WorkBenchStyle = 3, LampStyle = 7, TorchStyle = 0, ItemIDChair = ItemID.PearlwoodChair, ItemIDWorkBench = ItemID.PearlwoodWorkBench, ItemIDLantern = ItemID.PearlwoodLantern, ItemIDLamp = ItemID.PearlwoodLamp, ItemIDPlatform = ItemID.PearlwoodPlatform } },
          };
         public Dictionary<string, LanternSetting> lanternTypeDict = new Dictionary<string, LanternSetting>
             {
-            {"lho", new LanternSetting{LanternStyle = 13, ItemID = ItemID.HoneyLantern } },
-            {"lpa", new LanternSetting{LanternStyle = 27, ItemID = ItemID.PalmWoodLantern } },
-            {"ldy", new LanternSetting{LanternStyle = 26, ItemID = ItemID.DynastyLantern } },
-            {"lwo", new LanternSetting{LanternStyle = 22, ItemID = ItemID.LivingWoodLantern } },
-            {"lgl", new LanternSetting{LanternStyle = 15, ItemID = ItemID.GlassLantern } },
-            {"lsk", new LanternSetting{LanternStyle = 20, ItemID = ItemID.SkywareLantern } },
-            {"lst", new LanternSetting{LanternStyle = 14, ItemID = ItemID.SteampunkLantern } },
-            {"lri", new LanternSetting{LanternStyle = 16, ItemID = ItemID.RichMahoganyLantern } },            
-            {"lbo", new LanternSetting{LanternStyle = 29, ItemID = ItemID.BorealWoodLantern } },                        
-            {"lgr", new LanternSetting{LanternStyle = 35, ItemID = ItemID.GraniteLantern } },
-            {"lca", new LanternSetting{LanternStyle = 10, ItemID = ItemID.CactusLantern } },            
-            {"lmb", new LanternSetting{LanternStyle = 36, ItemID = ItemID.MarbleLantern } },
-            {"lsl", new LanternSetting{LanternStyle = 30, ItemID = ItemID.SlimeLantern } },
-            {"lme", new LanternSetting{LanternStyle = 34, ItemID = ItemID.MeteoriteLantern } },
-            {"lcr", new LanternSetting{LanternStyle = 37, ItemID = ItemID.CrystalLantern } },
-            {"lma", new LanternSetting{LanternStyle = 33, ItemID = ItemID.MartianLantern } },            
-            {"lic", new LanternSetting{LanternStyle = 18, ItemID = ItemID.FrozenLantern } },
-            {"lpw", new LanternSetting{LanternStyle = 17, ItemID = ItemID.PearlwoodLantern } },
+            {"lho", new LanternSetting{LanternStyle = 13, LampStyle = 11, ItemIDLantern = ItemID.HoneyLantern, ItemIDLamp = ItemID.HoneyLamp } },
+            {"lpa", new LanternSetting{LanternStyle = 27, LampStyle = 18, ItemIDLantern = ItemID.PalmWoodLantern, ItemIDLamp = ItemID.PalmWoodLamp } },
+            {"ldy", new LanternSetting{LanternStyle = 26, LampStyle = 17, ItemIDLantern = ItemID.DynastyLantern, ItemIDLamp = ItemID.DynastyLamp } },
+            {"lwo", new LanternSetting{LanternStyle = 22, LampStyle = 13, ItemIDLantern = ItemID.LivingWoodLantern, ItemIDLamp = ItemID.LivingWoodLamp } },
+            {"lgl", new LanternSetting{LanternStyle = 15, LampStyle = 4, ItemIDLantern = ItemID.GlassLantern, ItemIDLamp = ItemID.GlassLamp } },
+            {"lsk", new LanternSetting{LanternStyle = 20, LampStyle = 9, ItemIDLantern = ItemID.SkywareLantern, ItemIDLamp = ItemID.SkywareLamp } },
+            {"lst", new LanternSetting{LanternStyle = 14, LampStyle = 12, ItemIDLantern = ItemID.SteampunkLantern, ItemIDLamp = ItemID.SteampunkLamp } },
+            {"lri", new LanternSetting{LanternStyle = 16, LampStyle = 6, ItemIDLantern = ItemID.RichMahoganyLantern, ItemIDLamp = ItemID.RichMahoganyLamp } },            
+            {"lbo", new LanternSetting{LanternStyle = 29, LampStyle = 20, ItemIDLantern = ItemID.BorealWoodLantern, ItemIDLamp = ItemID.BorealWoodLamp } },                        
+            {"lgr", new LanternSetting{LanternStyle = 35, LampStyle = 29, ItemIDLantern = ItemID.GraniteLantern, ItemIDLamp = ItemID.GraniteLamp } },
+            {"lca", new LanternSetting{LanternStyle = 10, LampStyle = 1, ItemIDLantern = ItemID.CactusLantern, ItemIDLamp = ItemID.CactusLamp } },            
+            {"lmb", new LanternSetting{LanternStyle = 36, LampStyle = 30, ItemIDLantern = ItemID.MarbleLantern, ItemIDLamp = ItemID.MarbleLamp } },
+            {"lsl", new LanternSetting{LanternStyle = 30, LampStyle = 21, ItemIDLantern = ItemID.SlimeLantern, ItemIDLamp = ItemID.SlimeLamp } },
+            {"lme", new LanternSetting{LanternStyle = 34, LampStyle = 28, ItemIDLantern = ItemID.MeteoriteLantern, ItemIDLamp = ItemID.MeteoriteLamp } },
+            {"lcr", new LanternSetting{LanternStyle = 37, LampStyle = 31, ItemIDLantern = ItemID.CrystalLantern, ItemIDLamp = ItemID.CrystalLamp } },
+            {"lma", new LanternSetting{LanternStyle = 33, LampStyle = 27, ItemIDLantern = ItemID.MartianLantern, ItemIDLamp = ItemID.MartianLamppost } },            
+            {"lic", new LanternSetting{LanternStyle = 18, LampStyle = 5, ItemIDLantern = ItemID.FrozenLantern, ItemIDLamp = ItemID.FrozenLamp } },
+            {"lpw", new LanternSetting{LanternStyle = 17, LampStyle = 7, ItemIDLantern = ItemID.PearlwoodLantern, ItemIDLamp = ItemID.PearlwoodLamp } },
+            {"ldu", new LanternSetting{LanternStyle = 0,  LampStyle = 0, ItemIDLantern = ItemID.ChainLantern, ItemIDLamp = ItemID.TikiTorch } },
          };
 
        
@@ -169,9 +174,12 @@ namespace StartWithBase
             public int ChairStyle { get; set; }
             public int WorkBenchStyle { get; set; }
             public int LampStyle { get; set; }
-            public int TorchStyle { get; set; }
-            public int FurnitureCraftingItem { get; set; }
-            public int ItemID { get; set; }
+            public int TorchStyle { get; set; }            
+            public int ItemIDChair { get; set; }
+            public int ItemIDWorkBench { get; set; }
+            public int ItemIDLantern { get; set; }
+            public int ItemIDLamp { get; set; }
+            public int ItemIDPlatform { get; set; }
         }
         public class WallSetting
         {
@@ -187,7 +195,9 @@ namespace StartWithBase
         public class LanternSetting
         {
             public int LanternStyle { get; set; }
-            public int ItemID { get; set; }
+            public int LampStyle { get; set; }
+            public int ItemIDLantern { get; set; }
+            public int ItemIDLamp { get; set; }
         }
 
         public class PlatformSetting
@@ -619,10 +629,16 @@ namespace StartWithBase
                     curLampStyle = Int32.Parse(value);
                 else if (name.Equals("TorchStyle"))
                     curTorchStyle = Int32.Parse(value);
-                else if (name.Equals("FurnitureCraftingItemType"))
-                    curFurnitureCraftingItemType = Int32.Parse(value);
-                else if (name.Equals("PlatformCraftingItemType"))
-                    curPlatformCraftingItemType = Int32.Parse(value);
+                else if (name.Equals("ChairItemType"))
+                    curChairItemType = Int32.Parse(value);
+                else if (name.Equals("WorkBenchItemType"))
+                    curWorkBenchItemType = Int32.Parse(value);
+                else if (name.Equals("LanternItemType"))
+                    curLanternItemType = Int32.Parse(value);
+                else if (name.Equals("LampItemType"))
+                    curLampItemType = Int32.Parse(value);
+                else if (name.Equals("PlatformItemType"))
+                    curPlatformItemType = Int32.Parse(value);
 
             }
 
@@ -673,8 +689,11 @@ namespace StartWithBase
                 file.WriteLine("WorkBenchStyle = " + curWorkBenchStyle);
                 file.WriteLine("LampStyle = " + curLampStyle);
                 file.WriteLine("TorchStyle = " + curTorchStyle);
-                file.WriteLine("FurnitureCraftingItemType = " + curFurnitureCraftingItemType);
-                file.WriteLine("PlatformCraftingItemType = " + curPlatformCraftingItemType);
+                file.WriteLine("ChairItemType = " + curChairItemType);
+                file.WriteLine("WorkBenchItemType = " + curWorkBenchItemType);
+                file.WriteLine("LanternItemType = " + curLanternItemType);
+                file.WriteLine("LampItemType = " + curLampItemType);
+                file.WriteLine("PlatformItemType = " + curPlatformItemType);
             }
 
         }
@@ -687,8 +706,12 @@ namespace StartWithBase
             curWorkBenchStyle = ss.WorkBenchStyle;
             curLampStyle = ss.LampStyle;
             curTorchStyle = ss.TorchStyle;
-            curFurnitureCraftingItemType = ss.FurnitureCraftingItem;
 
+            curChairItemType = ss.ItemIDChair;
+            curWorkBenchItemType = ss.ItemIDWorkBench;
+            curLanternItemType = ss.ItemIDLantern;
+            curLampItemType = ss.ItemIDLamp;
+            curPlatformItemType = ss.ItemIDPlatform;
 
         }
         public void SetToWall(WallSetting ws)
@@ -705,28 +728,48 @@ namespace StartWithBase
         public void SetToLantern(LanternSetting ls)
         {
             curLanternStyle = (ushort)ls.LanternStyle;
+            curLanternItemType = ls.ItemIDLantern;
+            if (curLanternItemType != ItemID.ChainLantern && curLanternItemType != ItemID.LivingWoodLantern)
+            {
+                curLampStyle = (ushort)ls.LampStyle;
+                curLampItemType = ls.ItemIDLamp;
+            }
         }
         public void SetToPlatform(PlatformSetting ps)
         {
             curPlatformStyle = (ushort)ps.PlatformStyle;
-            curPlatformCraftingItemType = ps.ItemID;
+            curPlatformItemType = ps.ItemID;
         }
 
         const int stackSize = 42;
+        const int stackSizeFur = 2;
+        const int stackSizePlat = 23;
         public void SetUpChest(int cid)
         {
-            Main.chest[cid].item[0].SetDefaults(curFurnitureCraftingItemType);
-            Main.chest[cid].item[0].stack = stackSize;
-            if (Main.chest[cid].item[0].value > 99) Main.chest[cid].item[0].stack = 0;
-            Main.chest[cid].item[1].SetDefaults(curTileItemType);
-            Main.chest[cid].item[1].stack = stackSize;
-            if (Main.chest[cid].item[1].value > 99) Main.chest[cid].item[1].stack = 0;
-            Main.chest[cid].item[2].SetDefaults(curWallItemType);
-            Main.chest[cid].item[2].stack = stackSize;
-            if (Main.chest[cid].item[2].value > 99) Main.chest[cid].item[2].stack = 0;
-            Main.chest[cid].item[3].SetDefaults(curPlatformCraftingItemType);
-            Main.chest[cid].item[3].stack = stackSize;
-            if (Main.chest[cid].item[3].value > 99) Main.chest[cid].item[3].stack = 0;
+            int cs = 0;
+
+            Main.chest[cid].item[cs].SetDefaults(curChairItemType);
+            Main.chest[cid].item[cs].stack = stackSizeFur;
+            if (Main.chest[cid].item[cs].value > 99) Main.chest[cid].item[cs].stack = 0; cs++;
+            Main.chest[cid].item[cs].SetDefaults(curWorkBenchItemType);
+            Main.chest[cid].item[cs].stack = stackSizeFur;            
+            if (Main.chest[cid].item[cs].value > 150) Main.chest[cid].item[cs].stack = 0; cs++;
+            Main.chest[cid].item[cs].SetDefaults(curLanternItemType);
+            Main.chest[cid].item[cs].stack = stackSizeFur;
+            if (Main.chest[cid].item[cs].value > 99) Main.chest[cid].item[cs].stack = 0; cs++;
+            Main.chest[cid].item[cs].SetDefaults(curLampItemType);
+            Main.chest[cid].item[cs].stack = stackSizeFur;            
+            if (Main.chest[cid].item[cs].value > 500) Main.chest[cid].item[cs].stack = 0; cs++;
+
+            Main.chest[cid].item[cs].SetDefaults(curTileItemType);
+            Main.chest[cid].item[cs].stack = stackSize;
+            if (Main.chest[cid].item[cs].value > 99) Main.chest[cid].item[cs].stack = 0; cs++;
+            Main.chest[cid].item[cs].SetDefaults(curWallItemType);
+            Main.chest[cid].item[cs].stack = stackSize;
+            if (Main.chest[cid].item[cs].value > 99) Main.chest[cid].item[cs].stack = 0; cs++;
+            Main.chest[cid].item[cs].SetDefaults(curPlatformItemType);
+            Main.chest[cid].item[cs].stack = stackSizePlat;
+            if (Main.chest[cid].item[cs].value > 99) Main.chest[cid].item[cs].stack = 0; cs++;
 
         }
 
@@ -1348,7 +1391,7 @@ namespace StartWithBase
 
             int extraFloorsStart = extraFloors;
             int extraStorageFloorStart = extraStorageFloor;
-            while (extraFloors > 0)
+            while (extraFloors > 0 && cy>50)
             {
                 if (extraFloors % 2 == 0)
                 {
@@ -1552,15 +1595,18 @@ namespace StartWithBase
                     DrawLineTask drawLineTask = new DrawLineTask(this);
                     drawLineTask.drawTaskList.Add(new DrawTask(this, curTileType, 6, -1, false));
                     drawLineTask.drawTaskList.Add(new DrawTask(this, TileID.Platforms, 1, curPlatformStyle));
-                    drawLineTask.drawTaskList.Add(new DrawTask(this, -1, 4));
+                    drawLineTask.drawTaskList.Add(new DrawTask(this, -1, 1));
+                    drawLineTask.drawTaskList.Add(new DrawTask(this, TileID.WorkBenches, 1, curWorkBenchStyle));
+                    drawLineTask.drawTaskList.Add(new DrawTask(this, -1, 1));
                     drawLineTask.drawTaskList.Add(new DrawTask(this, TileID.HangingLanterns, 1, curLanternStyle));
                     drawLineTask.drawTaskList.Add(new DrawTask(this, -1, 4));
                     drawLineTask.drawTaskList.Add(new DrawTask(this, curTileType, 1));
                     drawLineTask.drawTaskList.Add(new DrawTask(this, -1, 5));
                     drawLineTask.drawTaskList.Add(new DrawTask(this, curTileType, 1));
-                    drawLineTask.drawTaskList.Add(new DrawTask(this, -1, 4));
+                    drawLineTask.drawTaskList.Add(new DrawTask(this, -1, 4));                    
                     drawLineTask.drawTaskList.Add(new DrawTask(this, TileID.HangingLanterns, 1, curLanternStyle));
-                    drawLineTask.drawTaskList.Add(new DrawTask(this, -1, 5));
+                    drawLineTask.drawTaskList.Add(new DrawTask(this, -1, 3));
+                    drawLineTask.drawTaskList.Add(new DrawTask(this, TileID.WorkBenches, 1, curWorkBenchStyle));
                     drawLineTask.drawTaskList.Add(new DrawTask(this, curTileType, 6, -1, false));
                     basement.drawLineList.Add(drawLineTask);
                 }

@@ -31,6 +31,7 @@ namespace StartWithBase
         UIScalableImageButtton startIcon;
         public bool doNotBuildBase;
         UIGenProgressBar pbar;
+        UIHeader pmes;
         Builder builder;
 
         public StartWithBaseUI(Builder builder, UIState uistate, Mod mod)
@@ -41,6 +42,15 @@ namespace StartWithBase
                 pbar = (UIGenProgressBar)field.GetValue(uistate);
             else
                 pbar = null;
+
+            field = typeof(UIWorldLoad).GetField("_progressMessage", BindingFlags.Instance | BindingFlags.NonPublic);
+            if (field != null && uistate is UIWorldLoad)
+                pmes = (UIHeader)field.GetValue(uistate);
+            else
+                pmes = null;
+
+
+            
 
             doNotBuildBase = false;
 
@@ -95,7 +105,7 @@ namespace StartWithBase
             content = "furniture";
             foreach (var sty in builder.styleTypeDict)
             {
-                UIScalableImageButtton fur = new UIScalableImageButtton(ModLoader.GetTexture("Terraria/Item_" + sty.Value.ItemID), content);
+                UIScalableImageButtton fur = new UIScalableImageButtton(ModLoader.GetTexture("Terraria/Item_" + sty.Value.ItemIDWorkBench), content);
                 fur.Id = sty.Key;
                 buttonDict.Add(fur.Id, fur);
             }
@@ -103,7 +113,7 @@ namespace StartWithBase
             content = "lantern";
             foreach (var sty in builder.lanternTypeDict)
             {
-                UIScalableImageButtton fur = new UIScalableImageButtton(ModLoader.GetTexture("Terraria/Item_" + sty.Value.ItemID), content);
+                UIScalableImageButtton fur = new UIScalableImageButtton(ModLoader.GetTexture("Terraria/Item_" + sty.Value.ItemIDLantern), content);
                 fur.Id = sty.Key;
                 buttonDict.Add(fur.Id, fur);
             }
@@ -250,16 +260,24 @@ namespace StartWithBase
 
         public void setRandom()
         {
+            if (Int32.Parse(counterText.Text) == 0)
+                return;
             Random rnd = new Random();
             string rand = "world$";
 
-            rand += builder.baseTypeDict.ElementAt(rnd.Next(0, builder.baseTypeDict.Count)).Key ;
+            //rand += builder.baseTypeDict.ElementAt(rnd.Next(0, builder.baseTypeDict.Count)).Key ;
+            rand += findActive("base");                     
+            
             rand += builder.TileTypeDict.ElementAt(rnd.Next(0, builder.TileTypeDict.Count)).Key;
             rand += builder.wallTypeDict.ElementAt(rnd.Next(0, builder.wallTypeDict.Count)).Key;
             rand += builder.styleTypeDict.ElementAt(rnd.Next(0, builder.styleTypeDict.Count)).Key;
             rand += builder.lanternTypeDict.ElementAt(rnd.Next(0, builder.lanternTypeDict.Count)).Key;
             rand += builder.platformTypeDict.ElementAt(rnd.Next(0, builder.platformTypeDict.Count)).Key;
 
+            setOtherOff("", "", true);
+
+            if (Int32.Parse(counterText.Text) == 0)
+                return;
             builder.parsWN(rand, false);
             InitButtons();
 
@@ -395,7 +413,8 @@ namespace StartWithBase
         private string findActive(string content)
         {
             foreach (var but in buttonDict)
-            {
+            {               
+
                 if (but.Value.isClicked && content.Equals(but.Value.content))
                 {
                     return but.Value.Id;
@@ -451,8 +470,7 @@ namespace StartWithBase
                 }
             }
             if (bid.Equals("random"))
-            {
-                setOtherOff("", "", true);
+            {                
                 setRandom();
             }
             else
@@ -479,6 +497,13 @@ namespace StartWithBase
                 pbar.Left.Precent += (pannelActive ? 2f : -2f); ;
                 pbar.Recalculate();
             }
+            if (pmes != null)
+            {
+                pmes.Left.Precent += (pannelActive ? 2f : -2f); ;
+                pmes.Recalculate();
+            }
+
+
 
         }
 
