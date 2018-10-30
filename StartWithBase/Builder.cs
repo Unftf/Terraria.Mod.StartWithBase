@@ -2647,7 +2647,7 @@ namespace StartWithBase
         }
 
 
-        private bool canPlaceC(int x, int y)
+        private bool canPlaceC(int x, int y, bool allow=false)
         {
             y--;
 
@@ -2656,7 +2656,7 @@ namespace StartWithBase
 
             if (Main.tile[x, y + 1].type == TileID.Platforms && Main.tile[x + 1, y + 1].type == TileID.Platforms)
                 return true;
-            if (Main.tile[x-1, y].type == TileID.Containers || Main.tile[x + 2, y].type == TileID.Containers)
+            if (allow && (Main.tile[x-1, y].type == TileID.Containers || Main.tile[x + 2, y].type == TileID.Containers) )
                 return true;
 
             if ((Main.tile[x, y + 1].type != TileID.Platforms && Main.tile[x, y + 1].type != curTileType) ||
@@ -2732,7 +2732,7 @@ namespace StartWithBase
                     if (!(Main.tile[x, y].active() || Main.tile[x, y].wall == curWallType || Main.tile[x, y - 1].active() || Main.tile[x, y - 1].wall == curWallType || x < xMax))
                         l--;
 
-                    if (canPlaceC(x, y))
+                    if (canPlaceC(x, y, tryagain<2) )
                     {
                         k = 5;l = 4;
                         int chestNum = NewChest(x, y, false);
