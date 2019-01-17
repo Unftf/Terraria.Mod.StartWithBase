@@ -6,16 +6,14 @@ It will check how many NPC your active mods contain and resize the base accordin
 
 It won't win a design award for good looking :) That's also your part.
 The main concept about this base is to reduce ways to NPC's, crafting stations, chests and a high amount of chest you can quick-stack to (after teleport back).
-Each of those can be done better but with negative effect for the other. If you think you got a better base structure write me in linked page please. (base made for vanilla)
-
-There you can also view how the bases look like at start and how they can look later on.
+Each of those can be done better but with negative effect for the other. If you think you got a better base structure write me in linked page please (also base pics there).
 
 It would be nice if you can also write me your experience during playthrough with this base mod.
 
 Thanks for testing. gl hf!
 
-Update: 
-alternative tiles. Enter at the end of world name or use GUI.
+Config your base:
+use GUI or change world name like:
 $Ba2 - base with 2 NPC flats as core structure
 $Ba3 - base with 3 NPC flats as core ($b3b for big version, both look if enough space for all mod items)
 $Ba4 - base with 4 .. (useful for many NPC)
@@ -25,7 +23,7 @@ $Tha, Tob, Tdy, Two, Tss, Tri, Tbo, Tgr, Tmb --> changes the tiles used for flat
 $Wha, Wdg, Wdy, Wwo, Wss, Wdi, Wri, Wbo, Wgr, Wmb --> changes the used wall
 $Lho, Lgl, Ldy, Lwo, Lpa, Lbo, Lgr, Wmb --> changes the used lantern
 $Ppa, Pri, Pdy, Pwo, Pbo, Pgr, Pmb, Pic --> changes the used platform
-...and many more
+...and many more (no Gui: $noG)
 
 $Sy* - random style of used tiles, predefined $Sy0, $Sy1, $Sy2
 $Cx1 - stores/loads config file which allows you to setup all values as you like
@@ -34,6 +32,8 @@ You can combine those, e.g "MyWorldName$Ba3FdyTssWdi" (without quotes) will sele
 more details at linked page
 
 updates:
+0.2.2.1 - pause world gen, no gui mode: $noG
+0.2.2.0 - more options
 0.2.0.0 - now with GUI, lantern, platform option
 0.1.4.4 - custom style and marble style
 0.1.4.2 - base improv

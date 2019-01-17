@@ -59,6 +59,7 @@ namespace StartWithBase
                     tasks.Insert(tid, new PassLegacy("Set counter to", delegate (GenerationProgress progress)
                     {
                         builder.SetProgress(val);
+                        while (builder.swbui != null && builder.swbui.pauseActive) { Thread.Sleep(242); }
 
                     }));
 

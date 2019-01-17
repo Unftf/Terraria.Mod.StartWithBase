@@ -30,6 +30,7 @@ namespace StartWithBase
         public UIText counterText;
         UIScalableImageButtton startIcon;
         public bool doNotBuildBase;
+        public bool pauseActive;
         UIGenProgressBar pbar;
         UIHeader pmes;
         Builder builder;
@@ -53,6 +54,7 @@ namespace StartWithBase
             
 
             doNotBuildBase = false;
+            pauseActive = false;
 
 
             settingsPannel = new UIPanel();
@@ -126,6 +128,10 @@ namespace StartWithBase
             }
 
             content = "numbers";
+            UIScalableImageButtton pause = new UIScalableImageButtton(mod.GetTexture("images/pause"), content);
+            pause.Id = "counterPause";
+            buttonDict.Add(pause.Id, pause);
+
             UIScalableImageButtton rand = new UIScalableImageButtton(mod.GetTexture("images/qm"), content);
             rand.Id = "random";
             buttonDict.Add(rand.Id, rand);
@@ -138,6 +144,8 @@ namespace StartWithBase
             UIScalableImageButtton save = new UIScalableImageButtton(mod.GetTexture("images/configSave"), content);
             save.Id = "configSave";
             buttonDict.Add(save.Id, save);
+                       
+            
 
             counterText = new UIText("42", 2, true);
             settingsPannel.Append(counterText);
@@ -145,6 +153,9 @@ namespace StartWithBase
             counterText.VAlign = 1.0f;
             counterText.PaddingBottom = paddingY;
             counterText.MarginLeft = padding;
+
+           
+
 
             foreach (var but in buttonDict)
             {
@@ -232,6 +243,7 @@ namespace StartWithBase
                     if (builder.curPlatformStyle == type)
                         but.Value.isClicked = true;
                 }
+
             }
 
         }
@@ -353,6 +365,12 @@ namespace StartWithBase
                     butt.Width.Pixels = maxWN;
                     butt.Height.Pixels /= fac;
                 }
+                else if (content.Equals("counter"))
+                {
+                    float fac = butt.Width.Pixels / (maxWN);
+                    butt.Width.Pixels = maxWN;
+                    butt.Height.Pixels /= fac;
+                }
                 else
                 {
                     butt.Width.Pixels *= 2; butt.Height.Pixels *= 2;
@@ -401,7 +419,7 @@ namespace StartWithBase
         {
             foreach (var but in buttonDict)
             {
-                if ((!but.Key.Equals(clickedB) && content.Equals(but.Value.content)) || offAll)
+                if ( ((!but.Key.Equals(clickedB) && content.Equals(but.Value.content)) || offAll) && !but.Value.Id.Equals("counterPause"))
                 {
                     buttonDict[but.Key].isClicked = false;
                     buttonDict[but.Key].SetVisibility(0.8f, 0.8f);
@@ -415,7 +433,7 @@ namespace StartWithBase
             foreach (var but in buttonDict)
             {               
 
-                if (but.Value.isClicked && content.Equals(but.Value.content))
+                if (but.Value.isClicked && content.Equals(but.Value.content) && !but.Value.Id.Equals("counterPause"))
                 {
                     return but.Value.Id;
                 }
@@ -475,7 +493,15 @@ namespace StartWithBase
             }
             else
             {
-                buttonDict[bid].isClicked = true;
+                if (bid.Contains("counterPause"))
+                {
+                    pauseActive = !pauseActive;
+                    buttonDict[bid].isClicked = !buttonDict[bid].isClicked;
+                }
+                else
+                {
+                    buttonDict[bid].isClicked = true;
+                }
             }
             buttonDict[bid].SetVisibility(1.0f, 1.0f);
             setOtherOff(bid, buttonDict[bid].content);

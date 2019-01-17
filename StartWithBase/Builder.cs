@@ -223,7 +223,10 @@ namespace StartWithBase
 
             //Main.MenuUI.CurrentState.RemoveAllChildren();
 
-            swbui = new StartWithBaseUI(this, uistate, mod);
+            if (!noGUI)
+                swbui = new StartWithBaseUI(this, uistate, mod);
+            else
+                swbui = null;
 
         }
 
@@ -239,7 +242,7 @@ namespace StartWithBase
 
         public void Build()
         {
-            if (swbui != null && !swbui.doNotBuildBase)
+            if ( (swbui != null && !swbui.doNotBuildBase) || noGUI)
             {
 
                 cx = Main.spawnTileX - 20;
@@ -438,7 +441,7 @@ namespace StartWithBase
         int chestsNeeded;
         const int yoff = 13;
         public StartWithBaseUI swbui = null;
-
+        bool noGUI;
 
 
 
@@ -473,6 +476,7 @@ namespace StartWithBase
             int from = wname.IndexOf("$");
             int to = wname.Length;
             extend = false;
+            noGUI = false;
 
             string subs = wname.Substring(from, to - from);
 
@@ -524,33 +528,39 @@ namespace StartWithBase
                     SetToTiles((TileTypeDict.ElementAt(WorldGen.genRand.Next(TileTypeDict.Count))).Value);
                     if (curTileType == TileTypeDict["tri"].TileID || curTileType == TileTypeDict["tob"].TileID) SetToTiles((TileTypeDict.ElementAt(WorldGen.genRand.Next(TileTypeDict.Count))).Value);//dont like mahagony, obsidian hard to get reduce chance
                 }
-                if (pa.Equals("sy0"))
+                else if(pa.Equals("sy0"))
                 {
                     SetToFurniture(styleTypeDict["fpa"]);
                     SetToWall(wallTypeDict["wha"]);
                     SetToTiles(TileTypeDict["tha"]);
                     SetToLantern(lanternTypeDict["lho"]);
                 }
-                if (pa.Equals("sy1"))
+                else if(pa.Equals("sy1"))
                 {
                     SetToFurniture(styleTypeDict["fwo"]);
                     SetToWall(wallTypeDict["wdi"]);
                     SetToTiles(TileTypeDict["tss"]);
                     SetToLantern(lanternTypeDict["ldy"]);
                 }
-                if (pa.Equals("sy2"))
+                else if(pa.Equals("sy2"))
                 {
                     SetToFurniture(styleTypeDict["fwo"]);
                     SetToWall(wallTypeDict["wdg"]);
                     SetToTiles(TileTypeDict["tob"]);
                     SetToLantern(lanternTypeDict["lgl"]);
                 }
-                if (pa.Substring(0, 2).Equals("cx"))
+                else if(pa.Substring(0, 2).Equals("cx"))
                 {
                     //custom values
                     CheckGenerate(pa.Substring(2, 1));
                     ReadAndSetConfig(pa.Substring(2, 1));
+                }else if (pa.Equals("nog"))
+                {
+                    //no Gui
+                    noGUI = true;
+
                 }
+
 
                 if (styleTypeDict.ContainsKey(pa))
                     SetToFurniture(styleTypeDict[pa]);

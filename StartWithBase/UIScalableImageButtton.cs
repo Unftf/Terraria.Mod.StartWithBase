@@ -45,7 +45,7 @@ namespace StartWithBase
 
             spriteBatch.Draw(this.btexture, dimensions.Position(),
                                 new Rectangle(0, 0, btexture.Width, btexture.Height),
-                                Color.White*(base.IsMouseHovering ? 1.0f : (isClicked? 1.0f: visNotClick)), 0.0f, Vector2.Zero, scaling, SpriteEffects.None, 0);
+                                Color.White*(base.IsMouseHovering ? ((isClicked ? 0.8f : 0.6f)) : (isClicked? 1.0f: visNotClick)), 0.0f, Vector2.Zero, scaling, SpriteEffects.None, 0);
         }
 
     }
