@@ -27,7 +27,7 @@ namespace StartWithBase
 
 
         UIPanel settingsPannel;
-        public UIText counterText;
+        public UIText counterText, statusText;
         UIScalableImageButtton startIcon;
         public bool doNotBuildBase;
         public bool pauseActive;
@@ -144,8 +144,14 @@ namespace StartWithBase
             UIScalableImageButtton save = new UIScalableImageButtton(mod.GetTexture("images/configSave"), content);
             save.Id = "configSave";
             buttonDict.Add(save.Id, save);
-                       
-            
+
+            statusText = new UIText("", 0.5f, true);            
+            settingsPannel.Append(statusText);
+            statusText.HAlign = 0.5f;
+            statusText.VAlign = 1.0f;
+            statusText.PaddingBottom = pause.Height.Pixels + 2* paddingY ;
+            statusText.MarginLeft = 0;
+            statusText.TextColor = new Color(0.85f, 0.85f, 0.85f, 0.85f);
 
             counterText = new UIText("42", 2, true);
             settingsPannel.Append(counterText);
@@ -285,13 +291,14 @@ namespace StartWithBase
             rand += builder.styleTypeDict.ElementAt(rnd.Next(0, builder.styleTypeDict.Count)).Key;
             rand += builder.lanternTypeDict.ElementAt(rnd.Next(0, builder.lanternTypeDict.Count)).Key;
             rand += builder.platformTypeDict.ElementAt(rnd.Next(0, builder.platformTypeDict.Count)).Key;
-
+                        
             setOtherOff("", "", true);
-
+            
             if (Int32.Parse(counterText.Text) == 0)
                 return;
             builder.parsWN(rand, false);
-            InitButtons();
+            InitButtons();            
+
 
         }
 
@@ -383,6 +390,10 @@ namespace StartWithBase
             }
             center(content, spacing);
             centerBot(content, spacingY, paddingY);
+
+            statusText.PaddingBottom = maxHei + paddingY;
+            statusText.MarginLeft = 0;
+
             lastUp = Main.screenWidth;
         }
 
@@ -445,8 +456,8 @@ namespace StartWithBase
         private void clickBase(UIMouseEvent evt, UIElement listeningElement)
         {
             string bid = (listeningElement as UIScalableImageButtton).Id;
-
-            if (bid.Contains("config") )
+            bool writeName = false;
+            if (bid.Contains("config"))
             {
                 if (bid.Length == ("config").Length + 1)
                 {
@@ -456,23 +467,24 @@ namespace StartWithBase
                     {
                         setOtherOff("", "", true);
                         InitButtons();
+                        writeStatus("style " + which + " loaded");
                     }
                     else
                     {
                         Main.PlaySound(SoundID.Frog);
+                        writeStatus("style " + which + " not stored yet");
                     }
                 }
                 else
                 {
                     string active = findActive("numbers");
-                                        
+
                     int num = lastSave;
                     if (active.Length > 0)
                     {
                         if (active.Length == ("config").Length + 1)
                         {
-                            active = active.Substring(active.Length - 1);
-                            bool pars = Int32.TryParse(active, out num);
+                            bool pars = Int32.TryParse(active.Substring(active.Length - 1), out num);
 
                             if (!pars) num = lastSave;
                         }
@@ -482,29 +494,55 @@ namespace StartWithBase
                         builder.parsWN(getValues());
                         builder.CheckGenerate(num.ToString(), true);
                         lastSave = num;
+                        writeStatus("style " + num + " stored");
+                        bid = buttonDict.ContainsKey(active) ? active : bid;
                     }
-                    
+
 
                 }
             }
-            if (bid.Equals("random"))
-            {                
-                setRandom();
-            }
-            else
+            else if (bid.Equals("random"))
             {
-                if (bid.Contains("counterPause"))
-                {
-                    pauseActive = !pauseActive;
-                    buttonDict[bid].isClicked = !buttonDict[bid].isClicked;
-                }
-                else
-                {
-                    buttonDict[bid].isClicked = true;
-                }
+                bid = findActive("numbers");
+                bid = buttonDict.ContainsKey(bid) ? bid : "random";
+                setRandom();
+                writeStatus("random style");
             }
+            else if (bid.Contains("counterPause"))
+            {
+                pauseActive = !pauseActive;
+                buttonDict[bid].isClicked = !buttonDict[bid].isClicked;
+                if (pauseActive)
+                    writeStatus("pause active");
+                else
+                    writeStatus("continue world gen");
+
+                bid = findActive("numbers");
+                bid = buttonDict.ContainsKey(bid) ? bid : "counterPause";
+            }
+            else            
+                writeName = true;
+            
+            if(!bid.Equals("random"))
+            {
+                buttonDict[bid].isClicked = true;
+            }
+            
             buttonDict[bid].SetVisibility(1.0f, 1.0f);
             setOtherOff(bid, buttonDict[bid].content);
+
+            if (writeName)
+            {
+                string name = findActive("base");
+                name += findActive("tile");
+                name += findActive("wall");
+                name += findActive("furniture");
+                name += findActive("lantern");
+                name += findActive("platform");
+
+                writeStatus("name: " + name);
+            }
+
         }
 
         bool pannelActive = false;
@@ -533,6 +571,14 @@ namespace StartWithBase
 
         }
 
+        public void writeStatus(string text)
+        {
+            if(statusText!=null)
+            {
+                statusText.SetText(text);
+            }
+
+        }
 
         private void rightClickPannel(UIMouseEvent evt, UIElement listeningElement)
         {

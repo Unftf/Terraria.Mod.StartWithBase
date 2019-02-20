@@ -39,10 +39,10 @@ namespace StartWithBase
         {
             Builder builder = new Builder(mod);
 
-            int tunnelsIndex = tasks.FindIndex(genpass => genpass.Name.Equals("Tunnels"));
+            int tunnelsIndex = tasks.FindIndex(genpass => genpass.Name.Equals("Sand"));
             if (tunnelsIndex != -1)
             {
-                tasks.Insert(3, new PassLegacy("Create UI", delegate (GenerationProgress progress)
+                tasks.Insert(tunnelsIndex, new PassLegacy("Create UI", delegate (GenerationProgress progress)
                 {
 
                     builder.Init(Main.MenuUI.CurrentState);                    
