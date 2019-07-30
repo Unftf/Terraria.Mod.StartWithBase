@@ -92,37 +92,37 @@ namespace StartWithBase
             content = "tile";
             foreach (var sty in builder.TileTypeDict)
             {
-                UIScalableImageButtton fur = new UIScalableImageButtton(ModLoader.GetTexture("Terraria/Item_" + sty.Value.ItemID), content);
+                UIScalableImageButtton fur = new UIScalableImageButtton(ModContent.GetTexture("Terraria/Item_" + sty.Value.ItemID), content);
                 fur.Id = sty.Key;
                 buttonDict.Add(fur.Id, fur);
             }
             content = "wall";
             foreach (var sty in builder.wallTypeDict)
             {
-                UIScalableImageButtton fur = new UIScalableImageButtton(ModLoader.GetTexture("Terraria/Item_" + sty.Value.ItemIDofWallType), content);
+                UIScalableImageButtton fur = new UIScalableImageButtton(ModContent.GetTexture("Terraria/Item_" + sty.Value.ItemIDofWallType), content);
                 fur.Id = sty.Key;
                 buttonDict.Add(fur.Id, fur);
             }
 
-            content = "furniture";
-            foreach (var sty in builder.styleTypeDict)
+            content = "deskChair";//former namer furniture
+            foreach (var sty in builder.deskChairTypeDict)
             {
-                UIScalableImageButtton fur = new UIScalableImageButtton(ModLoader.GetTexture("Terraria/Item_" + sty.Value.ItemIDWorkBench), content);
-                fur.Id = sty.Key;
-                buttonDict.Add(fur.Id, fur);
+                UIScalableImageButtton dc = new UIScalableImageButtton(ModContent.GetTexture("Terraria/Item_" + sty.Value.ItemIDWorkBench), content);
+                dc.Id = sty.Key;
+                buttonDict.Add(dc.Id, dc);
             }
 
             content = "lantern";
             foreach (var sty in builder.lanternTypeDict)
             {
-                UIScalableImageButtton fur = new UIScalableImageButtton(ModLoader.GetTexture("Terraria/Item_" + sty.Value.ItemIDLantern), content);
+                UIScalableImageButtton fur = new UIScalableImageButtton(ModContent.GetTexture("Terraria/Item_" + sty.Value.ItemIDLantern), content);
                 fur.Id = sty.Key;
                 buttonDict.Add(fur.Id, fur);
             }
             content = "platform";
             foreach (var sty in builder.platformTypeDict)
             {
-                UIScalableImageButtton fur = new UIScalableImageButtton(ModLoader.GetTexture("Terraria/Item_" + sty.Value.ItemID), content);
+                UIScalableImageButtton fur = new UIScalableImageButtton(ModContent.GetTexture("Terraria/Item_" + sty.Value.ItemID), content);
                 fur.Id = sty.Key;
                 buttonDict.Add(fur.Id, fur);
             }
@@ -230,17 +230,17 @@ namespace StartWithBase
                     if (builder.curWallType == type)
                         but.Value.isClicked = true;
                 }
-                else if (content.Equals("furniture"))
+                else if (content.Equals("deskChair"))//former furniture
                 {
                     //may also selected it custom style contains this workbench
-                    int type = builder.styleTypeDict.ContainsKey(but.Value.Id) ? builder.styleTypeDict[but.Value.Id].WorkBenchStyle : -1;
-                    if (builder.curWorkBenchStyle == type)
+                    int type = builder.deskChairTypeDict.ContainsKey(but.Value.Id) ? builder.deskChairTypeDict[but.Value.Id].WorkBenchStyle : -1;
+                    if (builder.curWorkBenchStyle == type && builder.curChairStyle == builder.deskChairTypeDict[but.Value.Id].ChairStyle)
                         but.Value.isClicked = true;
                 }
                 else if (content.Equals("lantern"))
                 {
                     int type = builder.lanternTypeDict.ContainsKey(but.Value.Id) ? builder.lanternTypeDict[but.Value.Id].LanternStyle : -1;
-                    if (builder.curLanternStyle == type)
+                    if (builder.curLanternStyle == type && builder.lanternTypeDict[but.Value.Id].LampStyle == builder.curLampStyle && builder.lanternTypeDict[but.Value.Id].TorchStyle == builder.curTorchStyle)
                         but.Value.isClicked = true;
                 }
                 else if (content.Equals("platform"))
@@ -536,7 +536,7 @@ namespace StartWithBase
                 string name = findActive("base");
                 name += findActive("tile");
                 name += findActive("wall");
-                name += findActive("furniture");
+                name += findActive("deskChair"); //former furniture
                 name += findActive("lantern");
                 name += findActive("platform");
 

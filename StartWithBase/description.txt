@@ -18,7 +18,7 @@ $Ba2 - base with 2 NPC flats as core structure
 $Ba3 - base with 3 NPC flats as core ($b3b for big version, both look if enough space for all mod items)
 $Ba4 - base with 4 .. (useful for many NPC)
 $Ba6 - base with 6 NPC flats as core (credits to Sergo for that)
-$Fpa, Fdy, Fwo, Fgr, Fbo, Fri, Fmb ---> changes the furniture material
+$Fpa, Fdy, Fwo, Fgr, Fbo, Fri, Fmb ---> changes the furniture material, $D.. only chair and desk 
 $Tha, Tob, Tdy, Two, Tss, Tri, Tbo, Tgr, Tmb --> changes the tiles used for flats
 $Wha, Wdg, Wdy, Wwo, Wss, Wdi, Wri, Wbo, Wgr, Wmb --> changes the used wall
 $Lho, Lgl, Ldy, Lwo, Lpa, Lbo, Lgr, Wmb --> changes the used lantern
@@ -32,6 +32,7 @@ You can combine those, e.g "MyWorldName$Ba3FdyTssWdi" (without quotes) will sele
 more details at linked page
 
 updates:
+0.2.2.3 - custom styles bugfix, desk chair: $D.. , same as $F
 0.2.2.1 - pause world gen, no gui mode: $noG
 0.2.2.0 - more options
 0.2.0.0 - now with GUI, lantern, platform option
