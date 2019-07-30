@@ -311,7 +311,7 @@ namespace StartWithBase
                 if (but.Value.isClicked)
                 {
                     string pa = but.Value.Id;
-                    if (builder.styleTypeDict.ContainsKey(pa) || builder.wallTypeDict.ContainsKey(pa) || builder.TileTypeDict.ContainsKey(pa) ||
+                    if (builder.deskChairTypeDict.ContainsKey(pa)  || builder.wallTypeDict.ContainsKey(pa) || builder.TileTypeDict.ContainsKey(pa) ||
                         builder.lanternTypeDict.ContainsKey(pa) || builder.baseTypeDict.ContainsKey(pa) || builder.platformTypeDict.ContainsKey(pa))
                         wn += pa;
                 }
