@@ -5,13 +5,15 @@ using System.Text;
 
 using Terraria;
 using Terraria.UI;
-using Terraria.World.Generation;
+
 using Terraria.GameContent.UI.Elements;
 using Terraria.UI.Gamepad;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
 using Terraria.ModLoader;
+
+//using ReLogic.Content;
 
 namespace StartWithBase
 {
@@ -22,21 +24,21 @@ namespace StartWithBase
         public bool isClicked;
         public string content;
         const float visNotClick = 0.4f;
+        //public string Id = "";//dummy to convert to 1.4
 
         public UIScalableImageButtton(Texture2D tex, string content = "",  bool isClicked = false): base(tex)
-        {
+        {            
             btexture = tex;
             this.isClicked = isClicked;
             this.content = content;
-
-            
+            //Id = base.Id.ToString();            
         }
         bool pd = false;
         protected override void DrawSelf(SpriteBatch spriteBatch)
         {
             //Vector2 pos = new Vector2(this.MarginLeft, this.MarginTop);
             CalculatedStyle dimensions = base.GetDimensions();
-            float scaling = dimensions.Width / btexture.Width;
+            float scaling = dimensions.Width / ((float)btexture.Width);
 
             if (!pd && dimensions.Width > 0)
             {                

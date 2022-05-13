@@ -16,6 +16,9 @@ using Microsoft.Xna.Framework.Graphics;
 
 using Terraria.ModLoader;
 using System.Reflection;
+using Terraria.Audio;
+
+//using ReLogic.Content;
 
 namespace StartWithBase
 {
@@ -34,9 +37,11 @@ namespace StartWithBase
         UIGenProgressBar pbar;
         UIHeader pmes;
         Builder builder;
-
+        bool drawIt = false;
+        UIState uistate;
         public StartWithBaseUI(Builder builder, UIState uistate, Mod mod)
-        {
+        {            
+            //uistate = Main.MenuUI.CurrentState;
             this.builder = builder;
             FieldInfo field = typeof(UIWorldLoad).GetField("_progressBar", BindingFlags.Instance | BindingFlags.NonPublic);
             if (field != null && uistate is UIWorldLoad)
@@ -50,7 +55,7 @@ namespace StartWithBase
             else
                 pmes = null;
 
-
+            this.uistate = uistate;
             
 
             doNotBuildBase = false;
@@ -67,10 +72,14 @@ namespace StartWithBase
 
             buttonDict = new Dictionary<string, UIScalableImageButtton>();
 
-            string content = "base";
+            string content = "base"; 
             UIScalableImageButtton base2Button = new UIScalableImageButtton(mod.GetTexture("images/base2"), content);
             base2Button.Id = "ba2";
             buttonDict.Add(base2Button.Id, base2Button);
+
+            UIScalableImageButtton base5Button = new UIScalableImageButtton(mod.GetTexture("images/base5"), content);
+            base5Button.Id = "ba5";
+            buttonDict.Add(base5Button.Id, base5Button);
 
             UIScalableImageButtton base3Button = new UIScalableImageButtton(mod.GetTexture("images/base3"), content);
             base3Button.Id = "ba3";
@@ -87,6 +96,8 @@ namespace StartWithBase
             UIScalableImageButtton base6Button = new UIScalableImageButtton(mod.GetTexture("images/base6"), content);
             base6Button.Id = "ba6";
             buttonDict.Add(base6Button.Id, base6Button);
+
+            
 
 
             content = "tile";
@@ -128,7 +139,7 @@ namespace StartWithBase
             }
 
             content = "numbers";
-            UIScalableImageButtton pause = new UIScalableImageButtton(mod.GetTexture("images/pause"), content);
+            UIScalableImageButtton pause = new UIScalableImageButtton(mod.GetTexture("images/pause") , content);
             pause.Id = "counterPause";
             buttonDict.Add(pause.Id, pause);
 
@@ -174,12 +185,14 @@ namespace StartWithBase
 
 
             InitButtons();
-            setSize();
-            uistate.Append(settingsPannel);
+            setSize();            
             settingsPannel.OnRightClick += rightClickPannel;
             uistate.Append(settingsPannel);
-                        
+
+            
             startIcon = new UIScalableImageButtton(Texture2D.FromStream(Main.instance.GraphicsDevice, new MemoryStream(mod.GetFileBytes("icon.png"))), content);
+            //startIcon = new UIScalableImageButtton(mod.GetTexture("images/configSave"), content);
+            //startIcon = new UIScalableImageButtton(mod.GetTexture("icon"), content);
             startIcon.Height.Pixels *= 2;
             startIcon.Width.Pixels *= 2;
             startIcon.PaddingRight = -startIcon.Width.Pixels;
@@ -188,11 +201,37 @@ namespace StartWithBase
             startIcon.HAlign = 1f;
             startIcon.OnClick += leftClickicon;
             startIcon.OnRightClick += rightClickicon;
+
+
             uistate.Append(startIcon);
             //uistate.Append(this);
+            //uistate.OnUpdate += ShowIt;// 
 
             lastSave = -1;
+            drawIt = true;            
         }
+        private void ShowIt(UIMouseEvent ev, UIElement affectedElement)
+		{
+            if(drawIt){
+                drawIt = false;                
+                affectedElement.Append(settingsPannel);
+                affectedElement.Append(startIcon);     
+                /*UIText text = new UIText("(left click to config)");                
+                text.HAlign = 0.01f ;
+                text.VAlign =  0.0f;//+ 100.0f/((float)Main.screenHeight);                                             
+                text.SetPadding(0);
+                text.MarginTop = 0;
+                text.MarginBottom = 0;
+                text.MarginLeft = 0;
+                text.MarginRight = 0;
+                text.PaddingTop = startIcon.Height.Pixels;
+                text.TextColor = new Color(128,128,128,text.TextColor.A);      
+                startIcon.Append( text );*/
+                
+
+                affectedElement.OnClick -= ShowIt;// OnUpdate
+            }
+		}
 
         private void InitButtons()
         {
@@ -208,6 +247,8 @@ namespace StartWithBase
                 {
                     //todo something better
                     if (butt.Id.Equals("ba2") && builder.baseType == Builder.BaseType.Base2)
+                        but.Value.isClicked = true;
+                    else if (butt.Id.Equals("ba5") && builder.baseType == Builder.BaseType.Base5)
                         but.Value.isClicked = true;
                     else if (butt.Id.Equals("ba3") && builder.baseType == Builder.BaseType.Base3)
                         but.Value.isClicked = true;
@@ -254,26 +295,28 @@ namespace StartWithBase
 
         }
 
+        
         public void free()
-        {
+        {            
             if (pannelActive)
                 swapView();
-
-           
-            settingsPannel.RemoveAllChildren();
-            settingsPannel.Remove();
-            settingsPannel = null;
-           
-            startIcon.RemoveAllChildren();
-            startIcon.Remove();
-            startIcon = null;
-
-            buttonDict.Clear();
-            buttonDict = null;
-
-            pbar = null;
-
-            
+            if (settingsPannel != null)
+            {
+                settingsPannel.RemoveAllChildren();
+                settingsPannel.Remove();
+                settingsPannel = null;
+            }
+            if (startIcon != null)
+            {
+                startIcon.RemoveAllChildren();
+                startIcon.Remove();
+                startIcon = null;
+            }
+            if (buttonDict != null)
+            {
+                buttonDict.Clear();
+                buttonDict = null;
+            }                                    
         }
 
         public void setRandom()
@@ -330,7 +373,7 @@ namespace StartWithBase
             if (settingsPannel == null) return;
 
             const int numB = 5; // bases
-            float spacing = 0;
+            float spacing = 0;float spacingLast = 0;
             float spacingY = 0;
 
 
@@ -340,7 +383,7 @@ namespace StartWithBase
             string content = buttonDict.ElementAt(0).Value.content;
             float maxHei = 0;
             foreach (var but in buttonDict)
-            {
+            {                
                 string contentThis = but.Value.content;
                 if (!content.Equals(contentThis))
                 {
@@ -383,10 +426,22 @@ namespace StartWithBase
                     butt.Width.Pixels *= 2; butt.Height.Pixels *= 2;
                 }
 
-                butt.MarginLeft = spacing + padding;
-                butt.MarginTop = spacingY + padding;
-                spacing += butt.Width.Pixels + padding;
-                maxHei = Math.Max(maxHei, butt.Height.Pixels);
+
+                
+                if(butt.Width.Pixels > butt.Height.Pixels *1.5 && content.Equals("base") && spacing!=0){
+                    //for now just base5
+                    butt.MarginLeft = spacingLast + padding;
+                    butt.MarginTop = (maxHei + padding *2);                    
+                    //maxHei = Math.Max(maxHei, butt.Height.Pixels);//wrong
+                }
+                else{                    
+                    spacingLast = spacing;
+                    butt.MarginLeft = spacing + padding;
+                    butt.MarginTop = spacingY + padding;
+                    spacing += butt.Width.Pixels + padding;
+                    maxHei = Math.Max(maxHei, butt.Height.Pixels);                    
+                }
+                
             }
             center(content, spacing);
             centerBot(content, spacingY, paddingY);
@@ -491,7 +546,7 @@ namespace StartWithBase
                     }
                     if (num != -1)
                     {
-                        builder.parsWN(getValues());
+                        builder.parsWN(getValues(),false);
                         builder.CheckGenerate(num.ToString(), true);
                         lastSave = num;
                         writeStatus("style " + num + " stored");
@@ -549,12 +604,15 @@ namespace StartWithBase
         private void swapView()
         {
             pannelActive = !pannelActive;
-            
-            settingsPannel.Left.Precent += (pannelActive ? -2f : 2f);
-            settingsPannel.Recalculate();
+            if(settingsPannel!=null){
+                settingsPannel.Left.Precent += (pannelActive ? -2f : 2f);
+                settingsPannel.Recalculate();
+            }
 
-            startIcon.Left.Precent += (!pannelActive ? -2f : 2f);
-            startIcon.Recalculate();
+            if(startIcon!=null){
+                startIcon.Left.Precent += (!pannelActive ? -2f : 2f);
+                startIcon.Recalculate();
+            }
 
             if (pbar != null)
             {
@@ -600,19 +658,7 @@ namespace StartWithBase
         public void Init()
         {
 
-        }
-
-        /*
-        protected override void DrawSelf(SpriteBatch spriteBatch)
-        {
-
-        }
-
-        public override void Update(GameTime gameTime)
-        {
-           
-        }*/
-
+        }   
 
     }
 }

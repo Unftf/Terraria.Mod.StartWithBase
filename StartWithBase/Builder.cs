@@ -5,26 +5,12 @@ using System.Text;
 
 
 using Terraria.ModLoader;
-using Terraria.World.Generation;
 using Terraria;
-using Terraria.GameContent.Generation;
 using Terraria.ID;
-using Terraria.Utilities;
 using Terraria.IO;
-using System.Reflection;
-using System.Threading;
-using Terraria.GameContent.UI.States;
-
-
-using ReLogic.Graphics;
-using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework;
 using Terraria.UI;
-
-using Terraria.Map;
-
-
-using Terraria.GameContent.UI.Elements;
+using Terraria.GameContent.Tile_Entities;
+using Terraria.DataStructures;
 
 namespace StartWithBase
 {
@@ -34,7 +20,7 @@ namespace StartWithBase
 
         public int curTileType = TileID.HayBlock;
         public int curTileItemType = ItemID.Hay;
-        public byte curWallType = WallID.Hay;
+        public byte curWallType = (byte)WallID.Hay;
         public int curWallItemType = ItemID.HayWall;
         
 
@@ -173,12 +159,13 @@ namespace StartWithBase
          };
 
 
-        public BaseType baseType = BaseType.Base3;
-        public enum BaseType { Base2, Base3, Base3ext, Base4, Base6 };
+        public BaseType baseType = BaseType.Base3ext;
+        public enum BaseType { Base2, Base5, Base3, Base3ext, Base4, Base6 };
 
         public Dictionary<string, BaseType> baseTypeDict = new Dictionary<string, BaseType>
         {
             {"ba2", BaseType.Base2 },
+            {"ba5", BaseType.Base5 },
             {"ba3", BaseType.Base3 },
             {"b3b", BaseType.Base3ext },
             {"ba4", BaseType.Base4 },
@@ -241,7 +228,7 @@ namespace StartWithBase
             
             
         }
-
+        
         public void Init(UIState uistate)
         {
             string wname = Main.worldName;
@@ -271,29 +258,39 @@ namespace StartWithBase
         {
             if ( (swbui != null && !swbui.doNotBuildBase) || noGUI)
             {
-
+                
                 cx = Main.spawnTileX - 20;
                 cy = Main.spawnTileY;
+                RemoveTrees(Main.spawnTileX-30,Main.spawnTileX+30,100,Main.spawnTileY+10);
+                
                 findSweetSpot(); // increases cy if spawn under surface
                 cy -= yoff;
 
 
-                townNPCcount = Main.MaxShopIDs; //vanilla town npc
+                townNPCcount = Main.MaxShopIDs; //vanilla town npc --> not anymore in 1.4
                 int count2 = townNPCcount;
+                //for(int i = 0; i < NPCID.Count; i++){                    
+                //    if(ContentSamples.NpcsByNetId[i].townNPC && ContentSamples.NpcsByNetId[i].CanTalk){ count2++;townNPCcount++;}                                        
+                //}
+                //townNPCcount -=2;//old man & trader
+                //count2 -=2;
+                
+                //townNPCcount = Main.MaxShopIDs; //vanilla town npc --> not anymore in 1.4
+                //count2 = townNPCcount;                
+                
                 for (int i = 0; i < NPCLoader.NPCCount; i++)
                 {
                     //adds town npc's from mods
                     ModNPC cur = NPCLoader.GetNPC(i);
+                    
                     if (cur != null)
                         if (cur.npc.CanTalk && cur.npc.friendly) townNPCcount++;
                     if (cur != null)
                         if (cur.npc.townNPC) count2++;
-
                 }
                 //all vanilla 1.3.5.3 npc count: 23
                 townNPCcount = Math.Max(townNPCcount, count2);
-
-
+                
                 allItemCount = ItemLoader.ItemCount;
                 chestsNeeded = (allItemCount + 39) / 40;
 
@@ -312,17 +309,25 @@ namespace StartWithBase
 
                 if (baseType == BaseType.Base2)
                     Base2();
+                else if (baseType == BaseType.Base5)
+                    Base5();
                 else if (baseType == BaseType.Base6)
-                    Base6(); //up to 90 at small
+                    Base6();
                 else if (baseType == BaseType.Base4)
                     Base4();
                 else
-                    Base3(); //if (param.Contains("ba3")) max npc about 80 at small world
+                    Base3();
 
-                if (Main.worldName.Contains("all") && Main.worldName.Contains("item") && (Main.worldName.Contains("world") || Main.worldName.Contains("map")))
+                string name = Main.ActiveWorldFileData==null?"":Main.ActiveWorldFileData.Name;
+                if( (Main.worldName.Contains("all") && Main.worldName.Contains("item") && (Main.worldName.Contains("world") || Main.worldName.Contains("map"))) ||
+                    (name.Contains("all") && name.Contains("item") && (name.Contains("world") || name.Contains("map"))) )
                 {
                     PlaceAllItems();
                 }
+
+                GrowTrees();
+
+
             }
         }
 
@@ -330,9 +335,60 @@ namespace StartWithBase
         {
             if (swbui != null)
             {               
-                swbui.free();
+                swbui?.free();
             }
 
+        }
+
+        internal void RemoveTrees(int fromX, int toX, int fromY, int toY){   
+                
+                for(int y=toY; y>fromY ;y--){                    
+                    for(int x=fromX; x<=toX;x++){                        
+                        if ((Main.tile[x, y].active() &&  (Main.tile[x, y].type == TileID.Trees || Main.tile[x, y].type == TileID.PalmTree
+                             )))  
+                                if(Main.tile[x, y+1].active() && (Main.tile[x, y+1].type == TileID.Grass || Main.tile[x, y+1].type == TileID.JungleGrass || Main.tile[x, y+1].type == TileID.Sand || Main.tile[x, y+1].type == TileID.SnowBlock) ){
+                                    short framex = 0;
+                                    switch(Main.tile[x, y + 1].type)
+                                    {
+                                        case TileID.JungleGrass:framex = 6 * 18;break;
+                                        case TileID.Sand: framex = 18 * 18; break;
+                                        case TileID.SnowBlock: framex = 3 * 18; break;
+
+
+
+                                    }
+           
+                                    WorldGen.KillTile(x, y-2);  
+                                    Main.tile[x, y].type = TileID.Saplings;
+                                    Main.tile[x, y].frameX = framex;
+                                    Main.tile[x, y].frameY = 18;
+                                    Tile tile = Main.tile[x, y-1];tile.active(true);
+                                    Main.tile[x, y-1].type = TileID.Saplings;
+                                    Main.tile[x, y-1].frameX = framex;
+                                    Main.tile[x, y-1].frameY = 0;
+                                    if( Main.tile[x-1, y].active() && (Main.tile[x-1, y].type == TileID.Trees || Main.tile[x-1, y].type == TileID.PalmTree
+                                         ))  WorldGen.KillTile(x, y);                                        
+                                    if( Main.tile[x+1, y].active() && (Main.tile[x+1, y].type == TileID.Trees || Main.tile[x+1, y].type == TileID.PalmTree
+                                         ))  WorldGen.KillTile(x, y);
+                                }
+                                else
+                                {
+                                    WorldGen.KillTile(x, y);                                    
+                                } 
+                    }
+                }
+        }
+        internal void GrowTrees(){
+            for(int y=Main.spawnTileY+50; y>150;y--){
+                for(int x=Main.spawnTileX-150; x<=Main.spawnTileX+150;x++){
+                    if (Main.tile[x, y].active() &&  Main.tile[x, y].type == TileID.Saplings){      
+                        if(Main.tile[x, y-2].active() &&  Main.tile[x, y-2].type == TileID.Rope)
+                            WorldGen.KillTile(x, y);                              
+                        else
+                            WorldGen.GrowTree(x, y);
+                    }
+                }
+            }
         }
 
         public class DrawTask
@@ -406,7 +462,7 @@ namespace StartWithBase
                         this.spriteStyle = builder.curWorkBenchStyle;
                         break;
                     case 'G':
-                        this.type = TileID.TallGateOpen;
+                        this.type = TileID.TallGateClosed;
                         this.spriteStyle = 0;
                         break;
                     case 'L':
@@ -480,7 +536,7 @@ namespace StartWithBase
 
         public void findSweetSpot()
         {
-            const int checkSizex = 20;
+            const int checkSizex = 42;
 
             for (; cy > 200; cy--)
             {
@@ -488,7 +544,7 @@ namespace StartWithBase
 
                 for (int xi = 0; xi < checkSizex; xi++)
                 {
-                    if ((Main.tile[cx + xi, cy].active() || Main.tile[cx - xi, cy].active()) && Main.tile[cx - xi, cy].wall != WallID.None)
+                    if (  (Main.tile[cx + xi, cy].active() && Main.tileSolid[Main.tile[cx + xi, cy].type]) || (Main.tile[cx - xi, cy].active() && Main.tileSolid[Main.tile[cx - xi, cy].type] ) && Main.tile[cx - xi, cy].wall != WallID.None)
                     {
                         decre = true;
                         break;
@@ -509,10 +565,9 @@ namespace StartWithBase
             string subs = wname.Substring(from, to - from);
 
             //rename world file
-            if (setwn)
-            {
-
-                string newWN = wname.Substring(0, from);
+            if (setwn && from>=0)
+            {                
+                string newWN = wname.Substring(0, from);                
                 Main.worldName = newWN;
                 string seed = Main.ActiveWorldFileData.SeedText;
                 Main.ActiveWorldFileData = WorldFile.CreateMetadata(Main.worldName, Main.ActiveWorldFileData.IsCloudSave, Main.expertMode);
@@ -537,6 +592,7 @@ namespace StartWithBase
                 if (pa.Substring(0, 2).Equals("ba"))
                 {
                     if (pa.Equals("ba2")) baseType = BaseType.Base2;
+                    if (pa.Equals("ba5")) baseType = BaseType.Base5;
                     if (pa.Equals("ba3")) baseType = BaseType.Base3;
                     if (pa.Equals("ba4")) baseType = BaseType.Base4;
                     if (pa.Equals("ba6")) baseType = BaseType.Base6;
@@ -831,7 +887,7 @@ namespace StartWithBase
         }
 
         public void Base2()
-        {
+        {            
             int chestsPerFloor = 2;
             int npcsPerFloor = 2;
 
@@ -845,17 +901,53 @@ namespace StartWithBase
 
 
             cy -= 23;
-            int range = 2 * floorsNeeded + 2;
-            cx += 20 - 4;
+            int range = 2 * floorsNeeded + 2 +1;
+            cx += 20;
 
             ClearField(23, range);
-
+            
             DrawBase2(floorsNeeded);
         }
 
+        public void Base5()
+        {   
+            int flatsTop = 2;
+            int flatRowsBot = 1;
+            int basNPCFlats = 2*(flatsTop+3*flatRowsBot);
+
+            int basesNeeded = (townNPCcount - basNPCFlats);
+            int off = 2;
+            while(basesNeeded>0){
+                off += 4;
+                flatsTop++;basesNeeded-=2;
+                if(basesNeeded>0 && off>=13){
+                    off -= 13;
+                    flatRowsBot++;
+                    basesNeeded -=6;
+                }
+            }
+                      
+            cx += 20 - 4;
+            float countTiles = 0;
+            float length = 42;
+            while(countTiles/length/2f<0.5){
+                cy++;
+                countTiles = 0;
+                for(int xi = cx-(int)length; xi<cx+length;xi++){
+                    if( Main.tile[xi,cy].active() && Main.tileSolid[Main.tile[xi,cy].type] ){
+                        countTiles++;
+                    }
+                }
+            }
+            cy++;
+
+            DrawBase5(flatsTop,flatRowsBot);
+        }
+
+
 
         public void Base3()
-        {
+        {            
             int chestsPerFloor = 9;
             int npcsPerFloor = 3;
             int baseFloor = 3;
@@ -903,14 +995,19 @@ namespace StartWithBase
             int groundBaseHight = 29;
             cy -= groundBaseHight;
 
-
-            ClearField(groundBaseHight + 4 * floorsNeeded + 7 * extraStorageFloor + (extend ? 7 : 0), 2 + (extend ? 7 + 4 : 0));
+            while(cy<53){
+                floorsNeeded--;cy+=4;
+                if(extraStorageFloor>0 && cy<53){extraStorageFloor--;cy+=7;}
+            }               
+            cx +=19 -(extend?7:0);
+            ClearField(groundBaseHight + 4 * floorsNeeded + 7 * extraStorageFloor + (extend ? 7 : 0) +2, 20 + (extend ? 7 : 0));
+            cx -=19 +(extend?7:0);
 
             DrawBase3(floorsNeeded, extraStorageFloor);
         }
 
         public void Base4()
-        {
+        {            
             int chestsPerFloor = 12;
             int npcsPerFloor = 6;
             int baseFloor = 0;
@@ -931,14 +1028,19 @@ namespace StartWithBase
             cy -= translateY;
             int spaceXneeded = floorsNeeded * 8;
 
-            ClearField(translateY, ((spaceXneeded + 1) / 2) + 2);
+
+            int len = ((spaceXneeded + 1) / 2) + 24;            
+            cx+=20;
+            ClearField(translateY+2, len);            
+            cx-=20;
+
             cx++;
 
             DrawBase4(floorsNeeded);
         }
 
         public void Base6()
-        {
+        {            
             int chestsPerFloor = 10;
             int npcsPerFloor = 6;
             int baseFloor = 0;
@@ -957,28 +1059,36 @@ namespace StartWithBase
             int translateY = 8 * floorsNeeded + storageExit * 7;
             cy -= translateY;
 
+            while(cy<53){
+                floorsNeeded--;cy+=4;translateY-=8;
+                if(floorsNeeded>0 && floorsNeeded>floorsNeeded/6 && cy<53){storageExit--;cy+=7;translateY-=7;}
+            }  
 
-            ClearField(translateY, 2);
-
-
+            cx += 16;
+            ClearField(translateY, 17);
+            cx -= 16;
+            
             DrawBase6(floorsNeeded, storageExit);
 
 
         }
 
-        public void ClearField(int yend, int xdimPlus = 0)
+        public void ClearField(int yend, int xdimPlus = 0, bool notilesClear = false)
         {
-            for (int xi = cx - xdimPlus; xi < cx + 40 + xdimPlus; xi++)
+            for (int xi = cx - xdimPlus; xi <= cx + xdimPlus; xi++)
             {
-                for (int yi = cy; yi < cy + yoff + yend - 5; yi++)
-                {
-                    Main.tile[xi, yi] = new Tile();
+                for (int yi = cy; yi <= cy + yend; yi++)
+                {                    
+                    if(!notilesClear) WorldGen.KillTile(xi,yi);
+                    WorldGen.KillWall(xi,yi);
+                    Main.tile[xi,yi].liquid  = 0;
+                    //Main.tile[xi,yi].wall = WallID.BubblegumBlock;
                 }
             }
 
         }
 
-        public void writeDebugFile(string content, bool append = true)
+        public static void writeDebugFile(string content, bool append = true)
         {
             using (System.IO.StreamWriter file =
              new System.IO.StreamWriter(Main.SavePath + @".\debug.txt", append))
@@ -1434,13 +1544,13 @@ namespace StartWithBase
                 DrawAObject(storageRoomExtendTop, false); cy -= 1;
 
                 cx = startX + 7;
+                
                 //gates not needed anymore
-                Main.tile[cx, cy - 1].active(false); Main.tile[cx + 38, cy - 1].active(false);
-                Main.tile[cx, cy - 2].active(false); Main.tile[cx + 38, cy - 2].active(false);
-                Main.tile[cx, cy - 3].active(false); Main.tile[cx + 38, cy - 3].active(false);
-                Main.tile[cx, cy - 4].active(false); Main.tile[cx + 38, cy - 4].active(false);
-                Main.tile[cx, cy - 5].active(false); Main.tile[cx + 38, cy - 5].active(false);
-                Main.tile[cx, cy - 6].active(false); Main.tile[cx + 38, cy - 6].active(false);
+                for(int i=1;i<7;i++){
+                               Tile tilef = Main.tile[cx, cy - i]; tilef.active(false); tilef = Main.tile[cx + 38, cy - i]; tilef.active(false);
+                        }   
+
+                
                 WorldGen.PlaceTile(cx, cy - 1, TileID.Lamps, true, true, -1, curLampStyle);
                 WorldGen.PlaceTile(cx + 38, cy - 1, TileID.Lamps, true, true, -1, curLampStyle);
 
@@ -1692,9 +1802,9 @@ namespace StartWithBase
             }
             DrawAObject(basement); cy--;
 
-            Main.tile[cx + 7, liquidY].liquid = 255;
-            Main.tile[cx + 31, liquidY].honey(true);
-            Main.tile[cx + 31, liquidY].liquid = 255;
+            Tile tile = Main.tile[cx + 7, liquidY]; tile.liquid = 255;
+            tile = Main.tile[cx + 31, liquidY]; tile.honey(true);
+            tile = Main.tile[cx + 31, liquidY]; tile.liquid = 255;
 
             int cid = Chest.FindChest(cx + 17, liquidY - 2);
             SetUpChest(cid);
@@ -1741,12 +1851,9 @@ namespace StartWithBase
 
                     if (storageGenToExtend > 0)
                     {
-                        Main.tile[cx + 7, cy + 1].active(false); Main.tile[cx + 45, cy + 1].active(false);
-                        Main.tile[cx + 7, cy + 2].active(false); Main.tile[cx + 45, cy + 2].active(false);
-                        Main.tile[cx + 7, cy + 3].active(false); Main.tile[cx + 45, cy + 3].active(false);
-                        Main.tile[cx + 7, cy + 4].active(false); Main.tile[cx + 45, cy + 4].active(false);
-                        Main.tile[cx + 7, cy + 5].active(false); Main.tile[cx + 45, cy + 5].active(false);
-                        Main.tile[cx + 7, cy + 6].active(false); Main.tile[cx + 45, cy + 6].active(false);
+                        for(int i=1;i<7;i++){
+                            tile = Main.tile[cx + 7, cy + i]; tile.active(false); tile = Main.tile[cx + 45, cy + i]; tile.active(false);
+                        }                        
                         DrawAObject(storageRoomExtend); cy -= 8; cx = cx + 45;
                         DrawAObject(storageRoomExtend, false); cy -= 1; cx = startX;
                         storageGenToExtend--;
@@ -1755,13 +1862,11 @@ namespace StartWithBase
                     floorsGenToExtend -= floorSpace;
                 }
 
-                //fill up base and remove gates                
-                Main.tile[cx + 7, cy + 1].active(false); Main.tile[cx + 45, cy + 1].active(false);
-                Main.tile[cx + 7, cy + 2].active(false); Main.tile[cx + 45, cy + 2].active(false);
-                Main.tile[cx + 7, cy + 3].active(false); Main.tile[cx + 45, cy + 3].active(false);
-                Main.tile[cx + 7, cy + 4].active(false); Main.tile[cx + 45, cy + 4].active(false);
-                Main.tile[cx + 7, cy + 5].active(false); Main.tile[cx + 45, cy + 5].active(false);
-                Main.tile[cx + 7, cy + 6].active(false); Main.tile[cx + 45, cy + 6].active(false);
+                //fill up base and remove gates     
+                for(int i=1;i<7;i++){
+                            tile = Main.tile[cx + 7, cy + i]; tile.active(false); tile = Main.tile[cx + 45, cy + i]; tile.active(false);
+                        }               
+                
                 DrawAObject(storageRoomExtend); cy -= 8; cx = cx + 45;
                 DrawAObject(storageRoomExtend, false); cy -= 1; cx = startX;
 
@@ -1771,11 +1876,10 @@ namespace StartWithBase
                     DrawAObject(floorExtend); cy -= 4; cx = cx + 45;
                     DrawAObject(floorExtend, false); cy -= 1; cx = startX;
                 }
-                Main.tile[cx + 7, cy + 1].active(false); Main.tile[cx + 45, cy + 1].active(false);
-                Main.tile[cx + 7, cy + 2].active(false); Main.tile[cx + 45, cy + 2].active(false);
-                Main.tile[cx + 7, cy + 3].active(false); Main.tile[cx + 45, cy + 3].active(false);
-                Main.tile[cx + 7, cy + 4].active(false); Main.tile[cx + 45, cy + 4].active(false);
-                Main.tile[cx + 7, cy + 5].active(false); Main.tile[cx + 45, cy + 5].active(false);
+                for(int i=1;i<6;i++){
+                            tile = Main.tile[cx + 7, cy + i]; tile.active(false); tile = Main.tile[cx + 45, cy + i]; tile.active(false);
+                        }    
+               
                 DrawAObject(storageRoomExtendbase); cy -= 7; cx = cx + 45;
                 DrawAObject(storageRoomExtendbase, false); cy -= 1;
 
@@ -2049,9 +2153,9 @@ namespace StartWithBase
 
             //DrawAObject(floorType1); cy--;
 
-            Main.tile[cx + 3, cy - 5].liquid = 255;
-            Main.tile[cx + 29, cy - 5].honey(true);
-            Main.tile[cx + 29, cy - 5].liquid = 255;
+            Tile tile = Main.tile[cx + 3, cy - 5]; tile.liquid = 255;
+            tile = Main.tile[cx + 29, cy - 5]; tile.honey(true);
+            tile.liquid = 255;
 
 
             RopeToGround(cx + 16, cy + 2);
@@ -2143,12 +2247,14 @@ namespace StartWithBase
                     //{
                     cx = stfx - 8 * (((extraFloorsParam + 1) / 2) - (extraFloors / 2));
                     DrawAObject(floor);
+                    RemoveTrees(cx-10,cx+10,cy,cy+80);
                     //}
                     // else
                     //{
                     cy = stfy;// added // for sym
                     cx = stfx + 30 + 8 * (((extraFloorsParam + 1) / 2) - (extraFloors / 2));//+1 for sym
                     DrawAObject(floor, false);
+                    RemoveTrees(cx-10,cx+10,cy,cy+80);
                     //}
                     extraFloors--;// added // for sym
                 }
@@ -2196,7 +2302,7 @@ namespace StartWithBase
             {
                 cy -= 4; //overwrite bot floor
 
-                maininnertop = new DrawObjectTask(this, "1B4b4p3e1p3e1b7e1p1b4e4p4b1B|" +
+                maininnertop = new DrawObjectTask(this,   "1B4b4p3e1p3e1b7e1p1b4e4p4b1B|" +
                                                           "1B1h1w1b4e1b2e1p3e1b7e1p4e1b4e1b1w1h1B|" +
                                                           "1B1e3b4e4b1pae1p4e1b4e3b1e1B|" +
                                                           "1B3e1b4p1b3e4b5p8b4p1b3e1B|" +
@@ -2276,17 +2382,17 @@ namespace StartWithBase
             {
                 for (int cyi = cy - 2; cyi > cy - 7; cyi--)
                     WorldGen.KillTile(cx, cyi, false, false, false);
-                WorldGen.PlaceObject(cx, cy - 6, TileID.TallGateOpen, true);
+                WorldGen.PlaceObject(cx, cy - 6, TileID.TallGateClosed, true);
 
                 for (int cyi = cy - 2; cyi > cy - 7; cyi--)
                     WorldGen.KillTile(cx + 38, cyi, false, false, false);
-                WorldGen.PlaceObject(cx + 38, cy - 6, TileID.TallGateOpen, true);
+                WorldGen.PlaceObject(cx + 38, cy - 6, TileID.TallGateClosed, true);
 
                 WorldGen.PlaceTile(cx, cy - 18, curTileType, true, true);
-                WorldGen.PlaceObject(cx, cy - 17, TileID.TallGateOpen, true);
+                WorldGen.PlaceObject(cx, cy - 17, TileID.TallGateClosed, true);
 
                 WorldGen.PlaceTile(cx + 38, cy - 18, curTileType, true, true);
-                WorldGen.PlaceObject(cx + 38, cy - 17, TileID.TallGateOpen, true);
+                WorldGen.PlaceObject(cx + 38, cy - 17, TileID.TallGateClosed, true);
             }
             else
             {
@@ -2294,10 +2400,10 @@ namespace StartWithBase
                 int diffxr = 8 * ((extraFloorsParam + 1) / 2);//+1 for sym
 
                 WorldGen.PlaceTile(cx - diffxl, cy - 18, curTileType, true, true);
-                WorldGen.PlaceObject(cx - diffxl, cy - 17, TileID.TallGateOpen, true);
+                WorldGen.PlaceObject(cx - diffxl, cy - 17, TileID.TallGateClosed, true);
 
                 WorldGen.PlaceTile(cx + 38 + diffxr, cy - 18, curTileType, true, true);
-                WorldGen.PlaceObject(cx + 38 + diffxr, cy - 17, TileID.TallGateOpen, true);
+                WorldGen.PlaceObject(cx + 38 + diffxr, cy - 17, TileID.TallGateClosed, true);
 
                 for (int cyi = cy - 20; cyi > cy - 26; cyi--)
                     WorldGen.PlaceTile(cx - diffxl, cyi, curTileType, true, true);
@@ -2323,8 +2429,8 @@ namespace StartWithBase
                 WorldGen.PlaceTile(cx - diffxl, cy - 7, curTileType, true, true);
                 WorldGen.PlaceTile(cx + 38 + diffxr, cy - 7, curTileType, true, true);
 
-                WorldGen.PlaceObject(cx - diffxl, cy - 6, TileID.TallGateOpen, true);
-                WorldGen.PlaceObject(cx + 38 + diffxr, cy - 6, TileID.TallGateOpen, true);
+                WorldGen.PlaceObject(cx - diffxl, cy - 6, TileID.TallGateClosed, true);
+                WorldGen.PlaceObject(cx + 38 + diffxr, cy - 6, TileID.TallGateClosed, true);
 
 
                 //for closed flats to inner base bot
@@ -2345,13 +2451,216 @@ namespace StartWithBase
                 WorldGen.PlaceTile(cx + 37 + 2, cy - 2, TileID.WorkBenches, true, true, -1, curWorkBenchStyle);
             }
 
-            Main.tile[cx + 7, cy - 9].liquid = 255;
-            Main.tile[cx + 31, cy - 9].liquid = 255;
-            Main.tile[cx + 31, cy - 9].honey(true);
-            Main.tile[cx + 33, cy - 9].liquid = 255;
-            WorldGen.PlaceTile(cx + 33, cy - 9, TileID.Platforms, true, true, -1, 13);//obsid plat to hold lava
-            Main.tile[cx + 33, cy - 9].lava(true);
 
+            Tile tile = Main.tile[cx + 7, cy - 9] ; tile.liquid = 255;
+            
+            tile = Main.tile[cx + 31, cy - 9]; tile.liquid = 255;
+            tile.honey(true);
+
+            WorldGen.PlaceTile(cx + 33, cy - 9, TileID.Platforms, true, true, -1, 13);//obsid plat to hold lava
+            tile = Main.tile[cx + 33, cy - 9]; tile.liquid  = 255;            
+            tile.lava(true);
+
+
+        }
+
+        public void DrawBase5(int basesTop, int baseRowsBot)
+        {
+            int startX = cx; //top left of entry
+            int startY = cy;
+
+
+            bool smallBaseTopInner = basesTop%3!=0;
+            bool smallBaseTopOuter = basesTop%3==2;
+            int numBases3Top = (basesTop-basesTop%3)/3;
+
+            int len = 3 * 4 * (numBases3Top) + 4 * (basesTop%3);
+            int lenB = 13 * (baseRowsBot)-2;
+
+            cx += 3;
+            ClearField(15, len+2);
+            cy--;
+            ClearField(0, len+2, true);
+            cy += 17;
+            ClearField(12, lenB+2);
+
+            DrawObjectTask smallBaseTop = new DrawObjectTask(this, "5B|" +
+                                                        "1B3e1B|" +
+                                                        "1B3e1B|" +
+                                                        "1B2b1e1B|" +
+                                                        "1B3e1B|" +
+                                                        "1B3e1B|" +
+                                                        "1B1b1p1e1B|" +
+                                                        "1B1h2e1B|" +
+                                                        "1B3e1B|" +
+                                                        "1B1c2e1B|" +
+                                                        "1B1e1w1B|" +
+                                                        "5B|"
+                                                        );
+
+            if(smallBaseTopInner){
+                int stfx = startX;
+                int stfy = startY;                
+
+                cx = stfx + 6;
+                cy = stfy;
+                DrawAObject(smallBaseTop);
+                cx = stfx - 4;
+                cy = stfy;
+                DrawAObject(smallBaseTop,false);                
+            }
+            if(smallBaseTopOuter){
+                int stfxR = startX + 6 + (smallBaseTopInner?4:0)+ (numBases3Top)*4*3;
+                int stfxL = startX - 4 - (smallBaseTopInner?4:0)- (numBases3Top)*4*3;      
+                int stfy = startY;          
+
+                cx = stfxL;
+                cy = stfy;
+                DrawAObject(smallBaseTop,false);
+                cx = stfxR;
+                cy = stfy;
+                DrawAObject(smallBaseTop,true);                
+            }
+
+            DrawObjectTask base3Top = new DrawObjectTask(this, "dB|" +
+                                            "1B5e1b5e1B|" +
+                                            "1B5e1b5e1B|" +
+                                            "1B1e9b1e1B|" +
+                                            "1B1e1b3e1h3e1b1e1B|" +
+                                            "1B1e1b7e1b1e1B|" +
+                                            "1B1e1p2b3e2b1p1e1B|" +
+                                            "1B2e1h1b3e1b1h2e1B|" +
+                                            "1B3e1b3e1b3e1B|" +
+                                            "1B1c2e1b2e1c1b2e1c1B|" +
+                                            "1B1e1w1b1w1e1b1w1e1B|" +
+                                            "dB|"                                            
+                                            );
+
+            {
+                int stfxR = startX +6   + (smallBaseTopInner?4:0);
+                int stfxL = startX -4*3 - (smallBaseTopInner?4:0);                
+                int stfy = startY;
+                int bases3TopCount = 0;
+
+                while (bases3TopCount < numBases3Top){
+                    cx = stfxR + 4 * 3*(bases3TopCount);
+                    cy = stfy;
+                    DrawAObject(base3Top);
+                    cx = stfxL - 4 * 3*(bases3TopCount);
+                    cy = stfy;
+                    DrawAObject(base3Top,false);
+                    bases3TopCount +=1;
+                }                
+            }
+
+   
+            DrawObjectTask base3Bot = new DrawObjectTask(this, "8p5B|" +
+                                            "8e1h3e1B|" +
+                                            "9e1c2e1B|" +
+                                            "8p1b1e1w1B|" +
+                                            "8e5B|" +
+                                            "8e1b3e1B|" +
+                                            "8p1h1c2e1B|" +
+                                            "ae1w1B|" +
+                                            "8e5B|" +
+                                            "8p1b3e1B|" +
+                                            "8e1h1c2e1B|" +
+                                            "ae1w1BB|" +
+                                            "dB|"                                            
+                                            );
+
+            {
+                int stfx = startX;                
+                int stfy = startY+16;
+                int basesBotCount = 0;
+
+                while (basesBotCount < baseRowsBot){
+                    cx = stfx + 4 + 13 * (basesBotCount);
+                    cy = stfy;
+                    DrawAObject(base3Bot);
+                    cx = stfx + 3 - 13 * (basesBotCount+1);
+                    cy = stfy;
+                    DrawAObject(base3Bot,false);
+                    basesBotCount += 1;
+                }
+                cx = startX + 3;
+                cy = startY+16;
+                DrawAObject(new DrawObjectTask(this,  "1p|1p|1p|1p|1p|1p|1p|1p|1p|1p|1p|1p|1B|"));                
+            }
+            cx = startX + 1;
+            cy = startY+11;
+            DrawAObject(new DrawObjectTask(this,  "5p|"));    
+
+            
+            cx = startX - len + 1;
+            cy = startY + 12;
+            Fill(cx, cy, 2*len+5 , 4, curWallType);
+
+            
+            Fill(startX-len, cy+4, len-lenB+1, 1, -1, curTileType);
+            Fill(startX+lenB+6, cy+4, len-lenB+1, 1, -1, curTileType);
+            Fill(startX-len, cy, 1, 4, -1, curTileType);
+            Fill(startX+lenB+6+ len-lenB, cy, 1, 4, -1, curTileType);
+            //Fill(startX+1, startY+11, 5, 1, -1, TileID.Platforms, curPlatformStyle);
+            Fill(startX+1, startY, 5 , 12, curWallType);
+
+            //door wires
+            cx = startX+3;
+            cy = startY-3;
+            ClearField(1, 3);       
+
+            Fill(startX, startY-1, 7, 1, -1, curTileType);               
+            WorldGen.PlaceTile(startX+2, startY-2, TileID.Lever, true, true, -1, -1);
+            WorldGen.PlaceTile(startX+5, startY-2, TileID.Lever, true, true, -1, 0);
+            Tile tile = Main.tile[startX+3,startY+2];                 
+            tile.wire(true);    
+            for(int x=startX+1;x<startX+6;x++){
+                tile = Main.tile[x,startY-1];                 
+                tile.wire(true);
+                tile.actuator(true);
+            }
+            for(int y=startY-2;y<startY+3;y++){
+                tile = Main.tile[startX+2,y];                 
+                tile.wire(true);                
+            }
+            for(int x=startX+4;x<startX+7;x++){
+                tile = Main.tile[x,startY-2];                 
+                tile.wire2(true);                
+                tile = Main.tile[x,startY];                 
+                tile.wire2(true);                
+            }
+            tile = Main.tile[startX+3,startY];                 
+            tile.wire2(true);
+            tile = Main.tile[startX+6,startY-1];                 
+            tile.wire2(true);
+            WorldGen.PlaceTile(startX+3, startY+4, TileID.LogicSensor, true, true, -1, 2);
+                   
+            int sensID = TELogicSensor.Place(startX+3, startY+4);    
+            
+            ((TELogicSensor)TileEntity.ByID[sensID]).logicCheck = TELogicSensor.LogicCheckType.PlayerAbove;
+
+            WorldGen.PlaceTile(startX+3, startY+2, TileID.LogicGate, true, true, -1, 0);
+            WorldGen.PlaceTile(startX+3, startY+1, TileID.LogicGateLamp, true, true, -1, 0);
+            WorldGen.PlaceTile(startX+3, startY+0, TileID.LogicGateLamp, true, true, -1, 1);
+            for(int y=startY+1;y<startY+5;y++){
+                tile = Main.tile[startX+2,y];                 
+                tile.wire3(true);                
+            }
+            tile = Main.tile[startX+3,startY+4];                 
+            tile.wire3(true);
+            tile = Main.tile[startX+3,startY+1];                 
+            tile.wire3(true);
+
+            cx = startX;
+            cy = startY;
+            
+            int cid = WorldGen.PlaceChest(cx-1, cy + 15, TileID.Containers, false, curChestStyle);
+            if (cid >= 0) SetUpChest(cid);    
+
+            cx = startX;
+            cy = startY;
+            RopeToGround(cx + 1, cy);
+            RopeToGround(cx + 5, cy);
 
         }
 
@@ -2549,7 +2858,7 @@ namespace StartWithBase
             }
 
 
-
+            cx -=4;
             int startX = cx;
             int startY = cy;
             int count = 0;
@@ -2569,6 +2878,8 @@ namespace StartWithBase
                     cx = startX + (count / 2 + 1) * 4 + 3;
                     DrawAObject(floorType1, false);
                 }
+                RemoveTrees(cx-10,cx+10,cy,cy+50);
+
                 extraFloors--;
                 count++;
             }
@@ -2580,10 +2891,11 @@ namespace StartWithBase
 
             cx = startX + 4;
             cy = startY;
+            Tile tile =  Main.tile[cx - 10, cy + 17]; tile.liquid  = 255;
+            tile.honey(true);
 
-            Main.tile[cx - 10, cy + 17].liquid = 255;
-            Main.tile[cx - 10, cy + 17].honey(true);
-            Main.tile[cx + 11, cy + 17].liquid = 255;
+
+            tile = Main.tile[cx + 11, cy + 17]; tile.liquid  = 255;
 
 
             RopeToGround(startX + 2 + 2, startY + 18);
@@ -2755,7 +3067,7 @@ namespace StartWithBase
         private bool canPlaceC(int x, int y, bool allow=false)
         {
             y--;
-
+            
             if (Main.tile[x, y].active() || Main.tile[x + 1, y].active() || Main.tile[x, y - 1].active() || Main.tile[x + 1, y - 1].active())
                 return false;
 
@@ -2785,7 +3097,7 @@ namespace StartWithBase
 
             if (Main.tile[x, y + 2].type == TileID.HolidayLights || Main.tile[x + 1, y + 2].type == TileID.HolidayLights)
                 return false;
-
+            
             return true;
         }
 
@@ -2843,14 +3155,14 @@ namespace StartWithBase
                         int chestNum = NewChest(x, y, false);
                         if (chestNum > 0)
                         {
-                            for (int ci = 0; ci < 40 && i < ItemLoader.ItemCount; ci++)
-                            {
-                                Main.chest[chestNum].item[ci].SetDefaults(i++);
+                            for (int ci = 0; ci < 40 && i < ItemLoader.ItemCount-1; ci++,i++) //-1 needed, why?, ItemCount alaso higher than needed
+                            {                                
+                                Main.chest[chestNum].item[ci].SetDefaults(i);
                                 Main.chest[chestNum].item[ci].stack = Main.chest[chestNum].item[ci].maxStack;
                             }
                             x++;
                         }                        
-                        if (chestNum == Main.maxChests || i == ItemLoader.ItemCount)
+                        if (chestNum == Main.maxChests || i == ItemLoader.ItemCount-1)
                         {
                             endIt = true;
                             break;

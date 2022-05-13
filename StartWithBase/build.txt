@@ -1,10 +1,10 @@
-author = Unftf
-version = 0.2.2.5
 displayName = Start with base
+author = Unftf
+version = 0.2.3.0
 homepage = https://forums.terraria.org/index.php?threads/start-with-base.69608/
-hideCode = true
-hideResources = false
-includeSource = false
 buildIgnore = *.csproj, *.user, obj\*, bin\*, .vs\*, *.config, .git\*
+hideCode = true
 includePDB = true
+includeSource = false
+hideResources = false
 languageVersion = 6

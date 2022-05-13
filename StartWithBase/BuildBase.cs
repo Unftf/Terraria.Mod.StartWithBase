@@ -40,48 +40,47 @@ namespace StartWithBase
             Builder builder = new Builder(mod);
 
             int tunnelsIndex = tasks.FindIndex(genpass => genpass.Name.Equals("Sand"));
-            if (tunnelsIndex != -1)
+            if(tunnelsIndex == -1)
+                tunnelsIndex = Math.Min(2, tasks.Count);
+            
+            tasks.Insert(tunnelsIndex, new PassLegacy("Create UI", delegate (GenerationProgress progress)
             {
-                tasks.Insert(tunnelsIndex, new PassLegacy("Create UI", delegate (GenerationProgress progress)
-                {
+                UIState state = Main.MenuUI.CurrentState;
+                builder.Init(state);                    
 
-                    builder.Init(Main.MenuUI.CurrentState);                    
-
-                }));
-            }
+            }));
+            
             int taskCount = tasks.FindIndex(genpass => genpass.Name.Equals("Final Cleanup")) - 1;
-            if (taskCount != -1)
+            if (taskCount == -1)
+                taskCount = Math.Max(0, tasks.Count-2);
+
+            for (int tid = taskCount; tid > tunnelsIndex ; tid--)
             {
-                
-                for (int tid = taskCount; tid > tunnelsIndex ; tid--)
+                int val = (taskCount - tid);
+                tasks.Insert(tid, new PassLegacy("Set counter to", delegate (GenerationProgress progress)
                 {
-                    int val = (taskCount - tid);
-                    tasks.Insert(tid, new PassLegacy("Set counter to", delegate (GenerationProgress progress)
+                    if (builder != null)
                     {
                         builder.SetProgress(val);
                         while (builder.swbui != null && builder.swbui.pauseActive) { Thread.Sleep(242); }
+                    }
 
-                    }));
-
-                }
+                }));
             }
+            
 
             int genIndex = tasks.FindIndex(genpass => genpass.Name.Equals("Final Cleanup"));
+            if (genIndex == -1)
+                genIndex = Math.Max(0, tasks.Count-1);
             if (genIndex != -1)
-            {
-                
+            {                
                 tasks.Insert(genIndex, new PassLegacy("Build base", delegate (GenerationProgress progress)
-                {
-                    builder.Build();
+                {                                    
+                    builder.Build();                                                
                     builder.EndBuilding();
-                    builder = null;
-                }));                
-            }
-                       
+                    builder = null;                    
+                })); 
+            }                       
         }
-        
-
-        
-
     }
 }

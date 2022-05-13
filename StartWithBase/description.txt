@@ -1,4 +1,4 @@
-Update! now with GUI !!!
+[Currently it is just a 1.4 port. No happiness involved]
 
 "Start with base" is a small mod which generates a base at the end of world generation considering all NPC's of all active mods. If u are tiered building ur own all the time that mod might work for you. But it won't give you too much.
 You still need to place chests and crafting stations. Only for NPC flats you don't need to care about anymore.
@@ -8,15 +8,16 @@ It won't win a design award for good looking :) That's also your part.
 The main concept about this base is to reduce ways to NPC's, crafting stations, chests and a high amount of chest you can quick-stack to (after teleport back).
 Each of those can be done better but with negative effect for the other. If you think you got a better base structure write me in linked page please (also base pics there).
 
-It would be nice if you can also write me your experience during playthrough with this base mod.
+Not all basee have been tested for long play. It would be nice if you can also write me your experience during playthrough with this base mod.
 
 Thanks for testing. gl hf!
 
-Config your base:
-use GUI or change world name like:
+Config your base: left click at the GUI during world generation
+or add those commands to world name:
 $Ba2 - base with 2 NPC flats as core structure
 $Ba3 - base with 3 NPC flats as core ($b3b for big version, both look if enough space for all mod items)
 $Ba4 - base with 4 .. (useful for many NPC)
+$Ba5 - base with 5 .. below ground
 $Ba6 - base with 6 NPC flats as core (credits to Sergo for that)
 $Fpa, Fdy, Fwo, Fgr, Fbo, Fri, Fmb ---> changes the furniture material, $D.. only chair and desk 
 $Tha, Tob, Tdy, Two, Tss, Tri, Tbo, Tgr, Tmb --> changes the tiles used for flats
@@ -32,6 +33,7 @@ You can combine those, e.g "MyWorldName$Ba3FdyTssWdi" (without quotes) will sele
 more details at linked page
 
 updates:
+0.2.3.0 - new base & bug fixes while porting it to 1.4
 0.2.2.3 - custom styles bugfix, desk chair: $D.. , same as $F
 0.2.2.1 - pause world gen, no gui mode: $noG
 0.2.2.0 - more options
