@@ -3,11 +3,11 @@
 "Start with base" is a small mod which generates a base at the end of world generation considering all NPC's of all active mods. If u are tiered building ur own all the time that mod might work for you. But it won't give you too much.<br>
 You still need to place chests and crafting stations. Only for NPC flats you don't need to care about anymore.<br>
 It will check how many NPC your active mods contain and resize the base accordingly (only at world gen).<br>
-
+<br>
 It won't win a design award for good looking :) That's also your part.<br>
 The main concept about this base is to reduce ways to NPC's, crafting stations, chests and a high amount of chest you can quick-stack to (after teleport back).<br>
 Each of those can be done better but with negative effect for the other. If you think you got a better base structure write me in linked page please (also base pics there).<br>
-
+<br>
 Not all basee have been tested for long play. It would be nice if you can also write me your experience during playthrough with this base mod.<br>
 <br>
 Thanks for testing. gl hf!<br>
