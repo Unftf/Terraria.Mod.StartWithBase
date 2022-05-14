@@ -267,13 +267,13 @@ namespace StartWithBase
                 cy -= yoff;
 
 
-                townNPCcount = Main.MaxShopIDs; //vanilla town npc --> not anymore in 1.4
+                townNPCcount = 0;// Main.MaxShopIDs; //vanilla town npc --> not anymore in 1.4
                 int count2 = townNPCcount;
-                //for(int i = 0; i < NPCID.Count; i++){                    
-                //    if(ContentSamples.NpcsByNetId[i].townNPC && ContentSamples.NpcsByNetId[i].CanTalk){ count2++;townNPCcount++;}                                        
-                //}
-                //townNPCcount -=2;//old man & trader
-                //count2 -=2;
+                for(int i = 0; i < NPCID.Count; i++){                    
+                    if(ContentSamples.NpcsByNetId[i].townNPC && ContentSamples.NpcsByNetId[i].CanTalk){ count2++;townNPCcount++;}                                        
+                }
+                townNPCcount -=2;//old man & trader
+                count2 -=2;
                 
                 //townNPCcount = Main.MaxShopIDs; //vanilla town npc --> not anymore in 1.4
                 //count2 = townNPCcount;                
@@ -284,9 +284,9 @@ namespace StartWithBase
                     ModNPC cur = NPCLoader.GetNPC(i);
                     
                     if (cur != null)
-                        if (cur.npc.CanTalk && cur.npc.friendly) townNPCcount++;
+                        if (cur.NPC.CanTalk && cur.NPC.friendly) townNPCcount++;
                     if (cur != null)
-                        if (cur.npc.townNPC) count2++;
+                        if (cur.NPC.townNPC) count2++;
                 }
                 //all vanilla 1.3.5.3 npc count: 23
                 townNPCcount = Math.Max(townNPCcount, count2);
@@ -344,32 +344,27 @@ namespace StartWithBase
                 
                 for(int y=toY; y>fromY ;y--){                    
                     for(int x=fromX; x<=toX;x++){                        
-                        if ((Main.tile[x, y].active() &&  (Main.tile[x, y].type == TileID.Trees || Main.tile[x, y].type == TileID.PalmTree
-                             )))  
-                                if(Main.tile[x, y+1].active() && (Main.tile[x, y+1].type == TileID.Grass || Main.tile[x, y+1].type == TileID.JungleGrass || Main.tile[x, y+1].type == TileID.Sand || Main.tile[x, y+1].type == TileID.SnowBlock) ){
-                                    short framex = 0;
-                                    switch(Main.tile[x, y + 1].type)
-                                    {
-                                        case TileID.JungleGrass:framex = 6 * 18;break;
-                                        case TileID.Sand: framex = 18 * 18; break;
-                                        case TileID.SnowBlock: framex = 3 * 18; break;
-
-
-
-                                    }
-           
+                        if ((Main.tile[x, y].HasTile &&  (Main.tile[x, y].TileType == TileID.Trees || Main.tile[x, y].TileType == TileID.PalmTree
+                            || Main.tile[x, y].TileType == TileID.VanityTreeSakura || Main.tile[x, y].TileType == TileID.VanityTreeYellowWillow  )))  
+                                if(Main.tile[x, y+1].HasTile && (Main.tile[x, y+1].TileType == TileID.Grass || Main.tile[x, y+1].TileType == TileID.JungleGrass || Main.tile[x, y+1].TileType == TileID.Sand || Main.tile[x, y+1].TileType == TileID.SnowBlock) ){   
+                                    short framex = Main.tile[x, y+1].TileType switch {
+                                        TileID.JungleGrass => 6*18     ,
+                                        TileID.Sand => 18*18     ,
+                                        TileID.SnowBlock => 3*18     ,
+                                        _ => 0
+                                    };                       
                                     WorldGen.KillTile(x, y-2);  
-                                    Main.tile[x, y].type = TileID.Saplings;
-                                    Main.tile[x, y].frameX = framex;
-                                    Main.tile[x, y].frameY = 18;
-                                    Tile tile = Main.tile[x, y-1];tile.active(true);
-                                    Main.tile[x, y-1].type = TileID.Saplings;
-                                    Main.tile[x, y-1].frameX = framex;
-                                    Main.tile[x, y-1].frameY = 0;
-                                    if( Main.tile[x-1, y].active() && (Main.tile[x-1, y].type == TileID.Trees || Main.tile[x-1, y].type == TileID.PalmTree
-                                         ))  WorldGen.KillTile(x, y);                                        
-                                    if( Main.tile[x+1, y].active() && (Main.tile[x+1, y].type == TileID.Trees || Main.tile[x+1, y].type == TileID.PalmTree
-                                         ))  WorldGen.KillTile(x, y);
+                                    Main.tile[x, y].TileType = TileID.Saplings;
+                                    Main.tile[x, y].TileFrameX = framex;
+                                    Main.tile[x, y].TileFrameY = 18;
+                                    Tile tile = Main.tile[x, y-1];tile.HasTile = true;
+                                    Main.tile[x, y-1].TileType = TileID.Saplings;
+                                    Main.tile[x, y-1].TileFrameX = framex;
+                                    Main.tile[x, y-1].TileFrameY = 0;
+                                    if( Main.tile[x-1, y].HasTile && (Main.tile[x-1, y].TileType == TileID.Trees || Main.tile[x-1, y].TileType == TileID.PalmTree
+                                        || Main.tile[x-1, y].TileType == TileID.VanityTreeSakura || Main.tile[x-1, y].TileType == TileID.VanityTreeYellowWillow  ))  WorldGen.KillTile(x, y);                                        
+                                    if( Main.tile[x+1, y].HasTile && (Main.tile[x+1, y].TileType == TileID.Trees || Main.tile[x+1, y].TileType == TileID.PalmTree
+                                        || Main.tile[x+1, y].TileType == TileID.VanityTreeSakura || Main.tile[x+1, y].TileType == TileID.VanityTreeYellowWillow  ))  WorldGen.KillTile(x, y);
                                 }
                                 else
                                 {
@@ -381,8 +376,8 @@ namespace StartWithBase
         internal void GrowTrees(){
             for(int y=Main.spawnTileY+50; y>150;y--){
                 for(int x=Main.spawnTileX-150; x<=Main.spawnTileX+150;x++){
-                    if (Main.tile[x, y].active() &&  Main.tile[x, y].type == TileID.Saplings){      
-                        if(Main.tile[x, y-2].active() &&  Main.tile[x, y-2].type == TileID.Rope)
+                    if (Main.tile[x, y].HasTile &&  Main.tile[x, y].TileType == TileID.Saplings){      
+                        if(Main.tile[x, y-2].HasTile &&  Main.tile[x, y-2].TileType == TileID.Rope)
                             WorldGen.KillTile(x, y);                              
                         else
                             WorldGen.GrowTree(x, y);
@@ -544,7 +539,7 @@ namespace StartWithBase
 
                 for (int xi = 0; xi < checkSizex; xi++)
                 {
-                    if (  (Main.tile[cx + xi, cy].active() && Main.tileSolid[Main.tile[cx + xi, cy].type]) || (Main.tile[cx - xi, cy].active() && Main.tileSolid[Main.tile[cx - xi, cy].type] ) && Main.tile[cx - xi, cy].wall != WallID.None)
+                    if (  (Main.tile[cx + xi, cy].HasTile && Main.tileSolid[Main.tile[cx + xi, cy].TileType]) || (Main.tile[cx - xi, cy].HasTile && Main.tileSolid[Main.tile[cx - xi, cy].TileType] ) && Main.tile[cx - xi, cy].WallType != WallID.None)
                     {
                         decre = true;
                         break;
@@ -570,7 +565,7 @@ namespace StartWithBase
                 string newWN = wname.Substring(0, from);                
                 Main.worldName = newWN;
                 string seed = Main.ActiveWorldFileData.SeedText;
-                Main.ActiveWorldFileData = WorldFile.CreateMetadata(Main.worldName, Main.ActiveWorldFileData.IsCloudSave, Main.expertMode);
+                Main.ActiveWorldFileData = WorldFile.CreateMetadata(Main.worldName, Main.ActiveWorldFileData.IsCloudSave, Main.GameMode);
                 Main.ActiveWorldFileData.SetSeed(seed);
             }
 
@@ -764,14 +759,14 @@ namespace StartWithBase
                 file.WriteLine("# here you can setup custom values");
                 file.WriteLine("# lines start with '#' get ignored");
                 file.WriteLine("");
-                file.WriteLine("# basetype values ba2=0 ba3=1 b3b=2 ba4=3 ba6=4 currently supported");
+                file.WriteLine("# basetype values ba2=0 ba5=1 ba3=2 b3b=3 ba4=4 ba6=5 currently supported");
                 file.WriteLine("basetype = " + (int)((baseType == BaseType.Base3 && extend) ? BaseType.Base3ext : baseType));
 
 
                 file.WriteLine("");
                 file.WriteLine("# In following part you can change each type of placed objects.");
                 file.WriteLine("# For tile ID's look e.g. at https://terraria.gamepedia.com/Tile_IDs");
-                file.WriteLine("# There the style numbers are written in braces, subtract 1 from those");
+                file.WriteLine("# There also the style numbers are written. It's called Sub ID there.");
                 file.WriteLine("# For items types look at their wiki pages. Those are placed in a starting chest.");
 
                 file.WriteLine("");
@@ -934,7 +929,7 @@ namespace StartWithBase
                 cy++;
                 countTiles = 0;
                 for(int xi = cx-(int)length; xi<cx+length;xi++){
-                    if( Main.tile[xi,cy].active() && Main.tileSolid[Main.tile[xi,cy].type] ){
+                    if( Main.tile[xi,cy].HasTile && Main.tileSolid[Main.tile[xi,cy].TileType] ){
                         countTiles++;
                     }
                 }
@@ -1081,14 +1076,14 @@ namespace StartWithBase
                 {                    
                     if(!notilesClear) WorldGen.KillTile(xi,yi);
                     WorldGen.KillWall(xi,yi);
-                    Main.tile[xi,yi].liquid  = 0;
-                    //Main.tile[xi,yi].wall = WallID.BubblegumBlock;
+                    Main.tile[xi,yi].LiquidAmount = 0;
+                    //Main.tile[xi,yi].WallType = WallID.BubblegumBlock;
                 }
             }
 
         }
 
-        public static void writeDebugFile(string content, bool append = true)
+        public void writeDebugFile(string content, bool append = true)
         {
             using (System.IO.StreamWriter file =
              new System.IO.StreamWriter(Main.SavePath + @".\debug.txt", append))
@@ -1547,7 +1542,7 @@ namespace StartWithBase
                 
                 //gates not needed anymore
                 for(int i=1;i<7;i++){
-                               Tile tilef = Main.tile[cx, cy - i]; tilef.active(false); tilef = Main.tile[cx + 38, cy - i]; tilef.active(false);
+                               Tile tilef = Main.tile[cx, cy - i]; tilef.HasTile=false; tilef = Main.tile[cx + 38, cy - i]; tilef.HasTile=false;
                         }   
 
                 
@@ -1802,9 +1797,9 @@ namespace StartWithBase
             }
             DrawAObject(basement); cy--;
 
-            Tile tile = Main.tile[cx + 7, liquidY]; tile.liquid = 255;
-            tile = Main.tile[cx + 31, liquidY]; tile.honey(true);
-            tile = Main.tile[cx + 31, liquidY]; tile.liquid = 255;
+            Tile tile = Main.tile[cx + 7, liquidY]; tile.LiquidAmount = 255;
+            tile = Main.tile[cx + 31, liquidY]; tile.LiquidType = 2;
+            tile = Main.tile[cx + 31, liquidY]; tile.LiquidAmount = 255;
 
             int cid = Chest.FindChest(cx + 17, liquidY - 2);
             SetUpChest(cid);
@@ -1852,7 +1847,7 @@ namespace StartWithBase
                     if (storageGenToExtend > 0)
                     {
                         for(int i=1;i<7;i++){
-                            tile = Main.tile[cx + 7, cy + i]; tile.active(false); tile = Main.tile[cx + 45, cy + i]; tile.active(false);
+                            tile = Main.tile[cx + 7, cy + i]; tile.HasTile=false; tile = Main.tile[cx + 45, cy + i]; tile.HasTile=false;
                         }                        
                         DrawAObject(storageRoomExtend); cy -= 8; cx = cx + 45;
                         DrawAObject(storageRoomExtend, false); cy -= 1; cx = startX;
@@ -1864,7 +1859,7 @@ namespace StartWithBase
 
                 //fill up base and remove gates     
                 for(int i=1;i<7;i++){
-                            tile = Main.tile[cx + 7, cy + i]; tile.active(false); tile = Main.tile[cx + 45, cy + i]; tile.active(false);
+                            tile = Main.tile[cx + 7, cy + i]; tile.HasTile=false; tile = Main.tile[cx + 45, cy + i]; tile.HasTile=false;
                         }               
                 
                 DrawAObject(storageRoomExtend); cy -= 8; cx = cx + 45;
@@ -1877,7 +1872,7 @@ namespace StartWithBase
                     DrawAObject(floorExtend, false); cy -= 1; cx = startX;
                 }
                 for(int i=1;i<6;i++){
-                            tile = Main.tile[cx + 7, cy + i]; tile.active(false); tile = Main.tile[cx + 45, cy + i]; tile.active(false);
+                            tile = Main.tile[cx + 7, cy + i]; tile.HasTile=false; tile = Main.tile[cx + 45, cy + i]; tile.HasTile=false;
                         }    
                
                 DrawAObject(storageRoomExtendbase); cy -= 7; cx = cx + 45;
@@ -1897,7 +1892,7 @@ namespace StartWithBase
             ropeX = x;
             ropeY = y;
             int rope = 0;
-            while ((!Main.tile[x, y + rope].active() || (Main.tile[x, y + rope].active() && Main.tile[x, y + rope].type == TileID.Trees) || rope < 5))
+            while ((!Main.tile[x, y + rope].HasTile || (Main.tile[x, y + rope].HasTile && Main.tile[x, y + rope].TileType == TileID.Trees) || rope < 5))
             {
                 WorldGen.PlaceTile(x, y + rope++, TileID.Rope, true, true, -1, 0);
             }
@@ -2153,9 +2148,9 @@ namespace StartWithBase
 
             //DrawAObject(floorType1); cy--;
 
-            Tile tile = Main.tile[cx + 3, cy - 5]; tile.liquid = 255;
-            tile = Main.tile[cx + 29, cy - 5]; tile.honey(true);
-            tile.liquid = 255;
+            Tile tile = Main.tile[cx + 3, cy - 5]; tile.LiquidAmount = 255;
+            tile = Main.tile[cx + 29, cy - 5]; tile.LiquidType=2;
+            tile.LiquidAmount = 255;
 
 
             RopeToGround(cx + 16, cy + 2);
@@ -2452,14 +2447,14 @@ namespace StartWithBase
             }
 
 
-            Tile tile = Main.tile[cx + 7, cy - 9] ; tile.liquid = 255;
+            Tile tile = Main.tile[cx + 7, cy - 9] ; tile.LiquidAmount = 255;
             
-            tile = Main.tile[cx + 31, cy - 9]; tile.liquid = 255;
-            tile.honey(true);
+            tile = Main.tile[cx + 31, cy - 9]; tile.LiquidAmount = 255;
+            tile.LiquidType = 2;
 
             WorldGen.PlaceTile(cx + 33, cy - 9, TileID.Platforms, true, true, -1, 13);//obsid plat to hold lava
-            tile = Main.tile[cx + 33, cy - 9]; tile.liquid  = 255;            
-            tile.lava(true);
+            tile = Main.tile[cx + 33, cy - 9]; tile.LiquidAmount = 255;            
+            tile.LiquidType = 1;
 
 
         }
@@ -2613,26 +2608,26 @@ namespace StartWithBase
             WorldGen.PlaceTile(startX+2, startY-2, TileID.Lever, true, true, -1, -1);
             WorldGen.PlaceTile(startX+5, startY-2, TileID.Lever, true, true, -1, 0);
             Tile tile = Main.tile[startX+3,startY+2];                 
-            tile.wire(true);    
+            tile.RedWire = true;    
             for(int x=startX+1;x<startX+6;x++){
                 tile = Main.tile[x,startY-1];                 
-                tile.wire(true);
-                tile.actuator(true);
+                tile.RedWire = true;
+                tile.HasActuator = true;
             }
             for(int y=startY-2;y<startY+3;y++){
                 tile = Main.tile[startX+2,y];                 
-                tile.wire(true);                
+                tile.RedWire = true;                
             }
             for(int x=startX+4;x<startX+7;x++){
                 tile = Main.tile[x,startY-2];                 
-                tile.wire2(true);                
+                tile.BlueWire = true;                
                 tile = Main.tile[x,startY];                 
-                tile.wire2(true);                
+                tile.BlueWire = true;                
             }
             tile = Main.tile[startX+3,startY];                 
-            tile.wire2(true);
+            tile.BlueWire = true;
             tile = Main.tile[startX+6,startY-1];                 
-            tile.wire2(true);
+            tile.BlueWire = true;
             WorldGen.PlaceTile(startX+3, startY+4, TileID.LogicSensor, true, true, -1, 2);
                    
             int sensID = TELogicSensor.Place(startX+3, startY+4);    
@@ -2644,12 +2639,12 @@ namespace StartWithBase
             WorldGen.PlaceTile(startX+3, startY+0, TileID.LogicGateLamp, true, true, -1, 1);
             for(int y=startY+1;y<startY+5;y++){
                 tile = Main.tile[startX+2,y];                 
-                tile.wire3(true);                
+                tile.GreenWire = true;                
             }
             tile = Main.tile[startX+3,startY+4];                 
-            tile.wire3(true);
+            tile.GreenWire = true;
             tile = Main.tile[startX+3,startY+1];                 
-            tile.wire3(true);
+            tile.GreenWire = true;
 
             cx = startX;
             cy = startY;
@@ -2891,11 +2886,11 @@ namespace StartWithBase
 
             cx = startX + 4;
             cy = startY;
-            Tile tile =  Main.tile[cx - 10, cy + 17]; tile.liquid  = 255;
-            tile.honey(true);
+            Tile tile =  Main.tile[cx - 10, cy + 17]; tile.LiquidAmount = 255;
+            tile.LiquidType = 2;
 
 
-            tile = Main.tile[cx + 11, cy + 17]; tile.liquid  = 255;
+            tile = Main.tile[cx + 11, cy + 17]; tile.LiquidAmount = 255;
 
 
             RopeToGround(startX + 2 + 2, startY + 18);
@@ -2976,11 +2971,11 @@ namespace StartWithBase
                         int yd = 0;
                         while (yd++ < 10)
                         {
-                            if (Main.tile[cx - 1, cy - yd].active() && Main.tile[cx + 1, cy - yd].active())
+                            if (Main.tile[cx - 1, cy - yd].HasTile && Main.tile[cx + 1, cy - yd].HasTile)
                                 continue;
                             else
                             {
-                                if ((Main.tile[cx - 1, cy - yd].active() && !Main.tile[cx + 1, cy - yd].active())) // && Main.tile[cx - 1, cy - yd].type != TileID.HangingLanterns
+                                if ((Main.tile[cx - 1, cy - yd].HasTile && !Main.tile[cx + 1, cy - yd].HasTile)) // && Main.tile[cx - 1, cy - yd].TileType != TileID.HangingLanterns
                                     changeIt = true;
                                 break;
                             }
@@ -2988,17 +2983,17 @@ namespace StartWithBase
                         if (changeIt)
                         {
                             Tile expr_691 = Main.tile[cx, cy + 1];
-                            expr_691.frameX += 18;
+                            expr_691.TileFrameX += 18;
                             Tile expr_6B2 = Main.tile[cx, cy];
-                            expr_6B2.frameX += 18;
+                            expr_6B2.TileFrameX += 18;
                         }
 
                         /*
                          * bool changed = false;
-                        if (((!Main.tile[cx + 1, cy - 1].active()) && (Main.tile[cx - 1, cy - 1].active())) || (
-                            (!Main.tile[cx + 1, cy - 1].active()) && (!Main.tile[cx - 1, cy - 1].active()) &&
-                            (!Main.tile[cx + 1, cy - 2].active()) && (Main.tile[cx - 1, cy - 1].active())) || 
-                            (Main.tile[cx -1, cy ].active() && !Main.tile[cx + 1, cy-2].active()) )
+                        if (((!Main.tile[cx + 1, cy - 1].HasTile) && (Main.tile[cx - 1, cy - 1].HasTile)) || (
+                            (!Main.tile[cx + 1, cy - 1].HasTile) && (!Main.tile[cx - 1, cy - 1].HasTile) &&
+                            (!Main.tile[cx + 1, cy - 2].HasTile) && (Main.tile[cx - 1, cy - 1].HasTile)) || 
+                            (Main.tile[cx -1, cy ].HasTile && !Main.tile[cx + 1, cy-2].HasTile) )
                         {
                             Tile expr_691 = Main.tile[cx, cy + 1];
                             expr_691.frameX += 18;
@@ -3007,7 +3002,7 @@ namespace StartWithBase
                             changed = true;
                         }      
                         
-                        if (Main.tile[cx - 1, cy].type == TileID.WorkBenches && changed && (!Main.tile[cx - 1, cy - 1].active()) )
+                        if (Main.tile[cx - 1, cy].TileType == TileID.WorkBenches && changed && (!Main.tile[cx - 1, cy - 1].HasTile) )
                         {
                             Tile expr_691 = Main.tile[cx, cy + 1];
                             expr_691.frameX -= 18;
@@ -3068,34 +3063,34 @@ namespace StartWithBase
         {
             y--;
             
-            if (Main.tile[x, y].active() || Main.tile[x + 1, y].active() || Main.tile[x, y - 1].active() || Main.tile[x + 1, y - 1].active())
+            if (Main.tile[x, y].HasTile || Main.tile[x + 1, y].HasTile || Main.tile[x, y - 1].HasTile || Main.tile[x + 1, y - 1].HasTile)
                 return false;
 
-            if (Main.tile[x, y + 1].type == TileID.Platforms && Main.tile[x + 1, y + 1].type == TileID.Platforms)
+            if (Main.tile[x, y + 1].TileType == TileID.Platforms && Main.tile[x + 1, y + 1].TileType == TileID.Platforms)
                 return true;
-            if (allow && (Main.tile[x-1, y].type == TileID.Containers || Main.tile[x + 2, y].type == TileID.Containers) )
+            if (allow && (Main.tile[x-1, y].TileType == TileID.Containers || Main.tile[x + 2, y].TileType == TileID.Containers) )
                 return true;
 
-            if ((Main.tile[x, y + 1].type != TileID.Platforms && Main.tile[x, y + 1].type != curTileType) ||
-                (Main.tile[x + 1, y + 1].type != TileID.Platforms && Main.tile[x + 1, y + 1].type != curTileType))
+            if ((Main.tile[x, y + 1].TileType != TileID.Platforms && Main.tile[x, y + 1].TileType != curTileType) ||
+                (Main.tile[x + 1, y + 1].TileType != TileID.Platforms && Main.tile[x + 1, y + 1].TileType != curTileType))
                 return false;
 
-            if ((Main.tile[x - 1, y].type == TileID.Chairs || Main.tile[x - 1, y].type == TileID.WorkBenches || Main.tile[x - 1, y].type == TileID.Lamps)
-                  && (Main.tile[x - 1, y - 1].type != curTileType && Main.tile[x - 1, y - 1].type != TileID.Platforms))
+            if ((Main.tile[x - 1, y].TileType == TileID.Chairs || Main.tile[x - 1, y].TileType == TileID.WorkBenches || Main.tile[x - 1, y].TileType == TileID.Lamps)
+                  && (Main.tile[x - 1, y - 1].TileType != curTileType && Main.tile[x - 1, y - 1].TileType != TileID.Platforms))
                 return false;
 
-            if ((Main.tile[x + 2, y].type == TileID.Chairs || Main.tile[x + 2, y].type == TileID.WorkBenches || Main.tile[x + 2, y].type == TileID.Lamps)
-                 && (Main.tile[x + 2, y - 1].type != curTileType && Main.tile[x + 2, y - 1].type != TileID.Platforms))
+            if ((Main.tile[x + 2, y].TileType == TileID.Chairs || Main.tile[x + 2, y].TileType == TileID.WorkBenches || Main.tile[x + 2, y].TileType == TileID.Lamps)
+                 && (Main.tile[x + 2, y - 1].TileType != curTileType && Main.tile[x + 2, y - 1].TileType != TileID.Platforms))
                 return false;
 
-            if ((Main.tile[x - 2, y].type == TileID.Chairs || Main.tile[x - 2, y].type == TileID.WorkBenches)
-                 && (!Main.tile[x - 1, y].active() && Main.tile[x - 1, y].type != TileID.HangingLanterns && Main.tile[x - 1, y].type != TileID.Platforms))
+            if ((Main.tile[x - 2, y].TileType == TileID.Chairs || Main.tile[x - 2, y].TileType == TileID.WorkBenches)
+                 && (!Main.tile[x - 1, y].HasTile && Main.tile[x - 1, y].TileType != TileID.HangingLanterns && Main.tile[x - 1, y].TileType != TileID.Platforms))
                 return false;
-            if ((Main.tile[x + 3, y].type == TileID.Chairs || Main.tile[x + 3, y].type == TileID.WorkBenches)
-                && (!Main.tile[x + 2, y].active() && Main.tile[x + 2, y].type != TileID.HangingLanterns && Main.tile[x + 2, y].type != TileID.Platforms))
+            if ((Main.tile[x + 3, y].TileType == TileID.Chairs || Main.tile[x + 3, y].TileType == TileID.WorkBenches)
+                && (!Main.tile[x + 2, y].HasTile && Main.tile[x + 2, y].TileType != TileID.HangingLanterns && Main.tile[x + 2, y].TileType != TileID.Platforms))
                 return false;
 
-            if (Main.tile[x, y + 2].type == TileID.HolidayLights || Main.tile[x + 1, y + 2].type == TileID.HolidayLights)
+            if (Main.tile[x, y + 2].TileType == TileID.HolidayLights || Main.tile[x + 1, y + 2].TileType == TileID.HolidayLights)
                 return false;
             
             return true;
@@ -3117,9 +3112,9 @@ namespace StartWithBase
             x = ropeX;
             y = ropeY - 5;
 
-            for (; (Main.tile[x, y - 2].active() || Main.tile[x, y - 1].wall == curWallType) && y > 75; y--){}
+            for (; (Main.tile[x, y - 2].HasTile || Main.tile[x, y - 1].WallType == curWallType) && y > 75; y--){}
             y++;
-            for (; (Main.tile[x - 1, y].active() || Main.tile[x - 1, y].wall == curWallType) && x > 75; x--){}
+            for (; (Main.tile[x - 1, y].HasTile || Main.tile[x - 1, y].WallType == curWallType) && x > 75; x--){}
             x++;
             startX = x;
             startY = y;
@@ -3131,22 +3126,22 @@ namespace StartWithBase
             bool endIt = false;
             int k = 5;
             
-            for (; !endIt && (Main.tile[x, y].active() || Main.tile[x, y].wall == curWallType || Main.tile[x, y - 1].active() || Main.tile[x, y - 1].wall == curWallType || k > 0) && y < Main.maxTilesY - 75 ; y++)
+            for (; !endIt && (Main.tile[x, y].HasTile || Main.tile[x, y].WallType == curWallType || Main.tile[x, y - 1].HasTile || Main.tile[x, y - 1].WallType == curWallType || k > 0) && y < Main.maxTilesY - 75 ; y++)
             {
-                if (!(Main.tile[x, y].active() || Main.tile[x, y].wall == curWallType || Main.tile[x, y - 1].active() || Main.tile[x, y - 1].wall == curWallType))
+                if (!(Main.tile[x, y].HasTile || Main.tile[x, y].WallType == curWallType || Main.tile[x, y - 1].HasTile || Main.tile[x, y - 1].WallType == curWallType))
                     k--;
 
                 x = startX;
-                for (; (Main.tile[x-1, y].active() || Main.tile[x-1, y].wall == curWallType) && x > 75; x--)
+                for (; (Main.tile[x-1, y].HasTile || Main.tile[x-1, y].WallType == curWallType) && x > 75; x--)
                 {
 
                 }
                 startX = Math.Min(x++, startX);
                 x = startX;
                 int l = 4;
-                for (; !endIt && (Main.tile[x, y].active() || Main.tile[x, y].wall == curWallType || Main.tile[x, y - 1].active() || Main.tile[x, y - 1].wall == curWallType || x < xMax || l>0) && x < Main.maxTilesX - 75; x++)
+                for (; !endIt && (Main.tile[x, y].HasTile || Main.tile[x, y].WallType == curWallType || Main.tile[x, y - 1].HasTile || Main.tile[x, y - 1].WallType == curWallType || x < xMax || l>0) && x < Main.maxTilesX - 75; x++)
                 {
-                    if (!(Main.tile[x, y].active() || Main.tile[x, y].wall == curWallType || Main.tile[x, y - 1].active() || Main.tile[x, y - 1].wall == curWallType || x < xMax))
+                    if (!(Main.tile[x, y].HasTile || Main.tile[x, y].WallType == curWallType || Main.tile[x, y - 1].HasTile || Main.tile[x, y - 1].WallType == curWallType || x < xMax))
                         l--;
 
                     if (canPlaceC(x, y, tryagain<2) )
@@ -3186,9 +3181,9 @@ namespace StartWithBase
 
                 x = ropeX;
                 y = ropeY - 5;
-                for (; (Main.tile[x - 1, y].active() || Main.tile[x - 1, y].wall == curWallType) && x > 75; x--) { }
+                for (; (Main.tile[x - 1, y].HasTile || Main.tile[x - 1, y].WallType == curWallType) && x > 75; x--) { }
                 x++;
-                for (; (Main.tile[x, y - 2].active() || Main.tile[x, y - 1].wall == curWallType) && y > 75; y--) { }
+                for (; (Main.tile[x, y - 2].HasTile || Main.tile[x, y - 1].WallType == curWallType) && y > 75; y--) { }
                 y++;
                 startX = x;
                 startY = y;
